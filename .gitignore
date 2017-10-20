@@ -1,0 +1,14 @@
+# Windows:
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Delphi
+*.res
+*.dcu
+*.stat
+*.dproj.local
+*.identcache
+__history
+Win32
+*.tvsconfig
