@@ -30,8 +30,7 @@ package WkeForDelphi;
 requires
   rtl,
   vcl,
-  vclimg,
-  LjGdiPlusBase;
+  vclimg;
 
 contains
   Langji.Wke.Reg in 'Langji.Wke.Reg.pas',
