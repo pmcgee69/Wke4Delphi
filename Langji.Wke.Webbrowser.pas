@@ -1,10 +1,15 @@
 unit Langji.Wke.Webbrowser;
 
 interface
+{$I delphiver.inc}
 
 uses
-  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics, Messages, windows, Vcl.Forms, System.Generics.Collections,
-  Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
+{$IFDEF DELPHI16_UP}
+  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics,  Vcl.Forms, System.Generics.Collections,
+{$ELSE}
+    SysUtils,Classes,Controls,Graphics,forms,
+{$ENDIF}
+ Messages, windows, Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
 
 type
   TWkeWebBrowser = class;
@@ -26,7 +31,7 @@ type
     procedure SetWkeUserAgent(const Value: string);
     procedure DoOnNewWindow(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
   public
-    FWkeWebPages: TList<TWkeWebBrowser>;
+    FWkeWebPages: TList{$IFDEF DELPHI16_UP}<TWkeWebBrowser>{$ENDIF} ;
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
     procedure loaded; override;
@@ -290,7 +295,7 @@ begin
       wkeSetUserAgent(thewebview, PansiChar(AnsiString(FwkeUserAgent)));
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
-      wkeSetCookieJarPath(thewebview, PChar(FwkeCookiePath));
+      wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
   end;
 end;
 
@@ -522,7 +527,7 @@ end;
 constructor TWkeApp.Create(Aowner: TComponent);
 begin
   inherited;
-  FWkeWebPages := TList<TWkeWebBrowser>.create;
+  FWkeWebPages := TList{$IFDEF DELPHI16_UP}<TWkeWebBrowser>{$ENDIF}.create;
 end;
 
 destructor TWkeApp.Destroy;

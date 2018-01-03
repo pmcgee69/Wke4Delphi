@@ -525,6 +525,8 @@ end;
 
 procedure wkeWebView.LoadURL(const AURL: string);
 begin
+  //wkeLoadURL(Self, PChar('www.baidu.com'));exit;// AnsiToUtf8(AURL)));exit;
+
 {$IFDEF UNICODE}
   wkeLoadURLW(Self, PChar(AURL));
 {$ELSE}

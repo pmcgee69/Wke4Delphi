@@ -1,10 +1,15 @@
 unit Langji.Wke.TransparentPage;
 
 interface
+{$I delphiver.inc}
 
 uses
-  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics, Messages, windows, Vcl.Forms, Langji.Wke.types, Langji.Wke.IWebBrowser,
-  Langji.Wke.lib;
+{$IFDEF DELPHI16_UP}
+  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics, Vcl.Forms,
+{$ELSE}
+  SysUtils, Classes, Controls, Graphics, Forms,
+{$ENDIF}
+  Messages, windows, Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
 
 type
   TCustomWkePage = class(TComponent, IWkeWebbrowser)
@@ -89,7 +94,7 @@ type
     property WindowHeight: Integer read FWindowHeight write FWindowHeight;
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property HtmlFile: string read FHtmlFile write FHtmlFile;
-    property WindowHandle:Hwnd read GetWebHandle;
+    property WindowHandle: Hwnd read GetWebHandle;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
     property ZoomPercent: Integer read GetZoom write SetZoom;
@@ -268,8 +273,8 @@ end;
 
 function TCustomWkePage.DoWebViewPromptBox(Sender: TObject; smsg, defaultres, Strres: string): boolean;
 begin
-   if Assigned(FOnPromptBox) then
-     FOnPromptBox(Self, smsg, defaultres, Strres,result);
+  if Assigned(FOnPromptBox) then
+    FOnPromptBox(Self, smsg, defaultres, Strres, result);
 end;
 
 procedure TCustomWkePage.DoWebViewTitleChange(Sender: TObject; sTitle: string);
@@ -358,9 +363,9 @@ end;
 
 function TCustomWkePage.GetWebHandle: HWnd;
 begin
-  result :=0;
+  result := 0;
   if Assigned(thewebview) then
-    result :=thewebview.WindowHandle;
+    result := thewebview.WindowHandle;
 end;
 
 procedure TCustomWkePage.SetTransparent(const Value: Boolean);
@@ -460,9 +465,9 @@ begin
     if Assigned(FOnAlertBox) then
       thewebview.SetOnAlertBox(DoAlertBox, self);
     if Assigned(FOnConfirmBox) then
-    thewebview.SetOnConfirmBox(DoConfirmBox, self);
+      thewebview.SetOnConfirmBox(DoConfirmBox, self);
     if Assigned(FOnPromptBox) then
-    thewebview.SetOnPromptBox(DoPromptBox, self);
+      thewebview.SetOnPromptBox(DoPromptBox, self);
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
     thewebview.SetOnWindowClosing(DoWindowClosing, self);
@@ -471,7 +476,7 @@ begin
       wkeSetUserAgent(thewebview, PansiChar(AnsiString(FwkeUserAgent)));
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
-      wkeSetCookieJarPath(thewebview, PChar(FwkeCookiePath));
+      wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
   end;
 
 end;
