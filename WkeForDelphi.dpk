@@ -37,7 +37,6 @@ contains
   Langji.Wke.types in 'Langji.Wke.types.pas',
   Langji.Wke.lib in 'Langji.Wke.lib.pas',
   Langji.Wke.Webbrowser in 'Langji.Wke.Webbrowser.pas',
-  Unit1 in 'Demos\wkeWebbrowTest\Unit1.pas' {Form1},
   Langji.Wke.TransparentPage in 'Langji.Wke.TransparentPage.pas',
   Langji.Wke.IWebBrowser in 'Langji.Wke.IWebBrowser.pas';
 
