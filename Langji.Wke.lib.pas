@@ -236,7 +236,7 @@ begin
       wkeLibHandle := LoadLibrary(PChar(wkeLibFileName));
   end;
 
-  if wkeLibHandle = 0 then    exit;
+  if wkeLibHandle = 0 then  raise  Exception.Create('Load wke.dll Error,Please check the file!');
   //  RaiseLastOSError;
 
   wkeInitialize := GetProcAddress(wkeLibHandle, 'wkeInitialize');

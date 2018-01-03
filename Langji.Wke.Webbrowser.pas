@@ -5,16 +5,17 @@ interface
 
 uses
 {$IFDEF DELPHI16_UP}
-  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics,  Vcl.Forms, System.Generics.Collections,
+  System.SysUtils, System.Classes, Vcl.Controls, vcl.graphics, Vcl.Forms, System.Generics.Collections,
 {$ELSE}
-    SysUtils,Classes,Controls,Graphics,forms,
+  SysUtils, Classes, Controls, Graphics, forms,
 {$ENDIF}
- Messages, windows, Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
+  Messages, windows, Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
 
 type
   TWkeWebBrowser = class;
 
-  TOnNewWindowEvent = procedure(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var openflg: TNewWindowFlag; var webbrow: Twkewebbrowser) of object;
+  TOnNewWindowEvent = procedure(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var openflg:
+    TNewWindowFlag; var webbrow: Twkewebbrowser) of object;
 
   TWkeApp = class(TComponent)
   private
@@ -53,7 +54,7 @@ type
     thewebview: TwkeWebView;
     FZoomValue: Integer;
     FLoadFinished: boolean;
-    FTransparent:boolean;
+    FTransparent: boolean;
     FOnLoadEnd: TOnLoadEndEvent;
     FOnTitleChange: TOnTitleChangeEvent;
     FOnLoadStart: TOnBeforeLoadEvent;
@@ -122,12 +123,10 @@ type
     property LoadFinished: Boolean read GetLoadFinished;       //º”‘ÿÕÍ≥…
     property mainwkeview: TWkeWebView read thewebview;
     property WkeApp: TWkeApp read FwkeApp write FwkeApp;
-
   published
     property Align;
     property Color;
-    property WebViewHandle:Hwnd read GetWebHandle;
-
+    property WebViewHandle: Hwnd read GetWebHandle;
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
@@ -241,12 +240,10 @@ begin
   FZoomValue := 100;
   FCookieEnabled := true;
   FwkeUserAgent := 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0';
- // FBackImage:=TPicture.Create;
 end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
- // FBackImage.Free;
   if not Assigned(FwkeApp) then
     WkeFinalizeAndUnloadLib;
   inherited;
@@ -263,16 +260,9 @@ end;
 
 procedure TWkeWebBrowser.CreateWebView;
 begin
-//  if FTransparent  then
-//    thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_TRANSPARENT , handle, 0, 0, Width, height)
-//  else
-    thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_CONTROL, handle, 0, 0, Width, height);
+  thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_CONTROL, handle, 0, 0, Width, height);
   if Assigned(thewebview) then
   begin
-//    if FTransparent  then
-//    begin
-//      windows.SetParent(thewebview.WindowHandle,handle);
-//    end;
     ShowWindow(thewebview.WindowHandle, SW_NORMAL);
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
@@ -284,9 +274,9 @@ begin
     if Assigned(FOnAlertBox) then
       thewebview.SetOnAlertBox(DoAlertBox, self);
     if Assigned(FOnConfirmBox) then
-    thewebview.SetOnConfirmBox(DoConfirmBox, self);
+      thewebview.SetOnConfirmBox(DoConfirmBox, self);
     if Assigned(FOnPromptBox) then
-    thewebview.SetOnPromptBox(DoPromptBox, self);
+      thewebview.SetOnPromptBox(DoPromptBox, self);
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
     thewebview.SetOnWindowClosing(DoWindowClosing, self);
@@ -318,13 +308,13 @@ begin
 end;
 
 procedure TWkeWebBrowser.DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
-
 begin
   if Assigned(FOnCreateView) then
     FOnCreateView(self, sUrl, navigationType, windowFeatures, wvw);
   if wvw <> nil then
   begin
-    if wvw.WindowHandle =0 then  wvw:=thewebview ;
+    if wvw.WindowHandle = 0 then
+      wvw := thewebview;
   end;
 end;
 
@@ -426,14 +416,14 @@ end;
 
 function TWkeWebBrowser.GetTransparent: boolean;
 begin
-    result := FTransparent;
+  result := FTransparent;
 end;
 
 function TWkeWebBrowser.GetWebHandle: Hwnd;
 begin
-  result :=0;
+  result := 0;
   if Assigned(thewebview) then
-    result :=thewebview.WindowHandle;
+    result := thewebview.WindowHandle;
 end;
 
 procedure TWkeWebBrowser.SetTransparent(const Value: Boolean);
@@ -501,7 +491,7 @@ end;
 
 procedure TWkeWebBrowser.SetZoom(const Value: Integer);
 begin
-  if Assigned(thewebview) then   //  wkeSetZoomFactor(thewebview,0.1);
+  if Assigned(thewebview) then
     thewebview.ZoomFactor := LogN(1.2, Value / 100);
 end;
 
@@ -604,8 +594,7 @@ begin
           wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_CONTROL, newFrm.handle, 0, 0, newFrm.Width, newFrm.height);
           ShowWindow(wvw.WindowHandle, SW_NORMAL);
           newFrm.Caption := sUrl;
-        end;
-
+        end;     
       end;
     nwf_OpenInCurrent:
       wvw := TWkeWebBrowser(Sender).thewebview;

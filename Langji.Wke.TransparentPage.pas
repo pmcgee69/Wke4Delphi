@@ -62,6 +62,7 @@ type
     procedure SetTransparent(const Value: Boolean);
     function GetLoadFinished: Boolean;
     function GetWebHandle: Hwnd;
+    procedure SetCaption(const Value: string);
     { Private declarations }
   protected
     procedure loaded; override;
@@ -88,6 +89,7 @@ type
     property LoadFinished: Boolean read GetLoadFinished;       //º”‘ÿÕÍ≥…
     property Transparent: Boolean read GetTransparent write SetTransparent;
   published
+    property Caption :string write SetCaption;
     property WindowLeft: Integer read FWindowLeft write FWindowLeft;
     property WindowTop: Integer read FWindowTop write FWindowTop;
     property WindowWidth: Integer read FWindowWidth write FWindowWidth;
@@ -427,6 +429,11 @@ begin
     thewebview.Reload;
 end;
 
+procedure TCustomWkePage.SetCaption(const Value: string);
+begin
+  if Assigned(thewebview) then    thewebview.WindowTitle :=Value;
+end;
+
 procedure TCustomWkePage.SetFocusToWebbrowser;
 begin
   if Assigned(thewebview) then
@@ -435,7 +442,7 @@ end;
 
 procedure TCustomWkePage.SetZoom(const Value: Integer);
 begin
-  if Assigned(thewebview) then   //  wkeSetZoomFactor(thewebview,0.1);
+  if Assigned(thewebview) then
     thewebview.ZoomFactor := LogN(1.2, Value / 100);
 end;
 
