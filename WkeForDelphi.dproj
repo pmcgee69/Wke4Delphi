@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{06AEDCF9-AC43-4C55-9D46-2EA6D0AF1E8A}</ProjectGuid>
         <MainSource>WkeForDelphi.dpk</MainSource>
-        <ProjectVersion>14.4</ProjectVersion>
+        <ProjectVersion>18.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
@@ -11,6 +11,11 @@
         <AppType>Package</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Android' and '$(Base)'=='true') or '$(Base_Android)'!=''">
+        <Base_Android>true</Base_Android>
+        <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='OSX32' and '$(Base)'=='true') or '$(Base_OSX32)'!=''">
@@ -57,6 +62,12 @@
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <SanitizedProjectName>WkeForDelphi</SanitizedProjectName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Android)'!=''">
+        <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
+        <BT_BuildType>Debug</BT_BuildType>
+        <EnabledSysJars>android-support-v4.dex.jar;cloud-messaging.dex.jar;fmx.dex.jar;google-analytics-v2.dex.jar;google-play-billing.dex.jar;google-play-licensing.dex.jar;google-play-services.dex.jar</EnabledSysJars>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_OSX32)'!=''">
         <DCC_UsePackage>rtl;$(DCC_UsePackage)</DCC_UsePackage>
@@ -67,7 +78,7 @@
         <DCC_UsePackage>rtl;vcl;vclimg;LjGdiPlusBase;$(DCC_UsePackage)</DCC_UsePackage>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>rtl;vcl;vclimg;$(DCC_UsePackage)</DCC_UsePackage>
@@ -87,7 +98,7 @@
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-        <DCC_DebugInformation>false</DCC_DebugInformation>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_OSX32)'!=''">
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
@@ -98,16 +109,10 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="vclimg.dcp"/>
-        <DCCReference Include="LjGdiPlusBase.dcp"/>
         <DCCReference Include="Langji.Wke.Reg.pas"/>
         <DCCReference Include="Langji.Wke.types.pas"/>
         <DCCReference Include="Langji.Wke.lib.pas"/>
         <DCCReference Include="Langji.Wke.Webbrowser.pas"/>
-        <DCCReference Include="Demos\wkeWebbrowTest\Unit1.pas">
-            <Form>Form1</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="Langji.Wke.TransparentPage.pas"/>
         <DCCReference Include="Langji.Wke.IWebBrowser.pas"/>
         <BuildConfiguration Include="Release">
@@ -172,6 +177,9 @@
             </Delphi.Personality>
             <Deployment/>
             <Platforms>
+                <Platform value="Android">False</Platform>
+                <Platform value="iOSDevice32">False</Platform>
+                <Platform value="iOSSimulator">False</Platform>
                 <Platform value="OSX32">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
@@ -181,4 +189,5 @@
     </ProjectExtensions>
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+    <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
 </Project>
