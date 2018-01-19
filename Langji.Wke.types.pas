@@ -281,6 +281,7 @@ type
     procedure SetEditable(editable: Boolean);
     function GetWindowHandle: HWND;
     procedure SetWindowTitle(const ATitle: string);
+    function GetLocalUrl: string;
   public
     class procedure Initialize;
     class procedure InitializeEx(settings: PwkeSettings);
@@ -321,6 +322,8 @@ type
     function FireKeyDownEvent(virtualKeyCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean;
     function FireKeyPressEvent(charCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean;
     procedure SetFocus;
+    procedure SetCookie(const scookie:string);  //2018.01.17ÐÂÔö
+
     procedure KillFocus;
     function RunJS(const AScript: string): jsValue;
     function GlobalExec: jsExecState;
@@ -364,7 +367,7 @@ type
     property ContentHeight: Integer read GetContentHeight;
     property Dirty: Boolean read IsDirty write SetDirty;
     property ViewDC: HDC read GetViewDC;
-    property Cookie: string read GetCookie;
+    property Cookie: string read GetCookie write SetCookie;         //2018.01.17
     property CookieEnabled: Boolean read IsCookieEnabled write SetCookieEnabled;
     property MediaVolume: Single read GetMediaVolume write SetMediaVolume;
     property CaretRect: wkeRect read GetCaretRect;
@@ -372,6 +375,7 @@ type
     property Editable: Boolean write SetEditable;
     property WindowHandle: HWND read GetWindowHandle;
     property WindowTitle: string write SetWindowTitle;
+    property LocalUrl:string read GetLocalUrl;
   end;
 
   TWkeWebView = wkeWebView;
@@ -630,6 +634,11 @@ begin
   Result := wkeGetHeight(Self);
 end;
 
+function wkeWebView.GetLocalUrl: string;
+begin
+  result :=wkeGetURL(Self);
+end;
+
 function wkeWebView.GetContentWidth: Integer;
 begin
   Result := wkeGetContentWidth(Self);
@@ -732,6 +741,12 @@ begin
 {$ELSE}
   Result := {$IFDEF FPC}wkeGetCookie(Self){$ELSE}Utf8ToAnsi(wkeGetCookie(Self)){$ENDIF};
 {$ENDIF}
+end;
+
+procedure wkeWebView.SetCookie(const scookie: string);
+begin
+  if Assigned(wkeSetCookie) then
+    wkeSetCookie(Self,PansiChar(AnsiToUtf8( GetLocalUrl)),PAnsiChar(AnsiToUtf8(scookie)));
 end;
 
 procedure wkeWebView.SetCookieEnabled(enable: Boolean);

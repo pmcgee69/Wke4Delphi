@@ -99,6 +99,11 @@ type
     procedure SetTransparent(const Value: Boolean);
     function GetLoadFinished: Boolean;
     function GetWebHandle: Hwnd;
+    /// <summary>
+    ///   格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+    /// </summary>
+    procedure SetCookie(const Value: string);
+    function GetCookie: string;
     { Private declarations }
   protected
     { Protected declarations }
@@ -132,6 +137,10 @@ type
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
+    /// <summary>
+    ///   Cookie格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+    /// </summary>
+    property Cookie :string read GetCookie write SetCookie;
     property ZoomPercent: Integer read GetZoom write SetZoom;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
@@ -399,6 +408,12 @@ begin
     result := thewebview.CanGoForward;
 end;
 
+function TWkeWebBrowser.GetCookie: string;
+begin
+  if Assigned(thewebview) then
+    result := thewebview.Cookie;
+end;
+
 function TWkeWebBrowser.GetCookieEnable: boolean;
 begin
   if Assigned(thewebview) then
@@ -495,6 +510,12 @@ procedure TWkeWebBrowser.Refresh;
 begin
   if Assigned(thewebview) then
     thewebview.Reload;
+end;
+
+procedure TWkeWebBrowser.SetCookie(const Value: string);
+begin
+  if Assigned(thewebview) then
+    thewebview.setcookie(Value);
 end;
 
 procedure TWkeWebBrowser.SetFocusToWebbrowser;

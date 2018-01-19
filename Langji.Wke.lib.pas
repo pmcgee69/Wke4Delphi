@@ -119,7 +119,25 @@ var
   wkeResizeWindow: procedure(webWindow: wkeWebView; width: Integer; height: Integer); cdecl;
   wkeSetWindowTitle: procedure(webWindow: wkeWebView; title: Putf8); cdecl;
   wkeSetWindowTitleW: procedure(webWindow: wkeWebView; title: Pwchar_t); cdecl;
-  wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;      //minibink 新增
+  wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
+ // ITERATOR3(void, wkeSetCookie, wkeWebView webView, const utf8* url, const utf8* cookie, "cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure")
+  /// <summary>
+  ///   设置Cookie minibink新增， cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+  /// </summary>
+  wkeSetCookie:procedure( webWindow: wkeWebView; const url,cookie: putf8);   cdecl;      //minibink 新增
+ // WKE_API const utf8* wkeGetURL(wkeWebView webView);
+ /// <summary>
+ ///  取当前Url
+ /// </summary>
+  wkeGetURL:function(webWindow: wkeWebView) : putf8; cdecl;                  //minibink 新增  2018.1.17
+//  WKE_API bool wkeIsMainFrame(wkeWebView webView, wkeWebFrameHandle frameId);
+//WKE_API bool wkeIsWebRemoteFrame(wkeWebView webView, wkeWebFrameHandle frameId);
+//WKE_API wkeWebFrameHandle wkeWebFrameGetMainFrame(wkeWebView webView);
+//WKE_API jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, const utf8* script, bool isInClosure);
+
+  wkeWebFrameGetMainFrame:function(webWindow: wkeWebView) : Thandle; cdecl;       //minibink 新增  2018.1.17
+  wkeIsMainFrame:function(webWindow: wkeWebView;frameId:Thandle):Boolean; cdecl;  //minibink 新增  2018.1.17
+  wkeRunJsByFrame:function(webWindow: wkeWebView;frameId:Thandle; const  script:putf8;isInClosure:boolean)   : jsValue; cdecl;
 //================================JScript============================
 
   jsBindFunction: procedure(name: PAnsiChar; fn: jsNativeFunction; AArgCount: LongInt); cdecl;
@@ -351,6 +369,10 @@ begin
 
 //void wkeSetCookieJarPath:=GetProcAddress(wkeLibHandle,'//void wkeSetCookieJarPath');
   wkeSetCookieJarPath := GetProcAddress(wkeLibHandle, 'wkeSetCookieJarPath');
+  wkeSetCookie        := GetProcAddress(wkeLibHandle, 'wkeSetCookie');
+  wkeGetURL           := GetProcAddress(wkeLibHandle, 'wkeGetURL');
+  wkeWebFrameGetMainFrame := GetProcAddress(wkeLibHandle, 'wkeWebFrameGetMainFrame');
+  wkeIsMainFrame         := GetProcAddress(wkeLibHandle, 'wkeIsMainFrame');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');
