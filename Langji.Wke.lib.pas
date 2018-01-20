@@ -55,7 +55,8 @@ var
   wkeIsDirty: function(webView: wkeWebView): Boolean; cdecl;
   wkeAddDirtyArea: procedure(webView: wkeWebView; x: Integer; y: Integer; w: Integer; h: Integer); cdecl;
   wkeLayoutIfNeeded: procedure(webView: wkeWebView); cdecl;
-  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst: Integer; yDst: Integer; w: Integer; h: Integer; xSrc: Integer; ySrc: Integer; bCopyAlpha: Boolean); cdecl;
+  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst: Integer; yDst: Integer; w: Integer; h: Integer; xSrc: Integer;
+    ySrc: Integer; bCopyAlpha: Boolean); cdecl;
   wkePaint2: procedure(webView: wkeWebView; bits: Pointer; pitch: Integer); cdecl;
   wkeRepaintIfNeeded: procedure(webView: wkeWebView); cdecl;
   wkeGetViewDC: function(webView: wkeWebView): HDC; cdecl;
@@ -119,25 +120,39 @@ var
   wkeResizeWindow: procedure(webWindow: wkeWebView; width: Integer; height: Integer); cdecl;
   wkeSetWindowTitle: procedure(webWindow: wkeWebView; title: Putf8); cdecl;
   wkeSetWindowTitleW: procedure(webWindow: wkeWebView; title: Pwchar_t); cdecl;
+
+
+//==============================================================================
+// 以下函数为MiniBlink特有
+//==============================================================================
+
   wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
  // ITERATOR3(void, wkeSetCookie, wkeWebView webView, const utf8* url, const utf8* cookie, "cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure")
   /// <summary>
   ///   设置Cookie minibink新增， cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
   /// </summary>
-  wkeSetCookie:procedure( webWindow: wkeWebView; const url,cookie: putf8);   cdecl;      //minibink 新增
+  wkeSetCookie: procedure(webWindow: wkeWebView; const url, cookie: putf8); cdecl;      //minibink 新增
  // WKE_API const utf8* wkeGetURL(wkeWebView webView);
  /// <summary>
  ///  取当前Url
  /// </summary>
-  wkeGetURL:function(webWindow: wkeWebView) : putf8; cdecl;                  //minibink 新增  2018.1.17
+  wkeGetURL: function(webWindow: wkeWebView): putf8; cdecl;                  //minibink 新增  2018.1.17
 //  WKE_API bool wkeIsMainFrame(wkeWebView webView, wkeWebFrameHandle frameId);
 //WKE_API bool wkeIsWebRemoteFrame(wkeWebView webView, wkeWebFrameHandle frameId);
 //WKE_API wkeWebFrameHandle wkeWebFrameGetMainFrame(wkeWebView webView);
 //WKE_API jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, const utf8* script, bool isInClosure);
 
-  wkeWebFrameGetMainFrame:function(webWindow: wkeWebView) : Thandle; cdecl;       //minibink 新增  2018.1.17
-  wkeIsMainFrame:function(webWindow: wkeWebView;frameId:Thandle):Boolean; cdecl;  //minibink 新增  2018.1.17
-  wkeRunJsByFrame:function(webWindow: wkeWebView;frameId:Thandle; const  script:putf8;isInClosure:boolean)   : jsValue; cdecl;
+  wkeWebFrameGetMainFrame: function(webWindow: wkeWebView): Thandle; cdecl;       //minibink 新增  2018.1.17
+  wkeIsMainFrame: function(webWindow: wkeWebView; frameId: Thandle): Boolean; cdecl;  //minibink 新增  2018.1.17
+  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue; cdecl;      // minibink 新增  2018.1.17
+
+  //ITERATOR2(void, wkeVisitAllCookie, void* params, wkeCookieVisitor visitor, "")
+
+  wkeVisitAllCookie: procedure(params: Pointer; const visitor: wkeCookieVisitor); cdecl;
+  //ITERATOR2(void, wkeSetLocalStorageFullPath, wkeWebView webView, const WCHAR* path, "")
+  wkeSetLocalStorageFullPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
+  //ITERATOR1(void, wkePerformCookieCommand, wkeCookieCommand command, "") \
+  wkePerformCookieCommand: procedure(command: wkeCookieCommand); cdecl;
 //================================JScript============================
 
   jsBindFunction: procedure(name: PAnsiChar; fn: jsNativeFunction; AArgCount: LongInt); cdecl;
@@ -199,9 +214,12 @@ var
 procedure ProcessVcFastCall;
 {$ENDIF UseVcFastCall}
 
-function  LoadWkeLibaraly(const wkeLibFilePath: string = ''):boolean;
+function LoadWkeLibaraly(const wkeLibFilePath: string = ''): boolean;
+
 procedure UnLoadWkeLibaraly();
+
 procedure WkeLoadLibAndInit;
+
 procedure WkeFinalizeAndUnloadLib;
 
 implementation
@@ -222,8 +240,6 @@ asm
 end;
 {$ENDIF UseVcFastCall}
 
-
-
 procedure WkeLoadLibAndInit;
 begin
   if wkeLibHandle = 0 then
@@ -242,10 +258,10 @@ begin
   end;
 end;
 
-function  LoadWkeLibaraly(const wkeLibFilePath: string = ''):boolean;
+function LoadWkeLibaraly(const wkeLibFilePath: string = ''): boolean;
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
-  result :=false;
+  result := false;
   if wkeLibHandle = 0 then
   begin
     if wkeLibFilePath <> '' then
@@ -254,7 +270,8 @@ begin
       wkeLibHandle := LoadLibrary(PChar(wkeLibFileName));
   end;
 
-  if wkeLibHandle = 0 then  raise  Exception.Create('Load wke.dll Error,Please check the file!');
+  if wkeLibHandle = 0 then
+    raise Exception.Create('Load wke.dll Error,Please check the file!');
   //  RaiseLastOSError;
 
   wkeInitialize := GetProcAddress(wkeLibHandle, 'wkeInitialize');
@@ -369,10 +386,15 @@ begin
 
 //void wkeSetCookieJarPath:=GetProcAddress(wkeLibHandle,'//void wkeSetCookieJarPath');
   wkeSetCookieJarPath := GetProcAddress(wkeLibHandle, 'wkeSetCookieJarPath');
-  wkeSetCookie        := GetProcAddress(wkeLibHandle, 'wkeSetCookie');
-  wkeGetURL           := GetProcAddress(wkeLibHandle, 'wkeGetURL');
+  wkeSetCookie := GetProcAddress(wkeLibHandle, 'wkeSetCookie');
+  wkeGetURL := GetProcAddress(wkeLibHandle, 'wkeGetURL');
   wkeWebFrameGetMainFrame := GetProcAddress(wkeLibHandle, 'wkeWebFrameGetMainFrame');
-  wkeIsMainFrame         := GetProcAddress(wkeLibHandle, 'wkeIsMainFrame');
+  wkeIsMainFrame := GetProcAddress(wkeLibHandle, 'wkeIsMainFrame');
+  wkeRunJsByFrame := GetProcAddress(wkeLibHandle, 'wkeRunJsByFrame');
+
+  wkeVisitAllCookie := GetProcAddress(wkeLibHandle, 'wkeVisitAllCookie');
+  wkeSetLocalStorageFullPath := GetProcAddress(wkeLibHandle, 'wkeSetLocalStorageFullPath');
+  wkePerformCookieCommand := GetProcAddress(wkeLibHandle, 'wkePerformCookieCommand');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');
@@ -428,7 +450,7 @@ begin
   jsSetGlobal := GetProcAddress(wkeLibHandle, 'jsSetGlobal');
   jsGC := GetProcAddress(wkeLibHandle, 'jsGC');
 
-  Result :=(wkeLibHandle <>0);
+  Result := (wkeLibHandle <> 0);
 
 end;
 

@@ -65,6 +65,13 @@ type
 
   TwkeLoadingResult = wkeLoadingResult;
 
+  wkeCookieCommand =(
+    wkeCookieCommandClearAllCookies,
+    wkeCookieCommandClearSessionCookies,
+    wkeCookieCommandFlushCookiesToFile,
+    wkeCookieCommandReloadCookiesFromFile);
+
+
   wkeWindowType = (WKE_WINDOW_TYPE_POPUP, WKE_WINDOW_TYPE_TRANSPARENT, WKE_WINDOW_TYPE_CONTROL);
 
   TwkeWindowType = wkeWindowType;
@@ -166,6 +173,7 @@ type
   JScript = class;
 
   jsExecState = JScript;
+  wkeCookieVisitor=function( params:Pointer; const name,value,domain,path:string;expires:Integer):Boolean;
 
   wkeTitleChangedCallback = procedure(webView: wkeWebView; param: Pointer; title: wkeString); cdecl;
 
@@ -282,6 +290,7 @@ type
     function GetWindowHandle: HWND;
     procedure SetWindowTitle(const ATitle: string);
     function GetLocalUrl: string;
+    procedure SetLocaStoragePath(const Value: string);
   public
     class procedure Initialize;
     class procedure InitializeEx(settings: PwkeSettings);
@@ -369,6 +378,7 @@ type
     property ViewDC: HDC read GetViewDC;
     property Cookie: string read GetCookie write SetCookie;         //2018.01.17
     property CookieEnabled: Boolean read IsCookieEnabled write SetCookieEnabled;
+    property LocalStoragePath:string  write SetLocaStoragePath;    //2018.1.20
     property MediaVolume: Single read GetMediaVolume write SetMediaVolume;
     property CaretRect: wkeRect read GetCaretRect;
     property ZoomFactor: Single read GetZoomFactor write SetZoomFactor;
@@ -529,8 +539,6 @@ end;
 
 procedure wkeWebView.LoadURL(const AURL: string);
 begin
-  //wkeLoadURL(Self, PChar('www.baidu.com'));exit;// AnsiToUtf8(AURL)));exit;
-
 {$IFDEF UNICODE}
   wkeLoadURLW(Self, PChar(AURL));
 {$ELSE}
@@ -804,6 +812,11 @@ end;
 procedure wkeWebView.SetFocus;
 begin
   wkeSetFocus(Self);
+end;
+
+procedure wkeWebView.SetLocaStoragePath(const Value: string);
+begin
+  wkeSetLocalStorageFullPath(self,PChar(value));
 end;
 
 procedure wkeWebView.KillFocus;
