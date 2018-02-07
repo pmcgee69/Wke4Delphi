@@ -48,6 +48,7 @@ type
   PjsValue = PInt64;
 
   wkeString = Pointer;
+  wkeFrameHwnd = Pointer;
 
   wkeProxyType = (WKE_PROXY_NONE, WKE_PROXY_HTTP, WKE_PROXY_SOCKS4, WKE_PROXY_SOCKS4A, WKE_PROXY_SOCKS5, WKE_PROXY_SOCKS5HOSTNAME);
 
@@ -70,6 +71,8 @@ type
     wkeCookieCommandClearSessionCookies,
     wkeCookieCommandFlushCookiesToFile,
     wkeCookieCommandReloadCookiesFromFile);
+
+
 
 
   wkeWindowType = (WKE_WINDOW_TYPE_POPUP, WKE_WINDOW_TYPE_TRANSPARENT, WKE_WINDOW_TYPE_CONTROL);
@@ -178,6 +181,7 @@ type
   wkeTitleChangedCallback = procedure(webView: wkeWebView; param: Pointer; title: wkeString); cdecl;
 
   wkeURLChangedCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString); cdecl;
+  wkeURLChangedCallback2 = procedure(webView: wkeWebView; param: Pointer;frameid:wkeFrameHwnd; url: wkeString); cdecl;    //2018.02.07
 
   wkePaintUpdatedCallback = procedure(webView: wkeWebView; param: Pointer; hdc: HDC; x: Integer; y: Integer; cx: Integer; cy: Integer); cdecl;
 
@@ -192,6 +196,7 @@ type
   wkeCreateViewCallback = function(webView: wkeWebView; param: Pointer; navigationType: wkeNavigationType; url: wkeString; windowFeatures: PwkeWindowFeatures): wkeWebView; cdecl;
 
   wkeDocumentReadyCallback = procedure(webView: wkeWebView; param: Pointer); cdecl;
+  wkeDocumentReadyCallback2 = procedure(webView: wkeWebView; param: Pointer;frameid:wkeFrameHwnd); cdecl;          //2018.02.07
 
   wkeLoadingFinishCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString; result: wkeLoadingResult; failedReason: wkeString); cdecl;
 
@@ -200,6 +205,13 @@ type
   wkeWindowDestroyCallback = procedure(webWindow: wkeWebView; param: Pointer); cdecl;
 
   wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
+
+  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString):boolean;  cdecl;        //2018.02.07
+  wkeOnCallUiThread= procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
+  wkeCallUiThread  = procedure(webView: wkeWebView; func:wkeOnCallUiThread ; param: Pointer); cdecl;  //2018.02.07
+  wkeLoadUrlBeginCallback = function (webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer):boolean; cdecl;  //2018.02.07
+  wkeLoadUrlEndCallback  = procedure(webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer;buf:Pointer;len:Integer); cdecl;  //2018.02.07
+  wkeNetResponseCallback  = function (webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer):boolean; cdecl;  //2018.02.07
 
   jsGetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar): jsValue; cdecl;
 

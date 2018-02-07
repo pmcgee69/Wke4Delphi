@@ -69,6 +69,7 @@ var
   wkeEditorCut: procedure(webView: wkeWebView); cdecl;
   wkeEditorPaste: procedure(webView: wkeWebView); cdecl;
   wkeEditorDelete: procedure(webView: wkeWebView); cdecl;
+  wkeEditorUndo: procedure(webView: wkeWebView); cdecl;       //2018.02.07
   wkeGetCookieW: function(webView: wkeWebView): pwchar_t; cdecl;
   wkeGetCookie: function(webView: wkeWebView): putf8; cdecl;
   wkeSetCookieEnabled: procedure(webView: wkeWebView; enable: Boolean); cdecl;
@@ -108,6 +109,7 @@ var
   wkeOnDocumentReady: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback; param: Pointer); cdecl;
   wkeOnLoadingFinish: procedure(webView: wkeWebView; callback: wkeLoadingFinishCallback; param: Pointer); cdecl;
   wkeOnConsoleMessage: procedure(webView: wkeWebView; callback: wkeConsoleMessageCallback; callbackParam: Pointer); cdecl;  //  ??
+
   wkeCreateWebWindow: function(AType: wkeWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height: Integer): wkeWebView; cdecl;
   wkeDestroyWebWindow: procedure(webWindow: wkeWebView); cdecl;
   wkeGetWindowHandle: function(webWindow: wkeWebView): HWND; cdecl;
@@ -120,6 +122,7 @@ var
   wkeResizeWindow: procedure(webWindow: wkeWebView; width: Integer; height: Integer); cdecl;
   wkeSetWindowTitle: procedure(webWindow: wkeWebView; title: Putf8); cdecl;
   wkeSetWindowTitleW: procedure(webWindow: wkeWebView; title: Pwchar_t); cdecl;
+
 
 
 //==============================================================================
@@ -153,6 +156,17 @@ var
   wkeSetLocalStorageFullPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   //ITERATOR1(void, wkePerformCookieCommand, wkeCookieCommand command, "") \
   wkePerformCookieCommand: procedure(command: wkeCookieCommand); cdecl;
+  wkeSetHeadlessEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;    //2018.02.07
+  wkeSetTouchEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;    //2018.02.07
+  wkeSetUIThreadCallback: procedure(webView: wkeWebView; callback: wkeCallUiThread; param: Pointer); cdecl;          //2018.02.07
+  wkeOnLoadUrlBegin: procedure(webView: wkeWebView; callback: wkeLoadUrlBeginCallback; param: Pointer); cdecl;          //2018.02.07
+  wkeOnLoadUrlEnd: procedure(webView: wkeWebView; callback: wkeLoadUrlEndCallback; param: Pointer); cdecl;          //2018.02.07
+  wkeOnDownload: procedure(webView: wkeWebView; callback: wkeDownloadCallback; param: Pointer); cdecl;          //2018.02.07
+  wkeOnDocumentReady2: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback2; param: Pointer); cdecl;   //2018.02.07
+  wkeOnURLChanged2: procedure(webView: wkeWebView; callback: wkeURLChangedCallback2; callbackParam: Pointer); cdecl;   //2018.02.07
+  wkeSetProxy   : procedure( const proxy:wkeProxy);                                                           //2018.02.07
+  wkeSetViewProxy : procedure(webView: wkeWebView; proxy:wkeProxy);                                           //2018.02.07
+
 //================================JScript============================
 
   jsBindFunction: procedure(name: PAnsiChar; fn: jsNativeFunction; AArgCount: LongInt); cdecl;
@@ -395,6 +409,17 @@ begin
   wkeVisitAllCookie := GetProcAddress(wkeLibHandle, 'wkeVisitAllCookie');
   wkeSetLocalStorageFullPath := GetProcAddress(wkeLibHandle, 'wkeSetLocalStorageFullPath');
   wkePerformCookieCommand := GetProcAddress(wkeLibHandle, 'wkePerformCookieCommand');
+  //2018.02.07
+  wkeSetHeadlessEnabled := GetProcAddress(wkeLibHandle, 'wkeSetHeadlessEnabled');
+  wkeSetTouchEnabled := GetProcAddress(wkeLibHandle, 'wkeSetTouchEnabled');
+  wkeSetUIThreadCallback := GetProcAddress(wkeLibHandle, 'wkeSetUIThreadCallback');
+  wkeOnLoadUrlBegin := GetProcAddress(wkeLibHandle, 'wkeOnLoadUrlBegin');
+  wkeOnLoadUrlEnd := GetProcAddress(wkeLibHandle, 'wkeOnLoadUrlEnd');
+  wkeOnDownload := GetProcAddress(wkeLibHandle, 'wkeOnDownload');
+  wkeOnDocumentReady2 := GetProcAddress(wkeLibHandle, 'wkeOnDocumentReady2');
+  wkeOnURLChanged2 := GetProcAddress(wkeLibHandle, 'wkeOnURLChanged2');
+  wkeSetProxy  := GetProcAddress(wkeLibHandle, 'wkeSetProxy');
+  wkeSetViewProxy  := GetProcAddress(wkeLibHandle, 'wkeSetViewProxy');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');

@@ -51,6 +51,7 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   WkeWebBrowser1.loadurl(Edit1.Text); //  dailiurl);
+ // WkeWebBrowser1.Headless :=true;
 end;
 
 

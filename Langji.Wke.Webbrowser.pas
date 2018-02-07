@@ -104,6 +104,10 @@ type
     procedure SetCookie(const Value: string);
     function GetCookie: string;
     procedure SetLocaStoragePath(const Value: string);
+    procedure SetHeadless(const Value: Boolean);
+    procedure SetTouchEnabled(const Value: Boolean);
+    procedure SetProxy(const Value: TwkeProxy);
+
     { Private declarations }
   protected
     { Protected declarations }
@@ -145,6 +149,10 @@ type
     property Cookie: string read GetCookie write SetCookie;
     property LocalStoragePath: string write SetLocaStoragePath;
     property ZoomPercent: Integer read GetZoom write SetZoom;
+    property Headless:Boolean  write SetHeadless;
+    property TouchEnabled:Boolean write SetTouchEnabled;
+    property Proxy:TwkeProxy write SetProxy;
+
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
     property OnBeforeLoad: TOnBeforeLoadEvent read FOnLoadStart write FOnLoadStart;
@@ -449,6 +457,13 @@ begin
     result := thewebview.WindowHandle;
 end;
 
+
+procedure TWkeWebBrowser.SetTouchEnabled(const Value: Boolean);
+begin
+  if Assigned(thewebview) then
+    wkeSetTouchEnabled(thewebview,value);
+end;
+
 procedure TWkeWebBrowser.SetTransparent(const Value: Boolean);
 begin
   FTransparent := Value;
@@ -518,10 +533,22 @@ begin
     thewebview.SetFocus;
 end;
 
+procedure TWkeWebBrowser.SetHeadless(const Value: Boolean);
+begin
+  if Assigned(thewebview) then
+    wkeSetHeadlessEnabled(thewebview,value);
+end;
+
 procedure TWkeWebBrowser.SetLocaStoragePath(const Value: string);
 begin
   if Assigned(thewebview) then
     thewebview.LocalStoragePath := Value;
+end;
+
+procedure TWkeWebBrowser.SetProxy(const Value: TwkeProxy);
+begin
+  if Assigned(thewebview) then
+    wkeSetViewProxy(thewebview,Value);
 end;
 
 procedure TWkeWebBrowser.SetZoom(const Value: Integer);
