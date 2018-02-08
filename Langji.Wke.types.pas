@@ -263,7 +263,8 @@ type
 
   TOnPromptBoxEvent =procedure(Sender: TObject; smsg, defaultres, Strres: string;var bresult:boolean) of object;
 
- 
+  TOnDownloadEvent  = procedure(Sender: TObject; sUrl: string) of object;
+
 
 //==============================================================================
 // webview
@@ -366,6 +367,7 @@ type
     procedure SetOnLoadingFinish(callback: wkeLoadingFinishCallback; param: Pointer);
     procedure SetOnWindowClosing(callback: wkeWindowClosingCallback; param: Pointer);
     procedure SetOnWindowDestroy(callback: wkeWindowDestroyCallback; param: Pointer);
+    procedure SetOnDownload(callback:wkeDownloadCallback; param: Pointer);
     procedure ShowWindow(show: Boolean);
     procedure EnableWindow(enable: Boolean);
     procedure MoveWindow(x: Integer; y: Integer; width: Integer; height: Integer);
@@ -952,6 +954,12 @@ end;
 procedure wkeWebView.SetOnDocumentReady(callback: wkeDocumentReadyCallback; param: Pointer);
 begin
   wkeOnDocumentReady(Self, callback, param);
+end;
+
+procedure wkeWebView.SetOnDownload(callback: wkeDownloadCallback;
+  param: Pointer);
+begin
+  wkeOnDownload(self,callback,param);
 end;
 
 procedure wkeWebView.SetOnLoadingFinish(callback: wkeLoadingFinishCallback; param: Pointer);

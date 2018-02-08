@@ -70,6 +70,7 @@ type
     FwkeCookiePath: string;
     FwkeUserAgent: string;
     FOnPromptBox: TOnPromptBoxEvent;
+    FOnDownload: TOnDownloadEvent;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
@@ -86,6 +87,7 @@ type
     procedure DoWebViewDocumentReady(Sender: TObject);
     procedure DoWebViewWindowClosing(Sender: TObject);
     procedure DoWebViewWindowDestroy(Sender: TObject);
+    function DoWebViewDownloadFile(Sender: TObject; sUrl: string): boolean;
     procedure WM_SIZE(var msg: TMessage); message WM_SIZE;
   //  procedure WM_KEYDOWN(var msg:TMessage);message WM_KEYDOWN ;
     function GetCanBack: boolean;
@@ -149,10 +151,9 @@ type
     property Cookie: string read GetCookie write SetCookie;
     property LocalStoragePath: string write SetLocaStoragePath;
     property ZoomPercent: Integer read GetZoom write SetZoom;
-    property Headless:Boolean  write SetHeadless;
-    property TouchEnabled:Boolean write SetTouchEnabled;
-    property Proxy:TwkeProxy write SetProxy;
-
+    property Headless: Boolean write SetHeadless;
+    property TouchEnabled: Boolean write SetTouchEnabled;
+    property Proxy: TwkeProxy write SetProxy;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
     property OnBeforeLoad: TOnBeforeLoadEvent read FOnLoadStart write FOnLoadStart;
@@ -164,6 +165,7 @@ type
     property OnAlertBox: TOnAlertBoxEvent read FOnAlertBox write FOnAlertBox;
     property OnConfirmBox: TOnConfirmBoxEvent read FOnConfirmBox write FOnConfirmBox;
     property OnPromptBox: TOnPromptBoxEvent read FOnPromptBox write FOnPromptBox;
+    property OnDownloadFile: TOnDownloadEvent read FOnDownload write FOnDownload;
   end;
 
 implementation
@@ -246,9 +248,10 @@ begin
   TWkeWebBrowser(param).DoWebViewWindowDestroy(TWkeWebBrowser(param));
 end;
 
-
-
-
+function DodownloadFile(webView: wkeWebView; param: Pointer; url: wkeString): boolean;   cdecl;
+begin
+  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), wkeWebView.GetString(url));
+end;
 
 
 
@@ -288,7 +291,7 @@ begin
   if Assigned(thewebview) then
   begin
     ShowWindow(thewebview.WindowHandle, SW_NORMAL);
-    SetWindowLong(thewebview.WindowHandle, GWL_STYLE, GetWindowLong(thewebview.WindowHandle, GWL_STYLE)or WS_CHILD or WS_TABSTOP or WS_CLIPCHILDREN or WS_CLIPSIBLINGS);
+    SetWindowLong(thewebview.WindowHandle, GWL_STYLE, GetWindowLong(thewebview.WindowHandle, GWL_STYLE) or WS_CHILD or WS_TABSTOP or WS_CLIPCHILDREN or WS_CLIPSIBLINGS);
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);
@@ -302,10 +305,14 @@ begin
       thewebview.SetOnConfirmBox(DoConfirmBox, self);
     if Assigned(FOnPromptBox) then
       thewebview.SetOnPromptBox(DoPromptBox, self);
+    if Assigned(FOndownload) then
+      thewebview.SetOnDownload(DoDownloadFile, Self);
+
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
     thewebview.SetOnWindowClosing(DoWindowClosing, self);
     thewebview.SetOnWindowDestroy(DoWindowDestroy, self);
+
     if FwkeUserAgent <> '' then
       wkeSetUserAgent(thewebview, PansiChar(AnsiString(FwkeUserAgent)));
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
@@ -347,6 +354,13 @@ procedure TWkeWebBrowser.DoWebViewDocumentReady(Sender: TObject);
 begin
   if Assigned(FOnDocumentReady) then
     FOnDocumentReady(Self);
+end;
+
+function TWkeWebBrowser.DoWebViewDownloadFile(Sender: TObject;
+  sUrl: string): boolean;
+begin
+  if Assigned(FOndownload) then
+    FOnDownload(Self,sUrl);
 end;
 
 procedure TWkeWebBrowser.DoWebViewLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
@@ -457,11 +471,10 @@ begin
     result := thewebview.WindowHandle;
 end;
 
-
 procedure TWkeWebBrowser.SetTouchEnabled(const Value: Boolean);
 begin
   if Assigned(thewebview) then
-    wkeSetTouchEnabled(thewebview,value);
+    wkeSetTouchEnabled(thewebview, Value);
 end;
 
 procedure TWkeWebBrowser.SetTransparent(const Value: Boolean);
@@ -536,7 +549,7 @@ end;
 procedure TWkeWebBrowser.SetHeadless(const Value: Boolean);
 begin
   if Assigned(thewebview) then
-    wkeSetHeadlessEnabled(thewebview,value);
+    wkeSetHeadlessEnabled(thewebview, Value);
 end;
 
 procedure TWkeWebBrowser.SetLocaStoragePath(const Value: string);
@@ -548,7 +561,7 @@ end;
 procedure TWkeWebBrowser.SetProxy(const Value: TwkeProxy);
 begin
   if Assigned(thewebview) then
-    wkeSetViewProxy(thewebview,Value);
+    wkeSetViewProxy(thewebview, Value);
 end;
 
 procedure TWkeWebBrowser.SetZoom(const Value: Integer);
@@ -563,8 +576,6 @@ begin
     thewebview.StopLoading;
 end;
 
-
-
 procedure TWkeWebBrowser.WM_SIZE(var msg: TMessage);
 begin
   inherited;
@@ -575,9 +586,9 @@ begin
   end;
 end;
 
-
 procedure TWkeWebBrowser.WndProc(var Msg: TMessage);
-var hndl:Hwnd;
+var
+  hndl: Hwnd;
 begin
   case Msg.Msg of
     WM_SETFOCUS:
@@ -588,8 +599,9 @@ begin
         inherited WndProc(Msg);
       end;
     CM_WANTSPECIALKEY:
-      if not (TWMKey(Msg).CharCode in [VK_LEFT .. VK_DOWN, VK_RETURN, VK_ESCAPE, VK_TAB]) then
-        Msg.Result := 1 else
+      if not (TWMKey(Msg).CharCode in [VK_LEFT..VK_DOWN, VK_RETURN, VK_ESCAPE, VK_TAB]) then
+        Msg.Result := 1
+      else
         inherited WndProc(Msg);
     WM_GETDLGCODE:
       Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTTAB;

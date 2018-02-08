@@ -63,6 +63,7 @@ type
     function GetLoadFinished: Boolean;
     function GetWebHandle: Hwnd;
     procedure SetCaption(const Value: string);
+    procedure SetHeadless(const Value: Boolean);
     { Private declarations }
   protected
     procedure loaded; override;
@@ -97,6 +98,7 @@ type
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property HtmlFile: string read FHtmlFile write FHtmlFile;
     property WindowHandle: Hwnd read GetWebHandle;
+    property Headless: Boolean write SetHeadless;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
     property ZoomPercent: Integer read GetZoom write SetZoom;
@@ -438,6 +440,12 @@ procedure TCustomWkePage.SetFocusToWebbrowser;
 begin
   if Assigned(thewebview) then
     thewebview.SetFocus;
+end;
+
+procedure TCustomWkePage.SetHeadless(const Value: Boolean);
+begin
+  if Assigned(thewebview) then
+    wkeSetHeadlessEnabled(thewebview,Value);
 end;
 
 procedure TCustomWkePage.SetZoom(const Value: Integer);
