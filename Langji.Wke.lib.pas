@@ -167,6 +167,22 @@ var
   wkeSetProxy   : procedure( const proxy:wkeProxy);                                                           //2018.02.07
   wkeSetViewProxy : procedure(webView: wkeWebView; proxy:wkeProxy);                                           //2018.02.07
 
+
+  //以下2018.314增加
+  //WKE_API void wkeSetDebugConfig(wkeWebView webView, const char* debugString, const char* param);
+  {devtools功能。开启方式是：wkeSetDebugConfig(m_wkeView, "showDevTools", "E:/mycode/devtools/front_end/inspector.html(utf8编码)");}
+  wkeSetDebugConfig:procedure(webView: wkeWebView; const  debugString, param:putf8); cdecl;
+  //WKE_API void wkeSetDragEnable(wkeWebView webView, bool b);   开启关闭拖拽功能
+  wkeSetDragEnable:procedure(webView: wkeWebView; b:boolean);  cdecl;
+  // WKE_API void wkeOnMouseOverUrlChanged(wkeWebView webView, wkeTitleChangedCallback callback, void* callbackParam);
+  wkeOnMouseOverUrlChanged:procedure(webView: wkeWebView; callback: wkeTitleChangedCallback; callbackParam: Pointer); cdecl;
+
+
+
+
+
+
+
 //================================JScript============================
 
   jsBindFunction: procedure(name: PAnsiChar; fn: jsNativeFunction; AArgCount: LongInt); cdecl;
@@ -420,6 +436,11 @@ begin
   wkeOnURLChanged2 := GetProcAddress(wkeLibHandle, 'wkeOnURLChanged2');
   wkeSetProxy  := GetProcAddress(wkeLibHandle, 'wkeSetProxy');
   wkeSetViewProxy  := GetProcAddress(wkeLibHandle, 'wkeSetViewProxy');
+
+  //2018.3.14
+  wkeSetDebugConfig := GetProcAddress(wkeLibHandle, 'wkeSetDebugConfig');
+  wkeSetDragEnable := GetProcAddress(wkeLibHandle, 'wkeSetDragEnable');
+  wkeOnMouseOverUrlChanged := GetProcAddress(wkeLibHandle, 'wkeOnMouseOverUrlChanged');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');

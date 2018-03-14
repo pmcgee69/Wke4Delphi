@@ -1,7 +1,7 @@
 unit Langji.Wke.Reg;
 
 interface
-uses classes,Langji.Wke.webbrowser,Langji.Wke.TransparentPage  ;
+uses classes,Langji.Wke.Webbrowser,Langji.Wke.TransparentPage  ;
 
 procedure Register;
 

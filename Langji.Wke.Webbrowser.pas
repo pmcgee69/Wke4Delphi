@@ -71,12 +71,14 @@ type
     FwkeUserAgent: string;
     FOnPromptBox: TOnPromptBoxEvent;
     FOnDownload: TOnDownloadEvent;
+    FOnMouseOverUrlChange: TOnUrlChangeEvent;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
      //webview
     procedure DoWebViewTitleChange(Sender: TObject; sTitle: string);
     procedure DoWebViewUrlChange(Sender: TObject; sUrl: string);
+    procedure DoWebViewMouseOverUrlChange(Sender: TObject; sUrl: string);
     procedure DoWebViewLoadStart(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; var Cancel: boolean);
     procedure DoWebViewLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
     procedure DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
@@ -109,6 +111,8 @@ type
     procedure SetHeadless(const Value: Boolean);
     procedure SetTouchEnabled(const Value: Boolean);
     procedure SetProxy(const Value: TwkeProxy);
+    procedure SetDragEnabled(const Value: boolean);
+
 
     { Private declarations }
   protected
@@ -130,6 +134,7 @@ type
     procedure LoadFile(const AFile: string);
     procedure ExecuteJavascript(const js: string);
     procedure SetFocusToWebbrowser;
+    procedure ShowDevTool;                        //2018.3.14
     property CanBack: boolean read GetCanBack;
     property CanForward: boolean read GetCanForward;
     property LocationUrl: string read GetLocationUrl;
@@ -153,6 +158,9 @@ type
     property ZoomPercent: Integer read GetZoom write SetZoom;
     property Headless: Boolean write SetHeadless;
     property TouchEnabled: Boolean write SetTouchEnabled;
+    property DragEnabled:boolean write SetDragEnabled;           //2018.3.14
+
+
     property Proxy: TwkeProxy write SetProxy;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
@@ -166,6 +174,7 @@ type
     property OnConfirmBox: TOnConfirmBoxEvent read FOnConfirmBox write FOnConfirmBox;
     property OnPromptBox: TOnPromptBoxEvent read FOnPromptBox write FOnPromptBox;
     property OnDownloadFile: TOnDownloadEvent read FOnDownload write FOnDownload;
+    property OnMouseOverUrlChanged: TOnUrlChangeEvent read FOnMouseOverUrlChange write FOnMouseOverUrlChange; //2018.3.14
   end;
 
 implementation
@@ -187,6 +196,11 @@ end;
 procedure DoUrlChange(webView: wkeWebView; param: Pointer; url: wkeString); cdecl;
 begin
   TWkeWebBrowser(param).DoWebViewUrlChange(TWkeWebBrowser(param), wkeWebView.GetString(url));
+end;
+
+procedure DoMouseOverUrlChange(webView: wkeWebView; param: Pointer; url: wkeString); cdecl;
+begin
+  TWkeWebBrowser(param).DoWebViewMouseOverUrlChange(TWkeWebBrowser(param), wkeWebView.GetString(url));
 end;
 
 procedure DoLoadEnd(webView: wkeWebView; param: Pointer; url: wkeString; result: wkeLoadingResult; failedReason: wkeString); cdecl;
@@ -307,6 +321,8 @@ begin
       thewebview.SetOnPromptBox(DoPromptBox, self);
     if Assigned(FOndownload) then
       thewebview.SetOnDownload(DoDownloadFile, Self);
+    if Assigned(FOnMouseOverUrlChange) then
+      wkeOnMouseOverUrlChanged(thewebview,DoMouseOverUrlChange,self);
 
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
@@ -375,6 +391,13 @@ begin
   if Assigned(FOnLoadStart) then
     FOnLoadStart(self, sUrl, navigationType, Cancel);
   FLoadFinished := false;
+end;
+
+procedure TWkeWebBrowser.DoWebViewMouseOverUrlChange(Sender: TObject;
+  sUrl: string);
+begin
+  if Assigned(FOnMouseOverUrlChange) then
+    FOnMouseOverUrlChange(self,sUrl);
 end;
 
 function TWkeWebBrowser.DoWebViewPromptBox(Sender: TObject; smsg, defaultres, Strres: string): boolean;
@@ -540,6 +563,12 @@ begin
     thewebview.setcookie(Value);
 end;
 
+procedure TWkeWebBrowser.SetDragEnabled(const Value: boolean);
+begin
+  if Assigned(thewebview) then
+    wkeSetDragEnable(thewebview, Value);
+end;
+
 procedure TWkeWebBrowser.SetFocusToWebbrowser;
 begin
   if Assigned(thewebview) then
@@ -562,6 +591,12 @@ procedure TWkeWebBrowser.SetProxy(const Value: TwkeProxy);
 begin
   if Assigned(thewebview) then
     wkeSetViewProxy(thewebview, Value);
+end;
+
+procedure TWkeWebBrowser.ShowDevTool;
+begin
+  if Assigned(thewebview) then
+    wkeSetDebugConfig(thewebview,'showDevTools',PAnsiChar(AnsiToUtf8(ExtractFilePath(ParamStr(0))+'\front_end\inspector.html')));
 end;
 
 procedure TWkeWebBrowser.SetZoom(const Value: Integer);

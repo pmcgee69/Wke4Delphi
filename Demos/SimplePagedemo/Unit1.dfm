@@ -23,7 +23,7 @@ object Form1: TForm1
     Caption = 'Panel1'
     TabOrder = 0
     object Button1: TButton
-      Left = 716
+      Left = 703
       Top = 24
       Width = 55
       Height = 25
@@ -68,6 +68,15 @@ object Form1: TForm1
       Caption = #8594
       TabOrder = 3
       OnClick = BitBtn2Click
+    end
+    object Button2: TButton
+      Left = 764
+      Top = 24
+      Width = 75
+      Height = 25
+      Caption = 'DevTool'
+      TabOrder = 4
+      OnClick = Button2Click
     end
   end
   object WkeApp1: TWkeApp
