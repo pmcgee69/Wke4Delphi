@@ -306,6 +306,7 @@ begin
   begin
     ShowWindow(thewebview.WindowHandle, SW_NORMAL);
     SetWindowLong(thewebview.WindowHandle, GWL_STYLE, GetWindowLong(thewebview.WindowHandle, GWL_STYLE) or WS_CHILD or WS_TABSTOP or WS_CLIPCHILDREN or WS_CLIPSIBLINGS);
+
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);
@@ -334,6 +335,7 @@ begin
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
+
   end;
 end;
 
@@ -614,7 +616,7 @@ end;
 procedure TWkeWebBrowser.WM_SIZE(var msg: TMessage);
 begin
   inherited;
-  if Align = alClient then
+ // if Align = alClient then
   begin
     if Assigned(thewebview) then
       thewebview.MoveWindow(0, 0, Width, Height);
