@@ -112,6 +112,7 @@ type
     procedure SetTouchEnabled(const Value: Boolean);
     procedure SetProxy(const Value: TwkeProxy);
     procedure SetDragEnabled(const Value: boolean);
+    procedure setOnAlertBox(const Value: TOnAlertBoxEvent);
 
 
     { Private declarations }
@@ -133,6 +134,7 @@ type
     procedure LoadHtml(const Astr: string);
     procedure LoadFile(const AFile: string);
     procedure ExecuteJavascript(const js: string);
+   // function RunJsAndGetValue( const js: string):Integer;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;                        //2018.3.14
     property CanBack: boolean read GetCanBack;
@@ -146,6 +148,7 @@ type
   published
     property Align;
     property Color;
+    property Visible;
    // property Taborder;
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
@@ -170,7 +173,7 @@ type
     property OnWindowClosing: TNotifyEvent read FOnWindowClosing write FOnWindowClosing;
     property OnWindowDestroy: TNotifyEvent read FOnWindowDestroy write FOnWindowDestroy;
     property OnDocumentReady: TNotifyEvent read FOnDocumentReady write FOnDocumentReady;
-    property OnAlertBox: TOnAlertBoxEvent read FOnAlertBox write FOnAlertBox;
+    property OnAlertBox: TOnAlertBoxEvent read FOnAlertBox write setOnAlertBox;
     property OnConfirmBox: TOnConfirmBoxEvent read FOnConfirmBox write FOnConfirmBox;
     property OnPromptBox: TOnPromptBoxEvent read FOnPromptBox write FOnPromptBox;
     property OnDownloadFile: TOnDownloadEvent read FOnDownload write FOnDownload;
@@ -469,13 +472,13 @@ end;
 function TWkeWebBrowser.GetLocationTitle: string;
 begin
   if Assigned(thewebview) then
-    result := wkeGetName(thewebview);
+    result := wkeGetTitleW(thewebview);
 end;
 
 function TWkeWebBrowser.GetLocationUrl: string;
 begin
   if Assigned(thewebview) then
-    result := wkeGetTitleW(thewebview);
+    result := wkeGetUrl(thewebview);
 end;
 
 function TWkeWebBrowser.GetMediaVolume: Single;
@@ -587,6 +590,13 @@ procedure TWkeWebBrowser.SetLocaStoragePath(const Value: string);
 begin
   if Assigned(thewebview) then
     thewebview.LocalStoragePath := Value;
+end;
+
+procedure TWkeWebBrowser.setOnAlertBox(const Value: TOnAlertBoxEvent);
+begin
+  FOnAlertBox:=value;
+  if Assigned(thewebview) then
+  thewebview.SetOnAlertBox(DoAlertBox, self);
 end;
 
 procedure TWkeWebBrowser.SetProxy(const Value: TwkeProxy);

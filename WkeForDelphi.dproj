@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{06AEDCF9-AC43-4C55-9D46-2EA6D0AF1E8A}</ProjectGuid>
         <MainSource>WkeForDelphi.dpk</MainSource>
-        <ProjectVersion>18.3</ProjectVersion>
+        <ProjectVersion>18.4</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>

@@ -31,7 +31,8 @@ implementation
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  WkeWebBrowser1.LoadUrl('www.ifeng.com');
+ // WkeWebBrowser1.Headless :=true;
+  WkeWebBrowser1.LoadUrl('http://www.ifeng.com/');
  // WkeWebBrowser1.LoadFile('.\html\index.html');
 end;
 
