@@ -830,7 +830,11 @@ end;
 
 procedure wkeWebView.SetLocaStoragePath(const Value: string);
 begin
+{$IFDEF UNICODE}
   wkeSetLocalStorageFullPath(self,PChar(value));
+{$ELSE}
+   wkeSetLocalStorageFullPath(self,PwideChar(value));
+{$ENDIF}
 end;
 
 procedure wkeWebView.KillFocus;
