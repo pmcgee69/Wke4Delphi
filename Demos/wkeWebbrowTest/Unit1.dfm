@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 374
+  ClientHeight = 482
   ClientWidth = 636
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,8 +18,8 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 636
-    Height = 374
-    Align = alClient
+    Height = 421
+    Align = alTop
     Color = clWhite
     UserAgent = 
       'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, l' +
@@ -27,5 +27,15 @@ object Form1: TForm1
     ZoomPercent = 100
     OnTitleChange = WkeWebBrowser1TitleChange
     OnCreateView = WkeWebBrowser1CreateView
+    ExplicitHeight = 374
+  end
+  object Button1: TButton
+    Left = 56
+    Top = 440
+    Width = 75
+    Height = 25
+    Caption = #21462#28304#30721
+    TabOrder = 1
+    OnClick = Button1Click
   end
 end

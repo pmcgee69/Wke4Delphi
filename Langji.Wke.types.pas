@@ -1,7 +1,6 @@
 unit Langji.Wke.types;
 
 interface
-
 uses
   windows;
 
@@ -34,6 +33,8 @@ const
   WKE_MSG_MBUTTONDBLCLK = $0209;
   WKE_MSG_MOUSEWHEEL = $020A;
 
+ // WKE_SETTING_PAINTCALLBACK_IN_OTHER_THREAD=4;
+
 type
   utf8 = AnsiChar;
 
@@ -48,17 +49,21 @@ type
   PjsValue = PInt64;
 
   wkeString = Pointer;
+
   wkeFrameHwnd = Pointer;
 
   wkeProxyType = (WKE_PROXY_NONE, WKE_PROXY_HTTP, WKE_PROXY_SOCKS4, WKE_PROXY_SOCKS4A, WKE_PROXY_SOCKS5, WKE_PROXY_SOCKS5HOSTNAME);
 
   TwkeProxyType = wkeProxyType;
 
-  wkeSettingMask = (WKE_SETTING_PROXY = 1);
+  wkeSettingMask = (WKE_SETTING_PROXY = 1,
+     WKE_SETTING_PAINTCALLBACK_IN_OTHER_THREAD = 4
+  );
 
   TwkeSettingMask = wkeSettingMask;
 
-  wkeNavigationType = (WKE_NAVIGATION_TYPE_LINKCLICK, WKE_NAVIGATION_TYPE_FORMSUBMITTE, WKE_NAVIGATION_TYPE_BACKFORWARD, WKE_NAVIGATION_TYPE_RELOAD, WKE_NAVIGATION_TYPE_FORMRESUBMITT, WKE_NAVIGATION_TYPE_OTHER);
+  wkeNavigationType = (WKE_NAVIGATION_TYPE_LINKCLICK, WKE_NAVIGATION_TYPE_FORMSUBMITTE, WKE_NAVIGATION_TYPE_BACKFORWARD,
+    WKE_NAVIGATION_TYPE_RELOAD, WKE_NAVIGATION_TYPE_FORMRESUBMITT, WKE_NAVIGATION_TYPE_OTHER);
 
   TwkeNavigationType = wkeNavigationType;
 
@@ -66,14 +71,8 @@ type
 
   TwkeLoadingResult = wkeLoadingResult;
 
-  wkeCookieCommand =(
-    wkeCookieCommandClearAllCookies,
-    wkeCookieCommandClearSessionCookies,
-    wkeCookieCommandFlushCookiesToFile,
-    wkeCookieCommandReloadCookiesFromFile);
-
-
-
+  wkeCookieCommand = (wkeCookieCommandClearAllCookies, wkeCookieCommandClearSessionCookies,
+    wkeCookieCommandFlushCookiesToFile, wkeCookieCommandReloadCookiesFromFile);
 
   wkeWindowType = (WKE_WINDOW_TYPE_POPUP, WKE_WINDOW_TYPE_TRANSPARENT, WKE_WINDOW_TYPE_CONTROL);
 
@@ -133,11 +132,14 @@ type
 
   TwkeWindowFeatures = wkeWindowFeatures;
 
-  wkeMessageLevel = (WKE_MESSAGE_LEVEL_TIP, WKE_MESSAGE_LEVEL_LOG, WKE_MESSAGE_LEVEL_WARNING, WKE_MESSAGE_LEVEL_ERROR, WKE_MESSAGE_LEVEL_DEBUG);
+  wkeMessageLevel = (WKE_MESSAGE_LEVEL_TIP, WKE_MESSAGE_LEVEL_LOG, WKE_MESSAGE_LEVEL_WARNING, WKE_MESSAGE_LEVEL_ERROR,
+    WKE_MESSAGE_LEVEL_DEBUG);
 
-  wkeMessageSource = (WKE_MESSAGE_SOURCE_HTML, WKE_MESSAGE_SOURCE_XML, WKE_MESSAGE_SOURCE_JS, WKE_MESSAGE_SOURCE_NETWORK, WKE_MESSAGE_SOURCE_CONSOLE_API, WKE_MESSAGE_SOURCE_OTHER);
+  wkeMessageSource = (WKE_MESSAGE_SOURCE_HTML, WKE_MESSAGE_SOURCE_XML, WKE_MESSAGE_SOURCE_JS, WKE_MESSAGE_SOURCE_NETWORK,
+    WKE_MESSAGE_SOURCE_CONSOLE_API, WKE_MESSAGE_SOURCE_OTHER);
 
-  wkeMessageType = (WKE_MESSAGE_TYPE_LOG, WKE_MESSAGE_TYPE_DIR, WKE_MESSAGE_TYPE_DIR_XML, WKE_MESSAGE_TYPE_TRACE, WKE_MESSAGE_TYPE_START_GROUP, WKE_MESSAGE_TYPE_START_GROUP_COLLAPSED, WKE_MESSAGE_TYPE_END_GROUP, WKE_MESSAGE_TYPE_ASSERT);
+  wkeMessageType = (WKE_MESSAGE_TYPE_LOG, WKE_MESSAGE_TYPE_DIR, WKE_MESSAGE_TYPE_DIR_XML, WKE_MESSAGE_TYPE_TRACE,
+    WKE_MESSAGE_TYPE_START_GROUP, WKE_MESSAGE_TYPE_START_GROUP_COLLAPSED, WKE_MESSAGE_TYPE_END_GROUP, WKE_MESSAGE_TYPE_ASSERT);
 
   PwkeConsoleMessage = ^wkeConsoleMessage;
 
@@ -149,6 +151,25 @@ type
     url: wkeString;
     lineNumber: LongInt;
   end;
+
+ //Add 20180523
+  pwkeMemBuf = packed record
+    size:Integer;
+    data:Pointer;
+    length:Cardinal ;
+  end;
+
+  wkeHttBodyElementType= (wkeHttBodyElementTypeData,wkeHttBodyElementTypeFile);
+
+  wkePostBodyElement= packed record
+    size:Integer;
+    type_:wkeHttBodyElementType;
+    data:pwkeMemBuf;
+    filepath:wkeString;
+    filestart:Int64;
+    filelength:Int64;
+  end;
+
 
 {$IF not Declared(SIZE_T)}
   SIZE_T = Cardinal;
@@ -240,11 +261,11 @@ type
   jsNativeFunction = function(es: jsExecState): jsValue;
  {$ELSE}
      // 前两个参数用来占位用
-
   jsNativeFunction = function(p1, p2, es: jsExecState): jsValue;
  {$ENDIF}
 
   TNewWindowFlag = (nwf_NewPage, nwf_OpenInCurrent, nwf_Cancel);
+  TwkePlatform =(wp_Win32,wp_Android,wp_Ios);
 
   //事件定义
   TOnTitleChangeEvent = procedure(Sender: TObject; sTitle: string) of object;

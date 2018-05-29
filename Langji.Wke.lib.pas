@@ -17,7 +17,8 @@ var
   wkeUpdate: procedure; cdecl;
   wkeGetVersion: function(): Integer; cdecl;
   wkeGetVersionString: function(): putf8; cdecl;
-  wkeSetFileSystem: procedure(pfn_open: FILE_OPEN; pfn_close: FILE_CLOSE; pfn_size: FILE_SIZE; pfn_read: FILE_READ; pfn_seek: FILE_SEEK); cdecl;
+  wkeSetFileSystem: procedure(pfn_open: FILE_OPEN; pfn_close: FILE_CLOSE; pfn_size: FILE_SIZE; pfn_read: FILE_READ;
+    pfn_seek: FILE_SEEK); cdecl;
   wkeCreateWebView: function(): wkeWebView; cdecl;
   wkeGetWebView: function(name: Pchar): wkeWebView; cdecl;
   wkeDestroyWebView: procedure(webView: wkeWebView); cdecl;
@@ -55,8 +56,8 @@ var
   wkeIsDirty: function(webView: wkeWebView): Boolean; cdecl;
   wkeAddDirtyArea: procedure(webView: wkeWebView; x: Integer; y: Integer; w: Integer; h: Integer); cdecl;
   wkeLayoutIfNeeded: procedure(webView: wkeWebView); cdecl;
-  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst: Integer; yDst: Integer; w: Integer; h: Integer; xSrc: Integer;
-    ySrc: Integer; bCopyAlpha: Boolean); cdecl;
+  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst: Integer; yDst: Integer;
+    w: Integer; h: Integer; xSrc: Integer; ySrc: Integer; bCopyAlpha: Boolean); cdecl;
   wkePaint2: procedure(webView: wkeWebView; bits: Pointer; pitch: Integer); cdecl;
   wkeRepaintIfNeeded: procedure(webView: wkeWebView); cdecl;
   wkeGetViewDC: function(webView: wkeWebView): HDC; cdecl;
@@ -110,7 +111,8 @@ var
   wkeOnLoadingFinish: procedure(webView: wkeWebView; callback: wkeLoadingFinishCallback; param: Pointer); cdecl;
   wkeOnConsoleMessage: procedure(webView: wkeWebView; callback: wkeConsoleMessageCallback; callbackParam: Pointer); cdecl;  //  ??
 
-  wkeCreateWebWindow: function(AType: wkeWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height: Integer): wkeWebView; cdecl;
+  wkeCreateWebWindow: function(AType: wkeWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height:
+    Integer): wkeWebView; cdecl;
   wkeDestroyWebWindow: procedure(webWindow: wkeWebView); cdecl;
   wkeGetWindowHandle: function(webWindow: wkeWebView): HWND; cdecl;
   wkeOnWindowClosing: procedure(webWindow: wkeWebView; callback: wkeWindowClosingCallback; param: Pointer); cdecl;
@@ -129,59 +131,65 @@ var
 // 以下函数为MiniBlink特有
 //==============================================================================
 
-  wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
- // ITERATOR3(void, wkeSetCookie, wkeWebView webView, const utf8* url, const utf8* cookie, "cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure")
+
+
+
+
+
+    // minibink 新增  2018.1.17
+//    ITERATOR3(void, wkeSetCookie, wkeWebView webView, const utf8* url, const utf8* cookie, "cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure")
+//    WKE_API bool wkeIsMainFrame(wkeWebView webView, wkeWebFrameHandle frameId);
+//    WKE_API bool wkeIsWebRemoteFrame(wkeWebView webView, wkeWebFrameHandle frameId);
+//    WKE_API wkeWebFrameHandle wkeWebFrameGetMainFrame(wkeWebView webView);
+//    WKE_API jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, const utf8* script, bool isInClosure);
+//    WKE_API const utf8* wkeGetURL(wkeWebView webView);
+ /// <summary>
+ ///  取当前Url
+ /// </summary>
+  wkeGetURL: function(webWindow: wkeWebView): putf8; cdecl;
   /// <summary>
   ///   设置Cookie minibink新增， cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
   /// </summary>
   wkeSetCookie: procedure(webWindow: wkeWebView; const url, cookie: putf8); cdecl;      //minibink 新增
- // WKE_API const utf8* wkeGetURL(wkeWebView webView);
- /// <summary>
- ///  取当前Url
- /// </summary>
-  wkeGetURL: function(webWindow: wkeWebView): putf8; cdecl;                  //minibink 新增  2018.1.17
-//  WKE_API bool wkeIsMainFrame(wkeWebView webView, wkeWebFrameHandle frameId);
-//WKE_API bool wkeIsWebRemoteFrame(wkeWebView webView, wkeWebFrameHandle frameId);
-//WKE_API wkeWebFrameHandle wkeWebFrameGetMainFrame(wkeWebView webView);
-//WKE_API jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, const utf8* script, bool isInClosure);
-
+  wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   wkeWebFrameGetMainFrame: function(webWindow: wkeWebView): Thandle; cdecl;       //minibink 新增  2018.1.17
   wkeIsMainFrame: function(webWindow: wkeWebView; frameId: Thandle): Boolean; cdecl;  //minibink 新增  2018.1.17
-  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue; cdecl;      // minibink 新增  2018.1.17
+  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue;  cdecl;      // minibink 新增  2018.1.17
 
+ // Add 2018.02.07
   //ITERATOR2(void, wkeVisitAllCookie, void* params, wkeCookieVisitor visitor, "")
-
   wkeVisitAllCookie: procedure(params: Pointer; const visitor: wkeCookieVisitor); cdecl;
   //ITERATOR2(void, wkeSetLocalStorageFullPath, wkeWebView webView, const WCHAR* path, "")
   wkeSetLocalStorageFullPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   //ITERATOR1(void, wkePerformCookieCommand, wkeCookieCommand command, "") \
   wkePerformCookieCommand: procedure(command: wkeCookieCommand); cdecl;
-  wkeSetHeadlessEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;    //2018.02.07
-  wkeSetTouchEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;    //2018.02.07
-  wkeSetUIThreadCallback: procedure(webView: wkeWebView; callback: wkeCallUiThread; param: Pointer); cdecl;          //2018.02.07
-  wkeOnLoadUrlBegin: procedure(webView: wkeWebView; callback: wkeLoadUrlBeginCallback; param: Pointer); cdecl;          //2018.02.07
-  wkeOnLoadUrlEnd: procedure(webView: wkeWebView; callback: wkeLoadUrlEndCallback; param: Pointer); cdecl;          //2018.02.07
-  wkeOnDownload: procedure(webView: wkeWebView; callback: wkeDownloadCallback; param: Pointer); cdecl;          //2018.02.07
-  wkeOnDocumentReady2: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback2; param: Pointer); cdecl;   //2018.02.07
-  wkeOnURLChanged2: procedure(webView: wkeWebView; callback: wkeURLChangedCallback2; callbackParam: Pointer); cdecl;   //2018.02.07
-  wkeSetProxy   : procedure( const proxy:wkeProxy);                                                           //2018.02.07
-  wkeSetViewProxy : procedure(webView: wkeWebView; proxy:wkeProxy);                                           //2018.02.07
+  wkeSetHeadlessEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;
+  wkeSetTouchEnabled: procedure(webWindow: wkeWebView; b: Boolean); cdecl;
+  wkeSetUIThreadCallback: procedure(webView: wkeWebView; callback: wkeCallUiThread; param: Pointer); cdecl;
+  wkeOnLoadUrlBegin: procedure(webView: wkeWebView; callback: wkeLoadUrlBeginCallback; param: Pointer); cdecl;
+  wkeOnLoadUrlEnd: procedure(webView: wkeWebView; callback: wkeLoadUrlEndCallback; param: Pointer); cdecl;
+  wkeOnDownload: procedure(webView: wkeWebView; callback: wkeDownloadCallback; param: Pointer); cdecl;
+  wkeOnDocumentReady2: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback2; param: Pointer); cdecl;
+  wkeOnURLChanged2: procedure(webView: wkeWebView; callback: wkeURLChangedCallback2; callbackParam: Pointer); cdecl;
+  wkeSetProxy: procedure(const proxy: wkeProxy);
+  wkeSetViewProxy: procedure(webView: wkeWebView; proxy: wkeProxy);
 
-
-  //以下2018.314增加
+  //以下2018.3.14增加
   //WKE_API void wkeSetDebugConfig(wkeWebView webView, const char* debugString, const char* param);
   {devtools功能。开启方式是：wkeSetDebugConfig(m_wkeView, "showDevTools", "E:/mycode/devtools/front_end/inspector.html(utf8编码)");}
-  wkeSetDebugConfig:procedure(webView: wkeWebView; const  debugString, param:putf8); cdecl;
+  wkeSetDebugConfig: procedure(webView: wkeWebView; const debugString, param: putf8); cdecl;
   //WKE_API void wkeSetDragEnable(wkeWebView webView, bool b);   开启关闭拖拽功能
-  wkeSetDragEnable:procedure(webView: wkeWebView; b:boolean);  cdecl;
+  wkeSetDragEnable: procedure(webView: wkeWebView; b: boolean); cdecl;
   // WKE_API void wkeOnMouseOverUrlChanged(wkeWebView webView, wkeTitleChangedCallback callback, void* callbackParam);
-  wkeOnMouseOverUrlChanged:procedure(webView: wkeWebView; callback: wkeTitleChangedCallback; callbackParam: Pointer); cdecl;
+  wkeOnMouseOverUrlChanged: procedure(webView: wkeWebView; callback: wkeTitleChangedCallback; callbackParam: Pointer); cdecl;
 
-
-
-
-
-
+  //Add 2018.05.23
+  //ITERATOR2(void, wkeAddPluginDirectory, wkeWebView webView, const WCHAR* path, "")
+  wkeAddPluginDirectory: procedure(webView: wkeWebView; const path: Pwchar_t);cdecl;
+  //ITERATOR1(wkePostBodyElements*, wkeNetGetPostBody, void* jobPtr, "")
+  //ITERATOR1(wkeRequestType, wkeNetGetRequestMethod, void* jobPtr, "")
+ // void wkeSetDeviceParameter(wkeWebView webView, const char* device, const char* paramStr, int paramInt, float paramFloat)
+  wkeSetDeviceParameter:procedure(webView: wkeWebView; const  device, paramStr: putf8;  paramInt:integer;  paramFloat:real); cdecl;
 
 //================================JScript============================
 
@@ -248,7 +256,7 @@ function LoadWkeLibaraly(const wkeLibFilePath: string = ''): boolean;
 
 procedure UnLoadWkeLibaraly();
 
-procedure WkeLoadLibAndInit;
+function WkeLoadLibAndInit:boolean;
 
 procedure WkeFinalizeAndUnloadLib;
 
@@ -270,12 +278,17 @@ asm
 end;
 {$ENDIF UseVcFastCall}
 
-procedure WkeLoadLibAndInit;
+function WkeLoadLibAndInit:boolean;
 begin
+  result :=false;
   if wkeLibHandle = 0 then
   begin
     if LoadWkeLibaraly() then
+    begin
       wkeInitialize;
+      result :=true;
+    end;
+
   end;
 end;
 
@@ -434,13 +447,16 @@ begin
   wkeOnDownload := GetProcAddress(wkeLibHandle, 'wkeOnDownload');
   wkeOnDocumentReady2 := GetProcAddress(wkeLibHandle, 'wkeOnDocumentReady2');
   wkeOnURLChanged2 := GetProcAddress(wkeLibHandle, 'wkeOnURLChanged2');
-  wkeSetProxy  := GetProcAddress(wkeLibHandle, 'wkeSetProxy');
-  wkeSetViewProxy  := GetProcAddress(wkeLibHandle, 'wkeSetViewProxy');
+  wkeSetProxy := GetProcAddress(wkeLibHandle, 'wkeSetProxy');
+  wkeSetViewProxy := GetProcAddress(wkeLibHandle, 'wkeSetViewProxy');
 
   //2018.3.14
   wkeSetDebugConfig := GetProcAddress(wkeLibHandle, 'wkeSetDebugConfig');
   wkeSetDragEnable := GetProcAddress(wkeLibHandle, 'wkeSetDragEnable');
   wkeOnMouseOverUrlChanged := GetProcAddress(wkeLibHandle, 'wkeOnMouseOverUrlChanged');
+  //2018.5.29
+  wkeSetDeviceParameter  := GetProcAddress(wkeLibHandle, 'wkeSetDeviceParameter');
+  wkeAddPluginDirectory  := GetProcAddress(wkeLibHandle, 'wkeAddPluginDirectory');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');

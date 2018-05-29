@@ -11,11 +11,13 @@ uses
 type
   TForm1 = class(TForm)
     WkeWebBrowser1: TWkeWebBrowser;
+    Button1: TButton;
     procedure FormShow(Sender: TObject);
     procedure WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
     procedure WkeWebBrowser1CreateView(Sender: TObject; sUrl: string;
       navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures;
       var wvw: wkeWebView);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,11 +31,14 @@ implementation
 
 {$R *.dfm}
 
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  ShowMessage(WkeWebBrowser1.GetSource);
+end;
+
 procedure TForm1.FormShow(Sender: TObject);
 begin
- // WkeWebBrowser1.Headless :=true;
-  WkeWebBrowser1.LoadUrl('http://www.ifeng.com/');
- // WkeWebBrowser1.LoadFile('.\html\index.html');
+  WkeWebBrowser1.LoadUrl('http://www.langjisky.com/');
 end;
 
 procedure TForm1.WkeWebBrowser1CreateView(Sender: TObject; sUrl: string;
@@ -46,7 +51,6 @@ end;
 procedure TForm1.WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
 begin
   Caption :=sTitle;
- // ShowMessage(stitle);
 end;
 
 end.
