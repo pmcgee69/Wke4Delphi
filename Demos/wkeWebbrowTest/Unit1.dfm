@@ -27,7 +27,6 @@ object Form1: TForm1
     ZoomPercent = 100
     OnTitleChange = WkeWebBrowser1TitleChange
     OnCreateView = WkeWebBrowser1CreateView
-    ExplicitHeight = 374
   end
   object Button1: TButton
     Left = 56
@@ -37,5 +36,14 @@ object Form1: TForm1
     Caption = #21462#28304#30721
     TabOrder = 1
     OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 280
+    Top = 440
+    Width = 75
+    Height = 25
+    Caption = 'Button2'
+    TabOrder = 2
+    OnClick = Button2Click
   end
 end

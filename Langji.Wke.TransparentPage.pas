@@ -174,10 +174,10 @@ begin
   result := TCustomWkePage(param).DoWebViewPromptBox(TCustomWkePage(param), wkeWebView.GetString(msg), wkeWebView.GetString(defaultResult), wkeWebView.GetString(sresult));
 end;
 
-procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
-begin
-  TCustomWkePage(param).DoWebViewConsoleMessage(TCustomWkePage(param), AMessage);
-end;
+//procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
+//begin
+//  TCustomWkePage(param).DoWebViewConsoleMessage(TCustomWkePage(param), AMessage);
+//end;
 
 procedure DocumentReady(webView: wkeWebView; param: Pointer); cdecl;
 begin
@@ -483,7 +483,7 @@ begin
       thewebview.SetOnConfirmBox(DoConfirmBox, self);
     if Assigned(FOnPromptBox) then
       thewebview.SetOnPromptBox(DoPromptBox, self);
-    thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
+   // thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
     thewebview.SetOnWindowClosing(DoWindowClosing, self);
     thewebview.SetOnWindowDestroy(DoWindowDestroy, self);

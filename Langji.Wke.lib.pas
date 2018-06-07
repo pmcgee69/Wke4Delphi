@@ -413,7 +413,8 @@ begin
   wkeOnCreateView := GetProcAddress(wkeLibHandle, 'wkeOnCreateView');
   wkeOnDocumentReady := GetProcAddress(wkeLibHandle, 'wkeOnDocumentReady');
   wkeOnLoadingFinish := GetProcAddress(wkeLibHandle, 'wkeOnLoadingFinish');
-  wkeOnConsoleMessage := GetProcAddress(wkeLibHandle, '//procedure wkeOnConsoleMessage');
+//  wkeOnConsoleMessage := GetProcAddress(wkeLibHandle, 'wkeOnConsoleMessage');
+  wkeOnConsoleMessage := GetProcAddress(wkeLibHandle, 'wkeOnConsole');
   wkeCreateWebWindow := GetProcAddress(wkeLibHandle, 'wkeCreateWebWindow');
   wkeDestroyWebWindow := GetProcAddress(wkeLibHandle, 'wkeDestroyWebWindow');
   wkeGetWindowHandle := GetProcAddress(wkeLibHandle, 'wkeGetWindowHandle');
@@ -427,7 +428,6 @@ begin
   wkeSetWindowTitle := GetProcAddress(wkeLibHandle, 'wkeSetWindowTitle');
   wkeSetWindowTitleW := GetProcAddress(wkeLibHandle, 'wkeSetWindowTitleW');
 
-//void wkeSetCookieJarPath:=GetProcAddress(wkeLibHandle,'//void wkeSetCookieJarPath');
   wkeSetCookieJarPath := GetProcAddress(wkeLibHandle, 'wkeSetCookieJarPath');
   wkeSetCookie := GetProcAddress(wkeLibHandle, 'wkeSetCookie');
   wkeGetURL := GetProcAddress(wkeLibHandle, 'wkeGetURL');

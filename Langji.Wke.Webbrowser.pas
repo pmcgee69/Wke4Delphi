@@ -75,6 +75,7 @@ type
     FOnMouseOverUrlChange: TOnUrlChangeEvent;
     FIsmain: Boolean;
     FPlatform: TwkePlatform;
+    FOnConsoleMessage: TOnConsoleMessgeEvent;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
@@ -89,7 +90,8 @@ type
     procedure DoWebViewAlertBox(Sender: TObject; smsg: string);
     function DoWebViewConfirmBox(Sender: TObject; smsg: string): boolean;
     function DoWebViewPromptBox(Sender: TObject; smsg, defaultres, Strres: string): boolean;
-    procedure DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
+   // procedure DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
+    procedure DoWebViewConsoleMessage(Sender: TObject; const AMessage,     sourceName: String; sourceLine: Cardinal; const stackTrack: String);
     procedure DoWebViewDocumentReady(Sender: TObject);
     procedure DoWebViewWindowClosing(Sender: TObject);
     procedure DoWebViewWindowDestroy(Sender: TObject);
@@ -118,8 +120,6 @@ type
     procedure SetDragEnabled(const Value: boolean);
     procedure setOnAlertBox(const Value: TOnAlertBoxEvent);
     procedure DoSourceCallBack(const s: string);
-
-
     { Private declarations }
   protected
     { Protected declarations }
@@ -127,9 +127,7 @@ type
     property Transparent: Boolean read GetTransparent write SetTransparent;
     procedure WndProc(var Msg: TMessage); override;
     procedure setPlatform(const Value: TwkePlatform);
-
     property SimulatePlatform: TwkePlatform read FPlatform write setPlatform;
-
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -140,10 +138,15 @@ type
     procedure Refresh;
     procedure Stop;
     procedure LoadUrl(const Aurl: string);
+    /// <summary>
+    ///   加载HTMLCODE
+    /// </summary>
     procedure LoadHtml(const Astr: string);
+    /// <summary>
+    ///   加载文件
+    /// </summary>
     procedure LoadFile(const AFile: string);
     procedure ExecuteJavascript(const js: string);
-   // function RunJsAndGetValue( const js: string):Integer;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;                        //2018.3.14
     /// <summary>
@@ -159,7 +162,6 @@ type
     property WkeApp: TWkeApp read FwkeApp write FwkeApp;
     property WebViewHandle: Hwnd read GetWebHandle;
     property isMain: Boolean read FIsmain;
-
   published
     property Align;
     property Color;
@@ -192,6 +194,7 @@ type
     property OnPromptBox: TOnPromptBoxEvent read FOnPromptBox write FOnPromptBox;
     property OnDownloadFile: TOnDownloadEvent read FOnDownload write FOnDownload;
     property OnMouseOverUrlChanged: TOnUrlChangeEvent read FOnMouseOverUrlChange write FOnMouseOverUrlChange; //2018.3.14
+    property OnConsoleMessage: TOnConsoleMessgeEvent read FOnConsoleMessage write FOnConsoleMessage;
   end;
 
 implementation
@@ -273,9 +276,10 @@ begin
     (defaultResult), wkeWebView.GetString(sresult));
 end;
 
-procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
+procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage,
+    sourceName: wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
 begin
-  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), AMessage);
+  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), wkeWebView.GetString(AMessage),wkeWebView.GetString(sourceName),sourceLine,wkeWebView.GetString(stackTrack) );
 end;
 
 procedure DocumentReady(webView: wkeWebView; param: Pointer); cdecl;
@@ -343,7 +347,8 @@ begin
 end;
 
 procedure TWkeWebBrowser.CreateWebView;
-  var wkeset:wkeSettings;
+var
+  wkeset: wkeSettings;
 begin
   thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_CONTROL, handle, 0, 0, Width, height);
   if Assigned(thewebview) then
@@ -382,7 +387,7 @@ begin
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
 
     wkeset.mask := 4;
-    wkeConfigure( @wkeset);
+    wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;
@@ -405,9 +410,12 @@ begin
     FOnConfirmBox(self, smsg, result);
 end;
 
-procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
+procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: String; sourceLine:
+  Cardinal; const stackTrack: String);
+//procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
 begin
-
+  if Assigned(FOnConsoleMessage) then
+    FOnConsoleMessage(Self, Amessage, sourceName, sourceLine );
 end;
 
 procedure TWkeWebBrowser.DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
@@ -665,11 +673,11 @@ begin
       wp_Win32:
         wkeSetDeviceParameter(thewebview, PAnsiChar('navigator.platform'), PAnsiChar('Win32'), 0, 0);
       wp_Android:
-      begin
-        wkeSetDeviceParameter(thewebview, PAnsiChar('navigator.platform'), PAnsiChar('Android'), 0, 0);
-        wkeSetDeviceParameter(thewebview, PAnsiChar('screen.width'), PAnsiChar('800'), 400, 0);
-        wkeSetDeviceParameter(thewebview, PAnsiChar('screen.height'), PAnsiChar('1600'), 800, 0);
-      end;
+        begin
+          wkeSetDeviceParameter(thewebview, PAnsiChar('navigator.platform'), PAnsiChar('Android'), 0, 0);
+          wkeSetDeviceParameter(thewebview, PAnsiChar('screen.width'), PAnsiChar('800'), 400, 0);
+          wkeSetDeviceParameter(thewebview, PAnsiChar('screen.height'), PAnsiChar('1600'), 800, 0);
+        end;
       wp_Ios:
         wkeSetDeviceParameter(thewebview, PAnsiChar('navigator.platform'), PAnsiChar('Android'), 0, 0);
     end;

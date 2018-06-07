@@ -219,20 +219,30 @@ type
   wkeDocumentReadyCallback = procedure(webView: wkeWebView; param: Pointer); cdecl;
   wkeDocumentReadyCallback2 = procedure(webView: wkeWebView; param: Pointer;frameid:wkeFrameHwnd); cdecl;          //2018.02.07
 
-  wkeLoadingFinishCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString; result: wkeLoadingResult; failedReason: wkeString); cdecl;
+  wkeLoadingFinishCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString; result: wkeLoadingResult;
+    failedReason: wkeString); cdecl;
 
   wkeWindowClosingCallback = function(webWindow: wkeWebView; param: Pointer): Boolean; cdecl;
 
   wkeWindowDestroyCallback = procedure(webWindow: wkeWebView; param: Pointer); cdecl;
 
-  wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
+ // wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
+ // wkeWebView webView, void* param, wkeConsoleLevel level, const wkeString message, const wkeString sourceName, unsigned sourceLine, const wkeString stackTrace);
+  wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage,
+    sourceName: wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
 
-  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString):boolean;  cdecl;        //2018.02.07
-  wkeOnCallUiThread= procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
-  wkeCallUiThread  = procedure(webView: wkeWebView; func:wkeOnCallUiThread ; param: Pointer); cdecl;  //2018.02.07
-  wkeLoadUrlBeginCallback = function (webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer):boolean; cdecl;  //2018.02.07
-  wkeLoadUrlEndCallback  = procedure(webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer;buf:Pointer;len:Integer); cdecl;  //2018.02.07
-  wkeNetResponseCallback  = function (webView: wkeWebView; param: Pointer; url: wkeString; job:Pointer):boolean; cdecl;  //2018.02.07
+  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString): boolean; cdecl;        //2018.02.07
+
+  wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
+
+  wkeCallUiThread = procedure(webView: wkeWebView; func: wkeOnCallUiThread; param: Pointer); cdecl;  //2018.02.07
+
+  wkeLoadUrlBeginCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer): boolean; cdecl;  //2018.02.07
+
+  wkeLoadUrlEndCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer; buf: Pointer; len:
+    Integer); cdecl;  //2018.02.07
+
+  wkeNetResponseCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer): boolean; cdecl;  //2018.02.07
 
   jsGetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar): jsValue; cdecl;
 
@@ -285,6 +295,7 @@ type
   TOnPromptBoxEvent =procedure(Sender: TObject; smsg, defaultres, Strres: string;var bresult:boolean) of object;
 
   TOnDownloadEvent  = procedure(Sender: TObject; sUrl: string) of object;
+  TOnConsoleMessgeEvent =procedure( Sender: TObject;const sMsg, source:string ;const sline:integer) of object;
 
 
 //==============================================================================
@@ -958,7 +969,7 @@ end;
 procedure wkeWebView.SetOnConsoleMessage(callback: wkeConsoleMessageCallback;
   callbackParam: Pointer);
 begin
-//  wkeOnConsoleMessage(Self, callback, callbackParam);
+  wkeOnConsoleMessage(Self, callback, callbackParam);
 end;
 
 procedure wkeWebView.SetOnPromptBox(callback: wkePromptBoxCallback; callbackParam: Pointer);

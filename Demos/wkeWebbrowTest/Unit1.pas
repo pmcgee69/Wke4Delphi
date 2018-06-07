@@ -12,12 +12,14 @@ type
   TForm1 = class(TForm)
     WkeWebBrowser1: TWkeWebBrowser;
     Button1: TButton;
+    Button2: TButton;
     procedure FormShow(Sender: TObject);
     procedure WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
     procedure WkeWebBrowser1CreateView(Sender: TObject; sUrl: string;
       navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures;
       var wvw: wkeWebView);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,9 +38,14 @@ begin
   ShowMessage(WkeWebBrowser1.GetSource);
 end;
 
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  WkeWebBrowser1.LoadFile('f:\GaodeMap.html');
+end;
+
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  WkeWebBrowser1.LoadUrl('http://www.langjisky.com/');
+  WkeWebBrowser1.LoadUrl('http://www.langjisky.com/GaodeMap.html');
 end;
 
 procedure TForm1.WkeWebBrowser1CreateView(Sender: TObject; sUrl: string;
