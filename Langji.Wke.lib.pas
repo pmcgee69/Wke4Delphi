@@ -190,6 +190,11 @@ var
   //ITERATOR1(wkeRequestType, wkeNetGetRequestMethod, void* jobPtr, "")
  // void wkeSetDeviceParameter(wkeWebView webView, const char* device, const char* paramStr, int paramInt, float paramFloat)
   wkeSetDeviceParameter:procedure(webView: wkeWebView; const  device, paramStr: putf8;  paramInt:integer;  paramFloat:real); cdecl;
+ // ITERATOR1(const utf8*, wkeGetSource, wkeWebView webView, "") \
+  wkeGetSource :function( webView: wkeWebView ):Putf8;  cdecl;
+  //ITERATOR1(void, wkeNetHookRequest, void *job, "") \
+  wkeNetHookRequest:procedure(job:Pointer); cdecl;
+
 
 //================================JScript============================
 
@@ -457,6 +462,8 @@ begin
   //2018.5.29
   wkeSetDeviceParameter  := GetProcAddress(wkeLibHandle, 'wkeSetDeviceParameter');
   wkeAddPluginDirectory  := GetProcAddress(wkeLibHandle, 'wkeAddPluginDirectory');
+  wkeGetSource           := GetProcAddress(wkeLibHandle, 'wkeGetSource');
+  wkeNetHookRequest      := GetProcAddress(wkeLibHandle, 'wkeNetHookRequest');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');

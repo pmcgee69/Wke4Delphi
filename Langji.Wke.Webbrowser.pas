@@ -55,7 +55,7 @@ type
     thewebview: TwkeWebView;
     FZoomValue: Integer;
     FLoadFinished: boolean;
-    FTransparent: boolean;
+ //   FTransparent: boolean;
     FOnLoadEnd: TOnLoadEndEvent;
     FOnTitleChange: TOnTitleChangeEvent;
     FOnLoadStart: TOnBeforeLoadEvent;
@@ -76,6 +76,8 @@ type
     FIsmain: Boolean;
     FPlatform: TwkePlatform;
     FOnConsoleMessage: TOnConsoleMessgeEvent;
+    FOnLoadUrlEnd: TOnLoadUrlEndEvent;
+    FOnLoadUrlBegin: TOnLoadUrlBeginEvent;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
@@ -90,12 +92,13 @@ type
     procedure DoWebViewAlertBox(Sender: TObject; smsg: string);
     function DoWebViewConfirmBox(Sender: TObject; smsg: string): boolean;
     function DoWebViewPromptBox(Sender: TObject; smsg, defaultres, Strres: string): boolean;
-   // procedure DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
-    procedure DoWebViewConsoleMessage(Sender: TObject; const AMessage,     sourceName: String; sourceLine: Cardinal; const stackTrack: String);
+    procedure DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: string; sourceLine: Cardinal; const stackTrack: string);
     procedure DoWebViewDocumentReady(Sender: TObject);
     procedure DoWebViewWindowClosing(Sender: TObject);
     procedure DoWebViewWindowDestroy(Sender: TObject);
     function DoWebViewDownloadFile(Sender: TObject; sUrl: string): boolean;
+    procedure DoWebViewLoadUrlEnd(Sender: TObject; sUrl: string; job: Pointer; buf: Pointer; len: Integer);
+    procedure DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
     procedure WM_SIZE(var msg: TMessage); message WM_SIZE;
   //  procedure WM_KEYDOWN(var msg:TMessage);message WM_KEYDOWN ;
     function GetCanBack: boolean;
@@ -104,8 +107,8 @@ type
     function GetLocationTitle: string;
     function GetLocationUrl: string;
     function GetMediaVolume: Single;
-    function GetTransparent: boolean;
-    procedure SetTransparent(const Value: Boolean);
+   // function GetTransparent: boolean;
+   // procedure SetTransparent(const Value: Boolean);
     function GetLoadFinished: Boolean;
     function GetWebHandle: Hwnd;
     /// <summary>
@@ -119,12 +122,12 @@ type
     procedure SetProxy(const Value: TwkeProxy);
     procedure SetDragEnabled(const Value: boolean);
     procedure setOnAlertBox(const Value: TOnAlertBoxEvent);
-    procedure DoSourceCallBack(const s: string);
+    procedure setWkeCookiePath(const Value: string);
     { Private declarations }
   protected
     { Protected declarations }
     procedure CreateWindowHandle(const Params: TCreateParams); override;
-    property Transparent: Boolean read GetTransparent write SetTransparent;
+   // property Transparent: Boolean read GetTransparent write SetTransparent;
     procedure WndProc(var Msg: TMessage); override;
     procedure setPlatform(const Value: TwkePlatform);
     property SimulatePlatform: TwkePlatform read FPlatform write setPlatform;
@@ -146,7 +149,7 @@ type
     ///   加载文件
     /// </summary>
     procedure LoadFile(const AFile: string);
-    procedure ExecuteJavascript(const js: string);
+    function ExecuteJavascript(const js: string): boolean;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;                        //2018.3.14
     /// <summary>
@@ -169,7 +172,7 @@ type
    // property Taborder;
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
-    property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
+    property CookiePath: string read FwkeCookiePath write setWkeCookiePath;
     /// <summary>
     ///   Cookie格式为：PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
     /// </summary>
@@ -195,12 +198,14 @@ type
     property OnDownloadFile: TOnDownloadEvent read FOnDownload write FOnDownload;
     property OnMouseOverUrlChanged: TOnUrlChangeEvent read FOnMouseOverUrlChange write FOnMouseOverUrlChange; //2018.3.14
     property OnConsoleMessage: TOnConsoleMessgeEvent read FOnConsoleMessage write FOnConsoleMessage;
+    property OnLoadUrlEnd: TOnLoadUrlEndEvent read FOnLoadUrlEnd write FOnLoadUrlEnd;
+    property OnLoadUrlBegin: TOnLoadUrlBeginEvent read FOnLoadUrlBegin write FOnLoadUrlBegin;
   end;
 
 implementation
 
-uses
-  dialogs, math;
+uses  // dialogs,
+  math;
 
 
 
@@ -276,10 +281,11 @@ begin
     (defaultResult), wkeWebView.GetString(sresult));
 end;
 
-procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage,
-    sourceName: wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
+procedure DoConsoleMessage(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage, sourceName:
+  wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
 begin
-  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), wkeWebView.GetString(AMessage),wkeWebView.GetString(sourceName),sourceLine,wkeWebView.GetString(stackTrack) );
+  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), wkeWebView.GetString(AMessage), wkeWebView.GetString
+    (sourceName), sourceLine, wkeWebView.GetString(stackTrack));
 end;
 
 procedure DocumentReady(webView: wkeWebView; param: Pointer); cdecl;
@@ -301,6 +307,25 @@ function DodownloadFile(webView: wkeWebView; param: Pointer; url: wkeString): bo
 begin
   result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), wkeWebView.GetString(url));
 end;
+
+procedure DoOnLoadUrlEnd(webView: wkeWebView; param: Pointer; const url: pansichar; job: Pointer; buf: Pointer; len: Integer); cdecl;
+begin
+  TWkeWebBrowser(param).DoWebViewLoadUrlEnd(TWkeWebBrowser(param), StrPas(url), job, buf, len);
+end;
+
+function DoOnLoadUrlBegin(webView: wkeWebView; param: Pointer; url: PAnsiChar; job: Pointer): boolean; cdecl;
+var
+  bhook, bHandled: boolean;
+begin
+  bhook := false;
+  bHandled := false;
+  TWkeWebBrowser(param).DoWebViewLoadUrlStart(TWkeWebBrowser(param), StrPas(url), bhook, bHandled);
+  if bhook then
+    if Assigned(wkeNetHookRequest) then
+      wkeNetHookRequest(job);
+  result := bHandled;
+end;
+
 
 //procedure ShowLastError;
 //var
@@ -327,7 +352,8 @@ end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
-
+  if Assigned(thewebview) then
+    wkeDestroyWebWindow(thewebview);
   if not Assigned(FwkeApp) then
     if FIsmain then
       WkeFinalizeAndUnloadLib;
@@ -375,6 +401,11 @@ begin
     if Assigned(FOnMouseOverUrlChange) then
       wkeOnMouseOverUrlChanged(thewebview, DoMouseOverUrlChange, self);
 
+    if Assigned(wkeOnLoadUrlBegin) then
+      wkeOnLoadUrlBegin(thewebview, DoOnLoadUrlBegin, self);
+    if Assigned(wkeOnLoadUrlEnd) then
+      wkeOnLoadUrlEnd(thewebview, DoOnLoadUrlEnd, self);
+
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
     thewebview.SetOnWindowClosing(DoWindowClosing, self);
@@ -392,11 +423,6 @@ begin
   end;
 end;
 
-procedure TWkeWebBrowser.DoSourceCallBack(const s: string);
-begin
-  ShowMessage(s);
-end;
-
 procedure TWkeWebBrowser.DoWebViewAlertBox(Sender: TObject; smsg: string);
 begin
   if Assigned(FOnAlertBox) then
@@ -410,12 +436,12 @@ begin
     FOnConfirmBox(self, smsg, result);
 end;
 
-procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: String; sourceLine:
-  Cardinal; const stackTrack: String);
+procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; const AMessage, sourceName: string; sourceLine:
+  Cardinal; const stackTrack: string);
 //procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; smsg: wkeConsoleMessage);
 begin
   if Assigned(FOnConsoleMessage) then
-    FOnConsoleMessage(Self, Amessage, sourceName, sourceLine );
+    FOnConsoleMessage(Self, AMessage, sourceName, sourceLine);
 end;
 
 procedure TWkeWebBrowser.DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
@@ -456,6 +482,19 @@ begin
   FLoadFinished := false;
 end;
 
+procedure TWkeWebBrowser.DoWebViewLoadUrlEnd(Sender: TObject; sUrl: string; job, buf: Pointer; len: Integer);
+begin
+  outputdebugstring('urlend call');
+  if Assigned(FOnLoadUrlEnd) then
+    FOnLoadUrlEnd(self, sUrl, buf, len);
+end;
+
+procedure TWkeWebBrowser.DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
+begin
+  if Assigned(FOnLoadUrlBegin) then
+    FOnLoadUrlBegin(Self, sUrl, bhook, bHandle);
+end;
+
 procedure TWkeWebBrowser.DoWebViewMouseOverUrlChange(Sender: TObject; sUrl: string);
 begin
   if Assigned(FOnMouseOverUrlChange) then
@@ -491,10 +530,24 @@ begin
     FOnWindowDestroy(Self);
 end;
 
-procedure TWkeWebBrowser.ExecuteJavascript(const js: string);
+function TWkeWebBrowser.ExecuteJavascript(const js: string): boolean;
+var
+  newjs: string;
+  r: jsValue;
+  es: jsExecState;
 begin
+  result := false;
+  newjs := 'try { ' + js + ' return 1; } catch(err){ return 0;}';
   if Assigned(thewebview) then
-    thewebview.RunJS(js);
+  begin
+    r := thewebview.RunJS(newjs);
+    es := thewebview.GlobalExec;
+    if es.IsNumber(r) then
+    begin
+      if es.Toint(r) = 1 then
+        result := true;
+    end;
+  end;
 end;
 
 function TWkeWebBrowser.GetCanBack: boolean;
@@ -546,16 +599,13 @@ end;
 
 function TWkeWebBrowser.GetSource: string;
 begin
+//  if Assigned(thewebview) then
+//    result := wkeGetSource(thewebview);
   tmpSource := '';
   if Assigned(thewebview) then
     ExecuteJavascript('GetSource(document.getElementsByTagName("html")[0].outerHTML);');
   Sleep(100);
   result := tmpSource;
-end;
-
-function TWkeWebBrowser.GetTransparent: boolean;
-begin
-  result := FTransparent;
 end;
 
 function TWkeWebBrowser.GetWebHandle: Hwnd;
@@ -565,9 +615,11 @@ begin
     result := thewebview.WindowHandle;
 end;
 
-procedure TWkeWebBrowser.SetTransparent(const Value: Boolean);
+procedure TWkeWebBrowser.setWkeCookiePath(const Value: string);
 begin
-  FTransparent := Value;
+  FwkeCookiePath := Value;
+  if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
+    wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
 end;
 
 function TWkeWebBrowser.getZoom: Integer;
@@ -612,6 +664,8 @@ procedure TWkeWebBrowser.LoadUrl(const Aurl: string);
 begin
   if Assigned(thewebview) then
     thewebview.LoadURL(Aurl);
+  if Assigned(thewebview) then
+    thewebview.MoveWindow(0, 0, Width, Height);
 end;
 
 procedure TWkeWebBrowser.Refresh;

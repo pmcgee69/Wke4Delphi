@@ -231,24 +231,35 @@ type
   wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage,
     sourceName: wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
 
-  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString): boolean; cdecl;        //2018.02.07
+//  typedef bool(*wkeLoadUrlBeginCallback)(wkeWebView webView, void* param, const char *url, void *job);
+//typedef void(*wkeLoadUrlEndCallback)(wkeWebView webView, void* param, const char *url, void *job, void* buf, int len);
+//typedef void(*wkeDidCreateScriptContextCallback)(wkeWebView webView, void* param, wkeWebFrameHandle frameId, void* context, int extensionGroup, int worldId);
+//typedef void(*wkeWillReleaseScriptContextCallback)(wkeWebView webView, void* param, wkeWebFrameHandle frameId, void* context, int worldId);
+//typedef bool(*wkeNetResponseCallback)(wkeWebView webView, void* param, const char* url, void* job);
+//typedef bool(*wkeDownloadCallback)(wkeWebView webView, void* param, const char* url);
+  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString): boolean;
+    cdecl;        //2018.02.07
 
   wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
 
   wkeCallUiThread = procedure(webView: wkeWebView; func: wkeOnCallUiThread; param: Pointer); cdecl;  //2018.02.07
 
-  wkeLoadUrlBeginCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer): boolean; cdecl;  //2018.02.07
+  wkeLoadUrlBeginCallback = function(webView: wkeWebView; param: Pointer; url: PAnsiChar ; job:
+    Pointer): boolean; cdecl;  //2018.02.07
 
-  wkeLoadUrlEndCallback = procedure(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer; buf: Pointer; len:
-    Integer); cdecl;  //2018.02.07
+  wkeLoadUrlEndCallback = procedure(webView: wkeWebView; param: Pointer;const url: pansichar; job:
+    Pointer; buf: Pointer; len: Integer); cdecl;  //2018.02.07
 
-  wkeNetResponseCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job: Pointer): boolean; cdecl;  //2018.02.07
+  wkeNetResponseCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job:
+    Pointer): boolean; cdecl;  //2018.02.07
 
   jsGetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar): jsValue; cdecl;
 
-  jsSetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar; value: jsValue): Boolean; cdecl;
+  jsSetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar; value:
+    jsValue): Boolean; cdecl;
 
-  jsCallAsFunctionCallback = function(es: jsExecState; AObject: jsValue; args: PjsValue; argCount: Integer): jsValue; cdecl;
+  jsCallAsFunctionCallback = function(es: jsExecState; AObject: jsValue; args: PjsValue; argCount:
+    Integer): jsValue; cdecl;
 
   PjsData = ^TjsData;
 
@@ -296,6 +307,10 @@ type
 
   TOnDownloadEvent  = procedure(Sender: TObject; sUrl: string) of object;
   TOnConsoleMessgeEvent =procedure( Sender: TObject;const sMsg, source:string ;const sline:integer) of object;
+
+  TOnLoadUrlEndEvent = procedure(Sender: TObject; sUrl: string;  buf: Pointer; len: Integer) of object;
+  TOnLoadUrlBeginEvent = procedure(Sender: TObject; sUrl: string;  out bHook,bHandled:boolean) of object;
+
 
 
 //==============================================================================
