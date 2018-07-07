@@ -352,11 +352,13 @@ end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
-  if Assigned(thewebview) then
-    wkeDestroyWebWindow(thewebview);
   if not Assigned(FwkeApp) then
+  begin
+    if Assigned(thewebview) then
+    wkeDestroyWebWindow(thewebview);
     if FIsmain then
       WkeFinalizeAndUnloadLib;
+  end;
   inherited;
 end;
 
@@ -365,7 +367,8 @@ begin
   inherited;
   if (csDesigning in ComponentState) then
     exit;
-  Fismain := WkeLoadLibAndInit;
+  if not Assigned(FwkeApp) then
+    Fismain := WkeLoadLibAndInit;
   if wkeLibHandle = 0 then
     Exit;
   CreateWebView;

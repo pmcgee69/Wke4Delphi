@@ -28,7 +28,7 @@ object Form1: TForm1
       Width = 55
       Height = 25
       Caption = 'Go'
-      TabOrder = 0
+      TabOrder = 2
       OnClick = Button1Click
     end
     object Edit1: TEdit
@@ -40,7 +40,7 @@ object Form1: TForm1
       Margins.Top = 2
       Margins.Right = 2
       Margins.Bottom = 2
-      TabOrder = 1
+      TabOrder = 4
       Text = 'https://www.baidu.com/'
     end
     object BitBtn1: TBitBtn
@@ -53,7 +53,7 @@ object Form1: TForm1
       Margins.Right = 2
       Margins.Bottom = 2
       Caption = #8592
-      TabOrder = 2
+      TabOrder = 0
       OnClick = BitBtn1Click
     end
     object BitBtn2: TBitBtn
@@ -66,7 +66,7 @@ object Form1: TForm1
       Margins.Right = 2
       Margins.Bottom = 2
       Caption = #8594
-      TabOrder = 3
+      TabOrder = 1
       OnClick = BitBtn2Click
     end
     object Button2: TButton
@@ -75,7 +75,8 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = 'DevTool'
-      TabOrder = 4
+      TabOrder = 3
+      Visible = False
       OnClick = Button2Click
     end
   end
