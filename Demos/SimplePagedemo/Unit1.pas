@@ -19,6 +19,7 @@ type
     Button2: TButton;
     procedure Button1Click(Sender: TObject);
     procedure WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
+    procedure WkeWebBrowser1LoadEnd (Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -67,14 +68,21 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   WkeWebBrowser1 := WkeApp1.CreateWebbrowser(form1);
-
+  WkeWebBrowser1.OnTitleChange := WkeWebBrowser1TitleChange;
+  WkeWebBrowser1.OnLoadEnd  :=    WkeWebBrowser1LoadEnd;
 end;
 
 procedure TForm1.WkeApp1NewWindow(Sender: TObject; sUrl: string;
   navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures;
   var openflg: TNewWindowFlag; var webbrow: TWkeWebBrowser);
 begin
-  openflg :=TNewWindowFlag.nwf_OpenInCurrent;
+  openflg :=TNewWindowFlag.nwf_OpenInCurrent;//  .nwf_NewPage;
+end;
+
+procedure TForm1.WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string;
+  loadresult: wkeLoadingResult);
+begin
+  Edit1.Text :=WkeWebBrowser1.LocationUrl;
 end;
 
 procedure TForm1.WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);

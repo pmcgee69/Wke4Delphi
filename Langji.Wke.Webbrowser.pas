@@ -78,6 +78,7 @@ type
     FOnConsoleMessage: TOnConsoleMessgeEvent;
     FOnLoadUrlEnd: TOnLoadUrlEndEvent;
     FOnLoadUrlBegin: TOnLoadUrlBeginEvent;
+    FpopupEnabled: Boolean;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
@@ -123,6 +124,7 @@ type
     procedure SetDragEnabled(const Value: boolean);
     procedure setOnAlertBox(const Value: TOnAlertBoxEvent);
     procedure setWkeCookiePath(const Value: string);
+    procedure SetNewPopupEnabled(const Value: Boolean);
     { Private declarations }
   protected
     { Protected declarations }
@@ -182,7 +184,7 @@ type
     property Headless: Boolean write SetHeadless;
     property TouchEnabled: Boolean write SetTouchEnabled;
     property DragEnabled: boolean write SetDragEnabled;           //2018.3.14
-
+    property PopupEnabled: Boolean read FpopupEnabled write SetNewPopupEnabled default true;
     property Proxy: TwkeProxy write SetProxy;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
@@ -345,8 +347,9 @@ begin
   Color := clwhite;
   FZoomValue := 100;
   FCookieEnabled := true;
+   FpopupEnabled := true;
   FwkeUserAgent :=
-    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0';
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.1650.63 Safari/537.36 Langji.Wke 1.0';
   FPlatform := wp_Win32;
 end;
 
@@ -355,7 +358,7 @@ begin
   if not Assigned(FwkeApp) then
   begin
     if Assigned(thewebview) then
-    wkeDestroyWebWindow(thewebview);
+      wkeDestroyWebWindow(thewebview);
     if FIsmain then
       WkeFinalizeAndUnloadLib;
   end;
@@ -404,10 +407,10 @@ begin
     if Assigned(FOnMouseOverUrlChange) then
       wkeOnMouseOverUrlChanged(thewebview, DoMouseOverUrlChange, self);
 
-    if Assigned(wkeOnLoadUrlBegin) then
-      wkeOnLoadUrlBegin(thewebview, DoOnLoadUrlBegin, self);
-    if Assigned(wkeOnLoadUrlEnd) then
-      wkeOnLoadUrlEnd(thewebview, DoOnLoadUrlEnd, self);
+//    if Assigned(wkeOnLoadUrlBegin) then
+//      wkeOnLoadUrlBegin(thewebview, DoOnLoadUrlBegin, self);
+//    if Assigned(wkeOnLoadUrlEnd) then
+//      wkeOnLoadUrlEnd(thewebview, DoOnLoadUrlEnd, self);
 
     thewebview.SetOnConsoleMessage(DoConsoleMessage, self);
     thewebview.SetOnDocumentReady(DocumentReady, self);
@@ -419,6 +422,7 @@ begin
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
+    wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
 
     wkeset.mask := 4;
     wkeConfigure(@wkeset);
@@ -450,6 +454,11 @@ end;
 procedure TWkeWebBrowser.DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
   windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
 begin
+  if Assigned(FwkeApp) then
+  begin
+    FwkeApp.DoOnNewWindow(self, sUrl, navigationType, windowFeatures, wvw);
+    exit;
+  end;
   if Assigned(FOnCreateView) then
     FOnCreateView(self, sUrl, navigationType, windowFeatures, wvw);
   if wvw <> nil then
@@ -711,6 +720,15 @@ procedure TWkeWebBrowser.SetLocaStoragePath(const Value: string);
 begin
   if Assigned(thewebview) then
     thewebview.LocalStoragePath := Value;
+end;
+
+procedure TWkeWebBrowser.SetNewPopupEnabled(const Value: Boolean);
+begin
+  if Assigned(thewebview) then
+  begin
+    FpopupEnabled := Value;
+    wkeSetNavigationToNewWindowEnable(thewebview, Value);
+  end;
 end;
 
 procedure TWkeWebBrowser.setOnAlertBox(const Value: TOnAlertBoxEvent);

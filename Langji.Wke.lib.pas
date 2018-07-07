@@ -195,6 +195,8 @@ var
   //ITERATOR1(void, wkeNetHookRequest, void *job, "") \
   wkeNetHookRequest:procedure(job:Pointer); cdecl;
 
+  wkeSetNavigationToNewWindowEnable: procedure(webView: wkeWebView; b: boolean); cdecl; //20180707
+
 
 //================================JScript============================
 
@@ -464,6 +466,7 @@ begin
   wkeAddPluginDirectory  := GetProcAddress(wkeLibHandle, 'wkeAddPluginDirectory');
   wkeGetSource           := GetProcAddress(wkeLibHandle, 'wkeGetSource');
   wkeNetHookRequest      := GetProcAddress(wkeLibHandle, 'wkeNetHookRequest');
+  wkeSetNavigationToNewWindowEnable := GetProcAddress(wkeLibHandle, 'wkeSetNavigationToNewWindowEnable');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');
