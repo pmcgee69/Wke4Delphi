@@ -36,7 +36,7 @@ object Form1: TForm1
     Height = 299
     Align = alRight
     Lines.Strings = (
-      'Memo1')
+      #24377#20986#31383#21475#21644#21462#28304#30721#26159#20004#20010#29420#31435#30340#21151#33021#12290)
     TabOrder = 0
   end
   object Button2: TButton

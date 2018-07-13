@@ -271,12 +271,9 @@ destructor TCustomWkePage.Destroy;
 begin
   try
     if Assigned(thewebview) then
-    begin
       wkeDestroyWebWindow(thewebview);
-    end;
-    WkeFinalizeAndUnloadLib;
+   // WkeFinalizeAndUnloadLib;
   except
-
   end;
   inherited;
 end;
@@ -632,6 +629,10 @@ end;
 constructor TWkeGetSource.Create;
 begin
   Fwke := TWkePopupPage.Create(nil);
+  Fwke.WindowLeft :=-600;
+  Fwke.WindowTop :=- 480;
+  Fwke.WindowWidth :=600;
+  Fwke.WindowHeight :=480;
   //FHeadless := false;
 end;
 
@@ -718,6 +719,11 @@ begin
     end;
   end;
 end;
+
+initialization
+
+finalization
+  WkeFinalizeAndUnloadLib;
 
 end.
 

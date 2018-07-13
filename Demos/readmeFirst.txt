@@ -1,0 +1,2 @@
+初学者先看wkeWebbrowTest这个Demo
+SimplePagedemo为动态创建wkeWebbrowser

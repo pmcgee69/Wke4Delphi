@@ -357,8 +357,12 @@ destructor TWkeWebBrowser.Destroy;
 begin
   if not Assigned(FwkeApp) then
   begin
-    if Assigned(thewebview) then
-      wkeDestroyWebWindow(thewebview);
+//  try
+//    if Assigned(thewebview) then
+//      wkeDestroyWebWindow(thewebview);
+//  except
+//
+//  end;
     if FIsmain then
       WkeFinalizeAndUnloadLib;
   end;
