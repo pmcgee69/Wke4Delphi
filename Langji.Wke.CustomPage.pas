@@ -721,8 +721,10 @@ begin
 end;
 
 initialization
-
+  if DebugHook<>0 then
+  WkeLoadLibAndInit;
 finalization
+  if DebugHook <> 0 then
   WkeFinalizeAndUnloadLib;
 
 end.
