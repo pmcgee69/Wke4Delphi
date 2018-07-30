@@ -154,7 +154,8 @@ var
   wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   wkeWebFrameGetMainFrame: function(webWindow: wkeWebView): Thandle; cdecl;       //minibink 新增  2018.1.17
   wkeIsMainFrame: function(webWindow: wkeWebView; frameId: Thandle): Boolean; cdecl;  //minibink 新增  2018.1.17
-  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue;  cdecl;      // minibink 新增  2018.1.17
+  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue;
+    cdecl;      // minibink 新增  2018.1.17
 
  // Add 2018.02.07
   //ITERATOR2(void, wkeVisitAllCookie, void* params, wkeCookieVisitor visitor, "")
@@ -185,16 +186,15 @@ var
 
   //Add 2018.05.23
   //ITERATOR2(void, wkeAddPluginDirectory, wkeWebView webView, const WCHAR* path, "")
-  wkeAddPluginDirectory: procedure(webView: wkeWebView; const path: Pwchar_t);cdecl;
+  wkeAddPluginDirectory: procedure(webView: wkeWebView; const path: Pwchar_t); cdecl;
   //ITERATOR1(wkePostBodyElements*, wkeNetGetPostBody, void* jobPtr, "")
   //ITERATOR1(wkeRequestType, wkeNetGetRequestMethod, void* jobPtr, "")
  // void wkeSetDeviceParameter(wkeWebView webView, const char* device, const char* paramStr, int paramInt, float paramFloat)
-  wkeSetDeviceParameter:procedure(webView: wkeWebView; const  device, paramStr: putf8;  paramInt:integer;  paramFloat:real); cdecl;
+  wkeSetDeviceParameter: procedure(webView: wkeWebView; const device, paramStr: putf8; paramInt: integer; paramFloat: real); cdecl;
  // ITERATOR1(const utf8*, wkeGetSource, wkeWebView webView, "") \
-  wkeGetSource :function( webView: wkeWebView ):Putf8;  cdecl;
+  wkeGetSource: function(webView: wkeWebView): Putf8; cdecl;
   //ITERATOR1(void, wkeNetHookRequest, void *job, "") \
-  wkeNetHookRequest:procedure(job:Pointer); cdecl;
-
+  wkeNetHookRequest: procedure(job: Pointer); cdecl;
   wkeSetNavigationToNewWindowEnable: procedure(webView: wkeWebView; b: boolean); cdecl; //20180707
 
 
@@ -263,7 +263,7 @@ function LoadWkeLibaraly(const wkeLibFilePath: string = ''): boolean;
 
 procedure UnLoadWkeLibaraly();
 
-function WkeLoadLibAndInit:boolean;
+function WkeLoadLibAndInit: boolean;
 
 procedure WkeFinalizeAndUnloadLib;
 
@@ -285,17 +285,16 @@ asm
 end;
 {$ENDIF UseVcFastCall}
 
-function WkeLoadLibAndInit:boolean;
+function WkeLoadLibAndInit: boolean;
 begin
-  result :=false;
+  result := false;
   if wkeLibHandle = 0 then
   begin
     if LoadWkeLibaraly() then
     begin
       wkeInitialize;
-      result :=true;
+      result := true;
     end;
-
   end;
 end;
 
@@ -312,9 +311,11 @@ function LoadWkeLibaraly(const wkeLibFilePath: string = ''): boolean;
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   result := false;
+
+  wkeLibHandle := GetModuleHandle(PChar( ExtractFileName( wkeLibFileName)));
   if wkeLibHandle = 0 then
   begin
-    if wkeLibFilePath <> '' then
+    if (wkeLibFilePath <> '') and Fileexists(wkeLibFilepath) then
       wkeLibFileName := wkeLibFilePath;
     if Fileexists(wkeLibFileName) then
       wkeLibHandle := LoadLibrary(PChar(wkeLibFileName));
@@ -462,10 +463,10 @@ begin
   wkeSetDragEnable := GetProcAddress(wkeLibHandle, 'wkeSetDragEnable');
   wkeOnMouseOverUrlChanged := GetProcAddress(wkeLibHandle, 'wkeOnMouseOverUrlChanged');
   //2018.5.29
-  wkeSetDeviceParameter  := GetProcAddress(wkeLibHandle, 'wkeSetDeviceParameter');
-  wkeAddPluginDirectory  := GetProcAddress(wkeLibHandle, 'wkeAddPluginDirectory');
-  wkeGetSource           := GetProcAddress(wkeLibHandle, 'wkeGetSource');
-  wkeNetHookRequest      := GetProcAddress(wkeLibHandle, 'wkeNetHookRequest');
+  wkeSetDeviceParameter := GetProcAddress(wkeLibHandle, 'wkeSetDeviceParameter');
+  wkeAddPluginDirectory := GetProcAddress(wkeLibHandle, 'wkeAddPluginDirectory');
+  wkeGetSource := GetProcAddress(wkeLibHandle, 'wkeGetSource');
+  wkeNetHookRequest := GetProcAddress(wkeLibHandle, 'wkeNetHookRequest');
   wkeSetNavigationToNewWindowEnable := GetProcAddress(wkeLibHandle, 'wkeSetNavigationToNewWindowEnable');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');

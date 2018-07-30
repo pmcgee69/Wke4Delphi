@@ -151,7 +151,19 @@ type
     ///   加载文件
     /// </summary>
     procedure LoadFile(const AFile: string);
+    /// <summary>
+    ///   执行js 返回值 为执行成功与否
+    /// </summary>
     function ExecuteJavascript(const js: string): boolean;
+
+    /// <summary>
+    ///   执行js并得到string返回值
+    /// </summary>
+    function GetJsTextResult(const js: string): string;
+    /// <summary>
+    ///   执行js并得到boolean返回值
+    /// </summary>
+    function GetJsBoolResult(const js: string): boolean;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;                        //2018.3.14
     /// <summary>
@@ -347,14 +359,16 @@ begin
   Color := clwhite;
   FZoomValue := 100;
   FCookieEnabled := true;
-   FpopupEnabled := true;
+  FpopupEnabled := true;
   FwkeUserAgent :=
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.1650.63 Safari/537.36 Langji.Wke 1.0';
   FPlatform := wp_Win32;
+
 end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
+{
   if not Assigned(FwkeApp) then
   begin
 //  try
@@ -365,8 +379,13 @@ begin
 //  end;
     if FIsmain then
       WkeFinalizeAndUnloadLib;
-  end;
+  end;     }
+//  if FIsmain then
+//    wkeFinalize;
+
+
   inherited;
+
 end;
 
 procedure TWkeWebBrowser.CreateWindowHandle(const Params: TCreateParams);
@@ -374,11 +393,30 @@ begin
   inherited;
   if (csDesigning in ComponentState) then
     exit;
-  if not Assigned(FwkeApp) then
-    Fismain := WkeLoadLibAndInit;
-  if wkeLibHandle = 0 then
-    Exit;
+
+//  if wkeLibHandle <> 0 then
+//  begin
+//    try
+//      wkeInitialize;
+//      FisMain := true;
+//    except
+//
+//    end;
+//  end;
   CreateWebView;
+
+//  try
+//    wkeInitialize;
+//
+//    CreateWebView;
+//  except
+//
+//  end;
+
+//  if not Assigned(FwkeApp) then
+//    Fismain := WkeLoadLibAndInit;
+//  if wkeLibHandle = 0 then
+//    Exit;
 
 end;
 
@@ -428,8 +466,8 @@ begin
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
 
-    wkeset.mask := 4;
-    wkeConfigure(@wkeset);
+//    wkeset.mask := 4;
+//    wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;
@@ -563,6 +601,36 @@ begin
       if es.Toint(r) = 1 then
         result := true;
     end;
+  end;
+end;
+
+function TWkeWebBrowser.GetJsTextResult(const js: string): string;
+var
+  r: jsValue;
+  es: jsExecState;
+begin
+  result := '';
+  if Assigned(thewebview) then
+  begin
+    r := thewebview.RunJS(js);
+    es := thewebview.GlobalExec;
+    if es.IsString(r) then
+      result := es.ToTempString(r);
+  end;
+end;
+
+function TWkeWebBrowser.GetJsBoolResult(const js: string): boolean;
+var
+  r: jsValue;
+  es: jsExecState;
+begin
+  result := false;
+  if Assigned(thewebview) then
+  begin
+    r := thewebview.RunJS(js);
+    es := thewebview.GlobalExec;
+    if es.IsBoolean(r) then
+      result := es.ToBoolean(r);
   end;
 end;
 
@@ -811,8 +879,8 @@ begin
           PostMessage(hndl, WM_SETFOCUS, Msg.WParam, 0);
         inherited WndProc(Msg);
       end;
-    CM_WANTSPECIALKEY:
-      if not (TWMKey(Msg).CharCode in [VK_LEFT..VK_DOWN, VK_RETURN, VK_ESCAPE, VK_TAB]) then
+    CM_WANTSPECIALKEY:                                  // VK_RETURN,
+      if not (TWMKey(Msg).CharCode in [VK_LEFT..VK_DOWN, VK_ESCAPE, VK_TAB]) then    //2018.07.26
         Msg.Result := 1
       else
         inherited WndProc(Msg);
@@ -836,7 +904,8 @@ destructor TWkeApp.Destroy;
 begin
   FWkeWebPages.Clear;
   FWkeWebPages.Free;
-  WkeFinalizeAndUnloadLib;
+ // WkeFinalizeAndUnloadLib;
+  wkeInitialize;
   inherited;
 end;
 
@@ -845,7 +914,8 @@ begin
   inherited;
   if csDesigning in Componentstate then
     exit;
-  WkeLoadLibAndInit;
+  wkeFinalize;
+  //WkeLoadLibAndInit;
 end;
 
 procedure TWkeApp.CloseWebbrowser(Abrowser: TWkewebbrowser);
@@ -953,5 +1023,15 @@ begin
   FUserAgent := Value;
 end;
 
+//initialization
+//
+//  LoadWkeLibaraly();
+//
+//finalization
+//  try
+//   wkeFinalize;
+//  finally
+//   // UnLoadWkeLibaraly;
+//  end;
 end.
 
