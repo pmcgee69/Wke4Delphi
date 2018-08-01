@@ -368,21 +368,18 @@ end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
-{
+
   if not Assigned(FwkeApp) then
   begin
-//  try
-//    if Assigned(thewebview) then
-//      wkeDestroyWebWindow(thewebview);
-//  except
+//    try
+//      if Assigned(thewebview) then
+//        wkeDestroyWebWindow(thewebview);
+//    except
 //
-//  end;
+//    end;
     if FIsmain then
       WkeFinalizeAndUnloadLib;
-  end;     }
-//  if FIsmain then
-//    wkeFinalize;
-
+  end;
 
   inherited;
 
@@ -394,30 +391,11 @@ begin
   if (csDesigning in ComponentState) then
     exit;
 
-//  if wkeLibHandle <> 0 then
-//  begin
-//    try
-//      wkeInitialize;
-//      FisMain := true;
-//    except
-//
-//    end;
-//  end;
+  if not Assigned(FwkeApp) then
+    Fismain := WkeLoadLibAndInit;
+  if wkeLibHandle = 0 then
+    Exit;
   CreateWebView;
-
-//  try
-//    wkeInitialize;
-//
-//    CreateWebView;
-//  except
-//
-//  end;
-
-//  if not Assigned(FwkeApp) then
-//    Fismain := WkeLoadLibAndInit;
-//  if wkeLibHandle = 0 then
-//    Exit;
-
 end;
 
 procedure TWkeWebBrowser.CreateWebView;
@@ -904,8 +882,8 @@ destructor TWkeApp.Destroy;
 begin
   FWkeWebPages.Clear;
   FWkeWebPages.Free;
- // WkeFinalizeAndUnloadLib;
-  wkeInitialize;
+  WkeFinalizeAndUnloadLib;
+
   inherited;
 end;
 
@@ -914,8 +892,7 @@ begin
   inherited;
   if csDesigning in Componentstate then
     exit;
-  wkeFinalize;
-  //WkeLoadLibAndInit;
+  WkeLoadLibAndInit;
 end;
 
 procedure TWkeApp.CloseWebbrowser(Abrowser: TWkewebbrowser);
@@ -1023,15 +1000,5 @@ begin
   FUserAgent := Value;
 end;
 
-//initialization
-//
-//  LoadWkeLibaraly();
-//
-//finalization
-//  try
-//   wkeFinalize;
-//  finally
-//   // UnLoadWkeLibaraly;
-//  end;
 end.
 
