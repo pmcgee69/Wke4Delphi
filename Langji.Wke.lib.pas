@@ -10,6 +10,9 @@ uses
 var
   wkeLibHandle: THandle = 0;
   wkeLibFileName: string = 'wke.dll';
+  wkePluginDir:string ='';
+  wkeIsInDll:Boolean =false;
+
   wkeInitialize: procedure; cdecl;
   wkeInitializeEx: procedure(settings: PwkeSettings); cdecl;
   wkeConfigure: procedure(settings: PwkeSettings); cdecl;
@@ -293,6 +296,8 @@ begin
     if LoadWkeLibaraly() then
     begin
       wkeInitialize;
+      if wkePluginDir <>'' then       
+      wkeAddPluginDirectory(nil,PWideChar(WideString( wkePluginDir )) );
       result := true;
     end;
   end;

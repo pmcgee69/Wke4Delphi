@@ -363,26 +363,16 @@ begin
   FwkeUserAgent :=
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.1650.63 Safari/537.36 Langji.Wke 1.0';
   FPlatform := wp_Win32;
-
 end;
 
 destructor TWkeWebBrowser.Destroy;
 begin
-
-  if not Assigned(FwkeApp) then
+  if (not Assigned(FwkeApp)) and (not wkeIsInDll) then
   begin
-//    try
-//      if Assigned(thewebview) then
-//        wkeDestroyWebWindow(thewebview);
-//    except
-//
-//    end;
     if FIsmain then
       WkeFinalizeAndUnloadLib;
   end;
-
   inherited;
-
 end;
 
 procedure TWkeWebBrowser.CreateWindowHandle(const Params: TCreateParams);
@@ -390,7 +380,6 @@ begin
   inherited;
   if (csDesigning in ComponentState) then
     exit;
-
   if not Assigned(FwkeApp) then
     Fismain := WkeLoadLibAndInit;
   if wkeLibHandle = 0 then
@@ -444,8 +433,8 @@ begin
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
 
-//    wkeset.mask := 4;
-//    wkeConfigure(@wkeset);
+    wkeset.mask := 4;
+    wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;
@@ -837,18 +826,15 @@ end;
 procedure TWkeWebBrowser.WM_SIZE(var msg: TMessage);
 begin
   inherited;
- // if Align = alClient then
-  begin
-    if Assigned(thewebview) then
-      thewebview.MoveWindow(0, 0, Width, Height);
-  end;
+  if Assigned(thewebview) then
+    thewebview.MoveWindow(0, 0, Width, Height);
+
 end;
 
 procedure TWkeWebBrowser.WndProc(var Msg: TMessage);
 var
   hndl: Hwnd;
 begin
-
   case Msg.Msg of
     WM_SETFOCUS:
       begin
@@ -883,7 +869,6 @@ begin
   FWkeWebPages.Clear;
   FWkeWebPages.Free;
   WkeFinalizeAndUnloadLib;
-
   inherited;
 end;
 

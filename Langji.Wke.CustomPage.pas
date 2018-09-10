@@ -269,20 +269,20 @@ end;
 
 destructor TCustomWkePage.Destroy;
 begin
+{
   try
     if Assigned(thewebview) then
       wkeDestroyWebWindow(thewebview);
-   // WkeFinalizeAndUnloadLib;
   except
-  end;
+  end;  }
   inherited;
 end;
 
 procedure TCustomWkePage.loaded;
 begin
   inherited;
-  if not (csDesigning in ComponentState) then
-    WkeLoadLibAndInit;
+//  if not (csDesigning in ComponentState) then
+//    WkeLoadLibAndInit;
 end;
 
 procedure TCustomWkePage.ShowWebPage;
@@ -629,10 +629,10 @@ end;
 constructor TWkeGetSource.Create;
 begin
   Fwke := TWkePopupPage.Create(nil);
-  Fwke.WindowLeft :=-600;
-  Fwke.WindowTop :=- 480;
-  Fwke.WindowWidth :=600;
-  Fwke.WindowHeight :=480;
+  Fwke.WindowLeft := -600;
+  Fwke.WindowTop := -480;
+  Fwke.WindowWidth := 600;
+  Fwke.WindowHeight := 480;
   //FHeadless := false;
 end;
 
@@ -721,11 +721,15 @@ begin
 end;
 
 initialization
-  if DebugHook<>0 then
-  WkeLoadLibAndInit;
+  if DebugHook <> 0 then
+    WkeLoadLibAndInit;
+
 finalization
   if DebugHook <> 0 then
-  WkeFinalizeAndUnloadLib;
+  begin
+    if not wkeIsInDll then
+      WkeFinalizeAndUnloadLib;
+  end;
 
 end.
 

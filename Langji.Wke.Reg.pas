@@ -5,6 +5,8 @@ uses classes,Langji.Wke.Webbrowser,Langji.Wke.CustomPage   ;
 
 procedure Register;
 
+{$R wkelogo.res}
+
 implementation
 
 procedure Register;
