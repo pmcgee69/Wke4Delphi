@@ -433,8 +433,8 @@ begin
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
 
-    wkeset.mask := 4;
-    wkeConfigure(@wkeset);
+   // wkeset.mask := 4;
+   // wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;
@@ -734,7 +734,11 @@ end;
 procedure TWkeWebBrowser.SetFocusToWebbrowser;
 begin
   if Assigned(thewebview) then
+  begin
     thewebview.SetFocus;
+    SendMessage(thewebview.WindowHandle,WM_ACTIVATE ,1,0);
+   // SendMessage(thewebview.WindowHandle,WM_SETFOCUS,0,0);
+  end;
 end;
 
 procedure TWkeWebBrowser.SetDragEnabled(const Value: boolean);
@@ -827,8 +831,7 @@ procedure TWkeWebBrowser.WM_SIZE(var msg: TMessage);
 begin
   inherited;
   if Assigned(thewebview) then
-    thewebview.MoveWindow(0, 0, Width, Height);
-
+    thewebview.MoveWindow(0, 0, Width, Height);  
 end;
 
 procedure TWkeWebBrowser.WndProc(var Msg: TMessage);
