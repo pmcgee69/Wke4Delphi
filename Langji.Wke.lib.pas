@@ -127,7 +127,7 @@ var
   wkeResizeWindow: procedure(webWindow: wkeWebView; width: Integer; height: Integer); cdecl;
   wkeSetWindowTitle: procedure(webWindow: wkeWebView; title: Putf8); cdecl;
   wkeSetWindowTitleW: procedure(webWindow: wkeWebView; title: Pwchar_t); cdecl;
-
+  wkeSetCspCheckEnable : procedure(webWindow: wkeWebView; b:boolean); cdecl;
 
 
 //==============================================================================
@@ -473,6 +473,8 @@ begin
   wkeGetSource := GetProcAddress(wkeLibHandle, 'wkeGetSource');
   wkeNetHookRequest := GetProcAddress(wkeLibHandle, 'wkeNetHookRequest');
   wkeSetNavigationToNewWindowEnable := GetProcAddress(wkeLibHandle, 'wkeSetNavigationToNewWindowEnable');
+
+  wkeSetCspCheckEnable:= GetProcAddress(wkeLibHandle, 'wkeSetCspCheckEnable');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');

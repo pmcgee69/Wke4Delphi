@@ -1,3 +1,13 @@
+{*******************************************************}
+{                                                       }
+{       WKE FOR DELPHI                                  }
+{                                                       }
+{       版权所有 (C) 2018 Langji                        }
+{                                                       }
+{       QQ:231850275                                    }
+{                                                       }
+{*******************************************************}
+
 unit Langji.Wke.CustomPage;
 
 interface
@@ -12,7 +22,7 @@ uses
   Messages, windows, Langji.Wke.types, Langji.Wke.IWebBrowser, Langji.Wke.lib;
 
 type
-  TCustomWkePage = class(TComponent)  //, IWkeWebbrowser)
+  TCustomWkePage = class(TComponent)
   private
     thewebview: TwkeWebView;
     FZoomValue: Integer;
@@ -720,16 +730,20 @@ begin
   end;
 end;
 
+
+{
+  如果要使用本单元，
+ 请将下面的代码加入你要使用的单元初始化节
+
 initialization
-  if DebugHook <> 0 then
-    WkeLoadLibAndInit;
+  WkeLoadLibAndInit;
 
 finalization
-  if DebugHook <> 0 then
-  begin
-    if not wkeIsInDll then
+  if not wkeIsInDll then
       WkeFinalizeAndUnloadLib;
-  end;
+
+
+        }
 
 end.
 

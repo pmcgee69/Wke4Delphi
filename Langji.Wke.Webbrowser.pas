@@ -1,4 +1,20 @@
+{*******************************************************}
+{                                                       }
+{       WKE FOR DELPHI                                  }
+{                                                       }
+{       ∞Ê»®À˘”– (C) 2018 Langji                        }
+{                                                       }
+{       QQ:231850275                                    }
+{                                                       }
+{*******************************************************}
+
 unit Langji.Wke.Webbrowser;
+
+//==============================================================================
+// WKE FOR DELPHI
+//==============================================================================
+
+
 
 interface
 {$I delphiver.inc}
@@ -432,7 +448,7 @@ begin
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
-
+    wkeSetCspCheckEnable(thewebview, True);
    // wkeset.mask := 4;
    // wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
@@ -736,7 +752,7 @@ begin
   if Assigned(thewebview) then
   begin
     thewebview.SetFocus;
-    SendMessage(thewebview.WindowHandle,WM_ACTIVATE ,1,0);
+    SendMessage(thewebview.WindowHandle, WM_ACTIVATE, 1, 0);
    // SendMessage(thewebview.WindowHandle,WM_SETFOCUS,0,0);
   end;
 end;
@@ -831,7 +847,7 @@ procedure TWkeWebBrowser.WM_SIZE(var msg: TMessage);
 begin
   inherited;
   if Assigned(thewebview) then
-    thewebview.MoveWindow(0, 0, Width, Height);  
+    thewebview.MoveWindow(0, 0, Width, Height);
 end;
 
 procedure TWkeWebBrowser.WndProc(var Msg: TMessage);
