@@ -448,9 +448,9 @@ begin
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
-    wkeSetCspCheckEnable(thewebview, True);
-   // wkeset.mask := 4;
-   // wkeConfigure(@wkeset);
+    wkeSetCspCheckEnable(thewebview, False);       //πÿ±’øÁ”ÚºÏ≤È
+    wkeset.mask := 4;
+    wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;

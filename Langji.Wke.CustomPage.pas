@@ -617,7 +617,7 @@ begin
     wkeSetCookieEnabled(thewebview, FCookieEnabled);
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
-
+    wkeSetCspCheckEnable(thewebview, False);       //πÿ±’øÁ”ÚºÏ≤È
    // wkeSetHeadlessEnabled(thewebview,True);// FHeadLess);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
