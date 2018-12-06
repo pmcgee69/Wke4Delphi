@@ -76,6 +76,8 @@ type
     function GetWebHandle: Hwnd;
     procedure SetCaption(const Value: string);
     procedure SetHeadless(const Value: Boolean);
+    function GetCookie: string;
+    procedure SetCookie(const Value: string);
     { Private declarations }
   protected
     procedure loaded; override;
@@ -84,6 +86,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ShowWebPage;
+    procedure ClosePage;
+    procedure HidePage;
     procedure CreateWebView; virtual; abstract;
     procedure GoBack;
     procedure GoForward;
@@ -113,6 +117,7 @@ type
     property Headless: Boolean write SetHeadless;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write FWkeCookiePath;
+    property Cookie: string read GetCookie write SetCookie;
     property ZoomPercent: Integer read GetZoom write SetZoom;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
@@ -264,6 +269,8 @@ end;
 
 { TCustomWkePage }
 
+
+
 constructor TCustomWkePage.Create(AOwner: TComponent);
 begin
   inherited;
@@ -300,6 +307,13 @@ begin
   CreateWebView;
   if FileExists(FHtmlFile) then
     thewebview.LoadFile(FHtmlFile);
+end;
+
+procedure TCustomWkePage.ClosePage;
+begin
+  CloseWindow(thewebview.WindowHandle ) ;
+  if Assigned(thewebview) then
+      wkeDestroyWebWindow(thewebview);
 end;
 
 procedure TCustomWkePage.DoWebViewAlertBox(Sender: TObject; smsg: string);
@@ -411,6 +425,12 @@ begin
     result := thewebview.CanGoForward;
 end;
 
+function TCustomWkePage.GetCookie: string;
+begin
+  if Assigned(thewebview) then
+    result := thewebview.Cookie;
+end;
+
 function TCustomWkePage.GetCookieEnable: boolean;
 begin
   if Assigned(thewebview) then
@@ -492,6 +512,12 @@ begin
   end;
 end;
 
+procedure TCustomWkePage.HidePage;
+begin
+  if Assigned(thewebview) then
+    ShowWindow(thewebview.WindowHandle,SW_HIDE );
+end;
+
 procedure TCustomWkePage.LoadFile(const AFile: string);
 begin
   if Assigned(thewebview) then
@@ -522,6 +548,12 @@ procedure TCustomWkePage.SetCaption(const Value: string);
 begin
   if Assigned(thewebview) then
     thewebview.WindowTitle := Value;
+end;
+
+procedure TCustomWkePage.SetCookie(const Value: string);
+begin
+   if Assigned(thewebview) then
+    thewebview.setcookie(Value);
 end;
 
 procedure TCustomWkePage.SetFocusToWebbrowser;

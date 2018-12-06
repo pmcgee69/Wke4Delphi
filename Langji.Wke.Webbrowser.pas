@@ -448,6 +448,7 @@ begin
     if DirectoryExists(FwkeCookiePath) and Assigned(wkeSetCookieJarPath) then
       wkeSetCookieJarPath(thewebview, PwideChar(FwkeCookiePath));
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
+
     wkeSetCspCheckEnable(thewebview, False);       //πÿ±’øÁ”ÚºÏ≤È
     wkeset.mask := 4;
     wkeConfigure(@wkeset);
@@ -597,7 +598,7 @@ begin
   begin
     r := thewebview.RunJS(js);
     es := thewebview.GlobalExec;
-    if es.IsString(r) then
+   // if es.IsString(r) then
       result := es.ToTempString(r);
   end;
 end;
