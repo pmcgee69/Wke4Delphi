@@ -99,6 +99,11 @@ type
     procedure SetFocusToWebbrowser;
     function ExecuteJavascript(const js: string): boolean;
     function GetSource: string;
+
+    /// <summary>
+    ///   执行js并得到string返回值
+    /// </summary>
+    function GetJsTextResult(const js: string): string;
     property CanBack: boolean read GetCanBack;
     property CanForward: boolean read GetCanForward;
     property LocationUrl: string read GetLocationUrl;
@@ -282,6 +287,7 @@ begin
   FWindowHeight := 480;
   FwkeUserAgent :=
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0';
+  CreateWebView;
 end;
 
 destructor TCustomWkePage.Destroy;
@@ -304,7 +310,9 @@ end;
 
 procedure TCustomWkePage.ShowWebPage;
 begin
-  CreateWebView;
+  if not Assigned(thewebview) then
+    CreateWebView;
+  ShowWindow(thewebview.WindowHandle ,SW_NORMAL );
   if FileExists(FHtmlFile) then
     thewebview.LoadFile(FHtmlFile);
 end;
@@ -437,6 +445,21 @@ begin
     result := thewebview.CookieEnabled;
 end;
 
+function TCustomWkePage.GetJsTextResult(const js: string): string;
+var
+  r: jsValue;
+  es: jsExecState;
+begin
+  result := '';
+  if Assigned(thewebview) then
+  begin
+    r := thewebview.RunJS(js);
+    es := thewebview.GlobalExec;
+    if es.IsString(r) then
+      result := es.ToTempString(r);
+  end;
+end;
+
 function TCustomWkePage.GetLoadFinished: Boolean;
 begin
   result := FLoadFinished;
@@ -451,7 +474,7 @@ end;
 function TCustomWkePage.GetLocationUrl: string;
 begin
   if Assigned(thewebview) then
-    result := wkeGetTitleW(thewebview);
+    result := wkeGetURL(thewebview);
 end;
 
 function TCustomWkePage.GetMediaVolume: Single;
@@ -589,7 +612,7 @@ begin
   thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_TRANSPARENT, 0, FWindowLeft, FWindowTop, FWindowWidth, FWindowHeight);
   if Assigned(thewebview) then
   begin
-    ShowWindow(thewebview.WindowHandle, SW_NORMAL);
+    ShowWindow(thewebview.WindowHandle, SW_hide);
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);

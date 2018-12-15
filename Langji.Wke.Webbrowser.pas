@@ -598,7 +598,7 @@ begin
   begin
     r := thewebview.RunJS(js);
     es := thewebview.GlobalExec;
-   // if es.IsString(r) then
+    if es.IsString(r) then
       result := es.ToTempString(r);
   end;
 end;
