@@ -287,32 +287,24 @@ begin
   FWindowHeight := 480;
   FwkeUserAgent :=
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0';
-  CreateWebView;
 end;
 
 destructor TCustomWkePage.Destroy;
 begin
-{
-  try
-    if Assigned(thewebview) then
-      wkeDestroyWebWindow(thewebview);
-  except
-  end;  }
   inherited;
 end;
 
 procedure TCustomWkePage.loaded;
 begin
   inherited;
-//  if not (csDesigning in ComponentState) then
-//    WkeLoadLibAndInit;
 end;
 
 procedure TCustomWkePage.ShowWebPage;
 begin
-  if not Assigned(thewebview) then
-    CreateWebView;
-  ShowWindow(thewebview.WindowHandle ,SW_NORMAL );
+
+  if not IsWindow(thewebview.WindowHandle ) then
+  CreateWebView;
+  ShowWindow(  thewebview.WindowHandle ,SW_NORMAL )  ;
   if FileExists(FHtmlFile) then
     thewebview.LoadFile(FHtmlFile);
 end;
@@ -612,7 +604,7 @@ begin
   thewebview := wkeCreateWebWindow(WKE_WINDOW_TYPE_TRANSPARENT, 0, FWindowLeft, FWindowTop, FWindowWidth, FWindowHeight);
   if Assigned(thewebview) then
   begin
-    ShowWindow(thewebview.WindowHandle, SW_hide);
+    ShowWindow(thewebview.WindowHandle, SW_NORMAL);
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);
@@ -649,7 +641,7 @@ begin
 //    if not FVisible then
 //      ShowWindow(thewebview.WindowHandle, SW_HIDE)
 //    else
-    ShowWindow(thewebview.WindowHandle, SW_NORMAL);
+    ShowWindow(thewebview.WindowHandle, SW_hide);
     thewebview.SetOnTitleChanged(DoTitleChange, self);
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);
