@@ -237,8 +237,8 @@ type
 //typedef void(*wkeWillReleaseScriptContextCallback)(wkeWebView webView, void* param, wkeWebFrameHandle frameId, void* context, int worldId);
 //typedef bool(*wkeNetResponseCallback)(wkeWebView webView, void* param, const char* url, void* job);
 //typedef bool(*wkeDownloadCallback)(wkeWebView webView, void* param, const char* url);
-  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url: wkeString): boolean;
-    cdecl;        //2018.02.07
+  wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url:PansiChar):boolean; cdecl;  // wkeString): boolean;
+           //2018.02.07
 
   wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
 

@@ -333,9 +333,9 @@ begin
   TWkeWebBrowser(param).DoWebViewWindowDestroy(TWkeWebBrowser(param));
 end;
 
-function DodownloadFile(webView: wkeWebView; param: Pointer; url: wkeString): boolean; cdecl;
+function DodownloadFile(webView: wkeWebView; param: Pointer;url:PansiChar):boolean; cdecl; // url: wkeString): boolean; cdecl;
 begin
-  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), wkeWebView.GetString(url));
+  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), StrPas(url));//   wkeWebView.GetString(url));
 end;
 
 procedure DoOnLoadUrlEnd(webView: wkeWebView; param: Pointer; const url: pansichar; job: Pointer; buf: Pointer; len: Integer); cdecl;
@@ -450,8 +450,8 @@ begin
     wkeSetNavigationToNewWindowEnable(thewebview, FpopupEnabled);
 
     wkeSetCspCheckEnable(thewebview, False);       //πÿ±’øÁ”ÚºÏ≤È
-    wkeset.mask := 4;
-    wkeConfigure(@wkeset);
+//    wkeset.mask := 4;
+//    wkeConfigure(@wkeset);
     jsBindFunction('GetSource', DoGetSource, 1);
   end;
 end;
@@ -502,6 +502,8 @@ end;
 
 function TWkeWebBrowser.DoWebViewDownloadFile(Sender: TObject; sUrl: string): boolean;
 begin
+  OutputDebugString(PChar(sUrl));
+
   if Assigned(FOndownload) then
     FOnDownload(Self, sUrl);
 end;

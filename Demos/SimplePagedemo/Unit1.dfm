@@ -41,7 +41,7 @@ object Form1: TForm1
       Margins.Right = 2
       Margins.Bottom = 2
       TabOrder = 4
-      Text = 'https://www.baidu.com/'
+      Text = 'https://www.langjisky.com'
     end
     object BitBtn1: TBitBtn
       Left = 18

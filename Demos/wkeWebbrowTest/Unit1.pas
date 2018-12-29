@@ -28,6 +28,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string;
       loadresult: wkeLoadingResult);
+    procedure WkeWebBrowser1DownloadFile(Sender: TObject; sUrl: string);
   private
     { Private declarations }
   public
@@ -70,7 +71,14 @@ procedure TForm1.WkeWebBrowser1CreateView(Sender: TObject; sUrl: string;
   navigationType: wkeNavigationType; windowFeatures: PwkeWindowFeatures;
   var wvw: wkeWebView);
 begin
-//  wvw :=wkewebbrowser1.mainwkeview;
+  //ShowMessage(surl);
+  //wvw :=wkewebbrowser1.mainwkeview;
+  WkeWebBrowser1.LoadUrl(surl);
+end;
+
+procedure TForm1.WkeWebBrowser1DownloadFile(Sender: TObject; sUrl: string);
+begin
+   ShowMessage('正在下载：'+#13+surl);
 end;
 
 procedure TForm1.WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string;

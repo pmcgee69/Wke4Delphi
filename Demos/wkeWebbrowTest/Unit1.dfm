@@ -28,9 +28,7 @@ object Form1: TForm1
     OnTitleChange = WkeWebBrowser1TitleChange
     OnLoadEnd = WkeWebBrowser1LoadEnd
     OnCreateView = WkeWebBrowser1CreateView
-    ExplicitTop = 0
-    ExplicitWidth = 636
-    ExplicitHeight = 421
+    OnDownloadFile = WkeWebBrowser1DownloadFile
   end
   object Panel1: TPanel
     Left = 0
@@ -40,8 +38,6 @@ object Form1: TForm1
     Align = alTop
     Caption = 'Panel1'
     TabOrder = 0
-    ExplicitLeft = -215
-    ExplicitWidth = 851
     object Button2: TButton
       Left = 703
       Top = 24
@@ -61,7 +57,7 @@ object Form1: TForm1
       Margins.Right = 2
       Margins.Bottom = 2
       TabOrder = 4
-      Text = 'https://www.baidu.com/'
+      Text = 'https://www.langjisky.com/'
     end
     object btn_back: TBitBtn
       Left = 18
