@@ -160,6 +160,7 @@ type
     Fwke: TWkePopupPage;
     function GetSourceHtml: string;
     function GetSourceText: string;
+    procedure DoAlertBox(Sender: TObject; sMsg: string);
   public
     constructor Create();
     destructor Destroy; override;
@@ -274,8 +275,6 @@ end;
 
 { TCustomWkePage }
 
-
-
 constructor TCustomWkePage.Create(AOwner: TComponent);
 begin
   inherited;
@@ -302,18 +301,18 @@ end;
 procedure TCustomWkePage.ShowWebPage;
 begin
 
-  if not IsWindow(thewebview.WindowHandle ) then
-  CreateWebView;
-  ShowWindow(  thewebview.WindowHandle ,SW_NORMAL )  ;
+  if not IsWindow(thewebview.WindowHandle) then
+    CreateWebView;
+  ShowWindow(thewebview.WindowHandle, SW_NORMAL);
   if FileExists(FHtmlFile) then
     thewebview.LoadFile(FHtmlFile);
 end;
 
 procedure TCustomWkePage.ClosePage;
 begin
-  CloseWindow(thewebview.WindowHandle ) ;
+  CloseWindow(thewebview.WindowHandle);
   if Assigned(thewebview) then
-      wkeDestroyWebWindow(thewebview);
+    wkeDestroyWebWindow(thewebview);
 end;
 
 procedure TCustomWkePage.DoWebViewAlertBox(Sender: TObject; smsg: string);
@@ -530,7 +529,7 @@ end;
 procedure TCustomWkePage.HidePage;
 begin
   if Assigned(thewebview) then
-    ShowWindow(thewebview.WindowHandle,SW_HIDE );
+    ShowWindow(thewebview.WindowHandle, SW_HIDE);
 end;
 
 procedure TCustomWkePage.LoadFile(const AFile: string);
@@ -567,7 +566,7 @@ end;
 
 procedure TCustomWkePage.SetCookie(const Value: string);
 begin
-   if Assigned(thewebview) then
+  if Assigned(thewebview) then
     thewebview.setcookie(Value);
 end;
 
@@ -690,6 +689,8 @@ begin
   Fwke.WindowTop := -480;
   Fwke.WindowWidth := 600;
   Fwke.WindowHeight := 480;
+ // Fwke.OnAlertBox :=DoAlertBox;
+  //…Ë÷√
   //FHeadless := false;
 end;
 
@@ -698,6 +699,11 @@ begin
  // CloseWindow(Fwke.WindowHandle );
   Fwke.Free;
   inherited;
+end;
+
+procedure TWkeGetSource.DoAlertBox(Sender: TObject; sMsg: string);
+begin
+//do nothing
 end;
 
 function TWkeGetSource.GetSourceHtml: string;

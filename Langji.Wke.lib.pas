@@ -80,7 +80,7 @@ var
   wkeIsCookieEnabled: function(webView: wkeWebView): Boolean; cdecl;
   wkeSetMediaVolume: procedure(webView: wkeWebView; volume: Single); cdecl;
   wkeGetMediaVolume: function(webView: wkeWebView): Single; cdecl;
-  wkeFireMouseEvent: function(webView: wkeWebView; AMessage: LongInt; x: Integer; y: Integer; flags: LongInt): Boolean; cdecl;
+  wkeFireMouseEvent: function(webView: wkeWebView; AMessage: Cardinal ; x: Integer; y: Integer; flags: LongInt): Boolean; cdecl;
   wkeFireContextMenuEvent: function(webView: wkeWebView; x: Integer; y: Integer; flags: LongInt): Boolean; cdecl;
   wkeFireMouseWheelEvent: function(webView: wkeWebView; x: Integer; y: Integer; delta: Integer; flags: LongInt): Boolean; cdecl;
   wkeFireKeyUpEvent: function(webView: wkeWebView; virtualKeyCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean; cdecl;
@@ -199,6 +199,9 @@ var
   //ITERATOR1(void, wkeNetHookRequest, void *job, "") \
   wkeNetHookRequest: procedure(job: Pointer); cdecl;
   wkeSetNavigationToNewWindowEnable: procedure(webView: wkeWebView; b: boolean); cdecl; //20180707
+
+
+  // Add 2019.01.22
 
 
 //================================JScript============================

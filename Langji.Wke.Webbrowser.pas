@@ -14,8 +14,6 @@ unit Langji.Wke.Webbrowser;
 // WKE FOR DELPHI
 //==============================================================================
 
-
-
 interface
 {$I delphiver.inc}
 
@@ -141,6 +139,10 @@ type
     procedure setOnAlertBox(const Value: TOnAlertBoxEvent);
     procedure setWkeCookiePath(const Value: string);
     procedure SetNewPopupEnabled(const Value: Boolean);
+    function getDocumentReady: boolean;
+    function GetContentHeight: Integer;
+    function GetContentWidth: Integer;
+
     { Private declarations }
   protected
     { Protected declarations }
@@ -180,12 +182,35 @@ type
     ///   执行js并得到boolean返回值
     /// </summary>
     function GetJsBoolResult(const js: string): boolean;
+
+    /// <summary>
+    ///   取webview 的DC
+    /// </summary>
+    function GetWebViewDC: HDC;
     procedure SetFocusToWebbrowser;
     procedure ShowDevTool;                        //2018.3.14
     /// <summary>
     ///  取源码
     /// </summary>
     function GetSource: string;
+
+    /// <summary>
+    ///   模拟鼠标
+    /// </summary>
+    /// <param name=" msg">WM_MouseMove 等</param>
+    /// <param name=" x,y">坐标</param>
+    /// <param name=" flag">wke_lbutton 左键 、右键等 </param>
+    procedure MouseEvent(const msg: Cardinal; const x, y: Integer; const flag: Integer = WKE_LBUTTON);
+    /// <summary>
+    ///   模拟键盘
+    /// </summary>
+    /// <param name=" flag">WKE_REPEAT等</param>
+    procedure KeyEvent(const vkcode: Integer; const flag: integer = 0);
+
+
+
+
+
     property CanBack: boolean read GetCanBack;
     property CanForward: boolean read GetCanForward;
     property LocationUrl: string read GetLocationUrl;
@@ -195,11 +220,18 @@ type
     property WkeApp: TWkeApp read FwkeApp write FwkeApp;
     property WebViewHandle: Hwnd read GetWebHandle;
     property isMain: Boolean read FIsmain;
+    property IsDocumentReady: boolean read getDocumentReady;
+    property Proxy: TwkeProxy write SetProxy;
+    property ZoomPercent: Integer read GetZoom write SetZoom;
+    property Headless: Boolean write SetHeadless;
+    property TouchEnabled: Boolean write SetTouchEnabled;
+    property DragEnabled: boolean write SetDragEnabled;           //2018.3.14
+    property ContentWidth: Integer read GetContentWidth;
+    property ContentHeight: Integer read GetContentHeight;
   published
     property Align;
     property Color;
     property Visible;
-   // property Taborder;
     property UserAgent: string read FwkeUserAgent write FwkeUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FwkeCookiePath write setWkeCookiePath;
@@ -208,12 +240,7 @@ type
     /// </summary>
     property Cookie: string read GetCookie write SetCookie;
     property LocalStoragePath: string write SetLocaStoragePath;
-    property ZoomPercent: Integer read GetZoom write SetZoom;
-    property Headless: Boolean write SetHeadless;
-    property TouchEnabled: Boolean write SetTouchEnabled;
-    property DragEnabled: boolean write SetDragEnabled;           //2018.3.14
     property PopupEnabled: Boolean read FpopupEnabled write SetNewPopupEnabled default true;
-    property Proxy: TwkeProxy write SetProxy;
     property OnTitleChange: TOnTitleChangeEvent read FOnTitleChange write FOnTitleChange;
     property OnUrlChange: TOnUrlChangeEvent read FOnUrlChange write FOnUrlChange;
     property OnBeforeLoad: TOnBeforeLoadEvent read FOnLoadStart write FOnLoadStart;
@@ -333,9 +360,9 @@ begin
   TWkeWebBrowser(param).DoWebViewWindowDestroy(TWkeWebBrowser(param));
 end;
 
-function DodownloadFile(webView: wkeWebView; param: Pointer;url:PansiChar):boolean; cdecl; // url: wkeString): boolean; cdecl;
+function DodownloadFile(webView: wkeWebView; param: Pointer; url: PansiChar): boolean; cdecl; // url: wkeString): boolean; cdecl;
 begin
-  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), StrPas(url));//   wkeWebView.GetString(url));
+  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), StrPas(url)); //   wkeWebView.GetString(url));
 end;
 
 procedure DoOnLoadUrlEnd(webView: wkeWebView; param: Pointer; const url: pansichar; job: Pointer; buf: Pointer; len: Integer); cdecl;
@@ -354,6 +381,7 @@ begin
     if Assigned(wkeNetHookRequest) then
       wkeNetHookRequest(job);
   result := bHandled;
+
 end;
 
 
@@ -632,6 +660,20 @@ begin
     result := thewebview.CanGoForward;
 end;
 
+function TWkeWebBrowser.GetContentHeight: Integer;
+begin
+  result := 0;
+  if Assigned(thewebview) then
+    result := wkeGetContentHeight(thewebview);
+end;
+
+function TWkeWebBrowser.GetContentWidth: Integer;
+begin
+  result := 0;
+  if Assigned(thewebview) then
+    result := wkeGetContentWidth(thewebview);
+end;
+
 function TWkeWebBrowser.GetCookie: string;
 begin
   if Assigned(thewebview) then
@@ -642,6 +684,13 @@ function TWkeWebBrowser.GetCookieEnable: boolean;
 begin
   if Assigned(thewebview) then
     result := thewebview.CookieEnabled;
+end;
+
+function TWkeWebBrowser.getDocumentReady: boolean;
+begin
+  result := false;
+  if Assigned(thewebview) then
+    result := wkeIsDocumentReady(thewebview);
 end;
 
 function TWkeWebBrowser.GetLoadFinished: Boolean;
@@ -685,6 +734,13 @@ begin
     result := thewebview.WindowHandle;
 end;
 
+function TWkeWebBrowser.GetWebViewDC: hdc;
+begin
+  result := 0;
+  if Assigned(thewebview) then
+    result := wkeGetViewDC(thewebview);
+end;
+
 procedure TWkeWebBrowser.setWkeCookiePath(const Value: string);
 begin
   FwkeCookiePath := Value;
@@ -718,6 +774,16 @@ begin
   end;
 end;
 
+procedure TWkeWebBrowser.KeyEvent(const vkcode, flag: integer);
+begin
+  if Assigned(thewebview) then
+  begin
+    wkeFireKeyDownEvent(thewebview, vkcode, flag, False);
+    Sleep(10);
+    wkeFireKeyUpEvent(thewebview, vkcode, flag, False);
+  end;
+end;
+
 procedure TWkeWebBrowser.LoadFile(const AFile: string);
 begin
   if Assigned(thewebview) then
@@ -736,6 +802,12 @@ begin
     thewebview.LoadURL(Aurl);
   if Assigned(thewebview) then
     thewebview.MoveWindow(0, 0, Width, Height);
+end;
+
+procedure TWkeWebBrowser.MouseEvent(const msg: Cardinal; const x, y, flag: Integer);
+begin
+  if Assigned(thewebview) then
+    wkeFireMouseEvent(thewebview, msg, x, y, flag);
 end;
 
 procedure TWkeWebBrowser.Refresh;
