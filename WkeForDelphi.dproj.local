@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899-12-30 00:00:00.000.384,E:\Components\wke4delphi\Unit2.pas=E:\Components\wke4delphi\Langji.Wke.Callback.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.221,=E:\Components\wke4delphi\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.645,=E:\Components\wke4delphi\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.492,E:\Git\MyGitee\Wke4Delphi\mb.libs.pas=E:\Git\MyGitee\Wke4Delphi\Langji.Miniblink.libs.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.843,=E:\Components\wke4delph\Langji.Wke.lib.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.306,=E:\Components\wke4delph\Langji.Wke.Webbrowser.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.366,=E:\Git\MyGitee\Wke4Delphi\mb.libs.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.793,=E:\Components\wke4delphi\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.918,=E:\Components\wke4delphi\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.361,=vcl.dcp</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.504,E:\Components\wke4delphi\Langji.Wke.Callback.pas=</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.570,=E:\Components\wke4delphi\Unit2.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.667,E:\Components\wke4delphi\Unit2.pas=E:\Components\wke4delphi\Langji.Wke.IWebBrowser.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.342,E:\Components\wke4delphi\Unit2.pas=E:\Components\wke4delphi\Langji.Wke.TransparentPage.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.498,E:\Components\wke4delph\Langji.Wke.lib.pas=E:\Components\wke4delph\Langji.Wke.types.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.496,=LjGdiPlusBase.dcp</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.714,D:\Userfiles\Doc\RAD Studio\Projects\Package1.dproj=E:\Components\wke4delph\WkeForDelphi.dproj</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.460,=rtl.dcp</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.384,E:\Components\wke4delphi\Langji.Wke.App.pas=E:\Components\wke4delphi\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.356,E:\Git\MyGitee\Wke4Delphi\mb.types.pas=E:\Git\MyGitee\Wke4Delphi\Langji.Miniblink.types.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.394,=E:\Git\MyGitee\Wke4Delphi\mb.types.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.485,=vclimg.dcp</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.422,E:\Components\wke4delphi\Demos\wkeWebbrowTest\Unit1.dfm=E:\Components\wke4delphi\Unit1.dfm</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.422,E:\Components\wke4delphi\Demos\wkeWebbrowTest\Unit1.pas=E:\Components\wke4delphi\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.926,=E:\Git\MyGitee\Wke4Delphi\Langji.Wke.CustomPage.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.498,=E:\Components\wke4delph\Unit1.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.398,E:\Components\wke4delph\Unit1.pas=E:\Components\wke4delph\Langji.Wke.Reg.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.746,E:\Components\wke4delph\Unit1.pas=E:\Components\wke4delph\Langji.Wke.lib.pas</Transaction>
+    <Transaction>1899-12-30 00:00:00.000.270,=E:\Components\wke4delph\Unit1.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="src"/>
+    <File Path="src\Langji.Miniblink.libs.pas"/>
+    <File Path="src\Langji.Miniblink.types.pas"/>
+    <File Path="src\Langji.Wke.CustomPage.pas"/>
+    <File Path="src\Langji.Wke.IWebBrowser.pas"/>
+    <File Path="src\Langji.Wke.lib.pas"/>
+    <File Path="src\Langji.Wke.Reg.pas"/>
+    <File Path="src\Langji.Wke.types.pas"/>
+    <File Path="src\Langji.Wke.Webbrowser.pas"/>
+    <File Path="rtl.dcp"/>
+    <File Path="vcl.dcp"/>
+  </ProjectSortOrder>
+</BorlandProject>

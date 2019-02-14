@@ -1,0 +1,44 @@
+package WkeForDelphi;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  vcl;
+
+contains
+  Langji.Wke.Reg in 'src\Langji.Wke.Reg.pas',
+  Langji.Wke.types in 'src\Langji.Wke.types.pas',
+  Langji.Wke.lib in 'src\Langji.Wke.lib.pas',
+  Langji.Wke.Webbrowser in 'src\Langji.Wke.Webbrowser.pas',
+  Langji.Wke.IWebBrowser in 'src\Langji.Wke.IWebBrowser.pas',
+  Langji.Wke.CustomPage in 'src\Langji.Wke.CustomPage.pas',
+  Langji.Miniblink.libs in 'src\Langji.Miniblink.libs.pas',
+  Langji.Miniblink.types in 'src\Langji.Miniblink.types.pas';
+
+end.

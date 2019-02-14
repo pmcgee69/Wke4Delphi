@@ -26,7 +26,7 @@ var
   Form1: TForm1;
 
 implementation
-     uses Langji.Wke.lib;
+
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -41,16 +41,5 @@ begin
   WkePopupPage1.ShowWebPage;
   WkePopupPage1.LoadUrl(Edit1.Text );
 end;
-
-
-
-//注意加入下面的初始化节，否则会报错。
-
-initialization
-  WkeLoadLibAndInit;
-
-finalization
-  if not wkeIsInDll then
-      WkeFinalizeAndUnloadLib;
 
 end.

@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Form1'
   ClientHeight = 482
-  ClientWidth = 846
+  ClientWidth = 829
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,29 +17,27 @@ object Form1: TForm1
   object WkeWebBrowser1: TWkeWebBrowser
     Left = 0
     Top = 75
-    Width = 846
+    Width = 829
     Height = 407
     Align = alClient
     Color = clWhite
     UserAgent = 
       'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, l' +
       'ike Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0'
-    ZoomPercent = 100
     OnTitleChange = WkeWebBrowser1TitleChange
     OnLoadEnd = WkeWebBrowser1LoadEnd
     OnCreateView = WkeWebBrowser1CreateView
-    OnDownloadFile = WkeWebBrowser1DownloadFile
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 846
+    Width = 829
     Height = 75
     Align = alTop
     Caption = 'Panel1'
     TabOrder = 0
     object Button2: TButton
-      Left = 703
+      Left = 575
       Top = 24
       Width = 55
       Height = 25
@@ -50,14 +48,14 @@ object Form1: TForm1
     object Edit1: TEdit
       Left = 92
       Top = 27
-      Width = 606
+      Width = 469
       Height = 21
       Margins.Left = 2
       Margins.Top = 2
       Margins.Right = 2
       Margins.Bottom = 2
-      TabOrder = 4
-      Text = 'https://www.langjisky.com/'
+      TabOrder = 5
+      Text = 'https://www.baidu.com/'
     end
     object btn_back: TBitBtn
       Left = 18
@@ -86,13 +84,22 @@ object Form1: TForm1
       OnClick = btn_forwardClick
     end
     object Button1: TButton
-      Left = 764
+      Left = 652
       Top = 24
       Width = 75
       Height = 25
       Caption = #21462#28304#30721
       TabOrder = 3
       OnClick = Button1Click
+    end
+    object Button3: TButton
+      Left = 744
+      Top = 24
+      Width = 75
+      Height = 25
+      Caption = 'DevTool'
+      TabOrder = 4
+      OnClick = Button3Click
     end
   end
 end

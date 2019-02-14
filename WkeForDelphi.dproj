@@ -91,12 +91,14 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="Langji.Wke.Reg.pas"/>
-        <DCCReference Include="Langji.Wke.types.pas"/>
-        <DCCReference Include="Langji.Wke.lib.pas"/>
-        <DCCReference Include="Langji.Wke.Webbrowser.pas"/>
-        <DCCReference Include="Langji.Wke.IWebBrowser.pas"/>
-        <DCCReference Include="Langji.Wke.CustomPage.pas"/>
+        <DCCReference Include="src\Langji.Wke.Reg.pas"/>
+        <DCCReference Include="src\Langji.Wke.types.pas"/>
+        <DCCReference Include="src\Langji.Wke.lib.pas"/>
+        <DCCReference Include="src\Langji.Wke.Webbrowser.pas"/>
+        <DCCReference Include="src\Langji.Wke.IWebBrowser.pas"/>
+        <DCCReference Include="src\Langji.Wke.CustomPage.pas"/>
+        <DCCReference Include="src\Langji.Miniblink.libs.pas"/>
+        <DCCReference Include="src\Langji.Miniblink.types.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
