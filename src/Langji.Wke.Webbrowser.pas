@@ -261,8 +261,8 @@ type
 
 implementation
 
-uses
-  dialogs, math;
+uses  // dialogs,
+   math;
 
 
 
@@ -487,10 +487,10 @@ end;
 //  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), UTF8Decode(StrPas(url)));
 //end;
 
-procedure  DoMbThreadDownload(webView: TmbWebView; param: Pointer; expectedContentLength: DWORD; const
-    url, mime, disposition: PChar; job: Tmbnetjob; databind: PmbNetJobDataBind); stdcall;
+procedure DoMbThreadDownload(webView: TmbWebView; param: Pointer; expectedContentLength: DWORD; const url, mime,
+  disposition: PChar; job: Tmbnetjob; databind: PmbNetJobDataBind); stdcall;
 begin
-   TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), UTF8Decode(StrPas(url)));
+  TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), UTF8Decode(StrPas(url)));
 end;
 
 procedure DombGetCanBack(webView: TmbWebView; param: Pointer; state: TMbAsynRequestState; b: Boolean); stdcall;
@@ -632,7 +632,7 @@ begin
     thewebview.SetOnNavigation(DoLoadStart, self);
     thewebview.SetOnLoadingFinish(DoLoadEnd, self);
    // if Assigned(FwkeApp) or Assigned(FOnCreateView) then
-      thewebview.SetOnCreateView(DoCreateView, self);
+    thewebview.SetOnCreateView(DoCreateView, self);
     thewebview.SetOnPaintUpdated(DoPaintUpdated, self);
     if Assigned(FOnAlertBox) then
       thewebview.SetOnAlertBox(DoAlertBox, self);
@@ -697,14 +697,19 @@ var
 begin
 //  if Assigned(FwkeApp) then
 //  begin
-//    FwkeApp.DoOnNewWindow(self, sUrl, navigationType, windowFeatures, wvw);
+//    ShowMessage('backs');
+//    FwkeApp.DoOnNewWindow(self, sUrl, navigationType, windowFeatures, view);
+//
+//    wvw := view;
 //    exit;
 //  end;
+
 
   if Assigned(FOnCreateView) then
   begin
     FOnCreateView(self, sUrl, navigationType, windowFeatures, view);
     wvw := view;
+   // exit;
   end;
 
   if not Assigned(wvw) then
@@ -1497,6 +1502,7 @@ begin
   if csDesigning in Componentstate then
     exit;
   WkeLoadLibAndInit;
+
 end;
 
 procedure TWkeApp.CloseWebbrowser(Abrowser: TWkewebbrowser);
@@ -1523,6 +1529,9 @@ begin
     newBrowser.CookiePath := FCookiePath;
   FWkeWebPages.Add(newBrowser);
   result := newBrowser;
+  wkeSetNavigationToNewWindowEnable(newBrowser.thewebview, true);
+
+  wkeSetCspCheckEnable(newBrowser.thewebview, False);
 end;
 
 function TWkeApp.CreateWebbrowser(Aparent: TWincontrol): TWkeWebBrowser;
@@ -1551,17 +1560,8 @@ begin
     nwf_NewPage:
       begin
         if NewwebPage <> nil then
-          wvw := NewwebPage.thewebview
-        else
-        begin
-          newFrm := TForm.Create(nil);
-          newFrm.BoundsRect := Rect(windowFeatures.x, windowFeatures.y, windowFeatures.x + windowFeatures.width,
-            windowFeatures.y + windowFeatures.height);
-          newFrm.Show;
-          wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_CONTROL, newFrm.handle, 0, 0, newFrm.Width, newFrm.height);
-          ShowWindow(wvw.WindowHandle, SW_NORMAL);
-          newFrm.Caption := sUrl;
-        end;
+          wvw := NewwebPage.thewebview;
+
       end;
     nwf_OpenInCurrent:
       wvw := TWkeWebBrowser(Sender).thewebview;
