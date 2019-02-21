@@ -421,7 +421,7 @@ type
   TmbWindowFeatures = packed record
     x: Integer;
     y: Integer;
-    width: Integer;
+    width:Integer;
     height: Integer;
     menuBarVisible: Boolean;
     stausBarVisible: Boolean;

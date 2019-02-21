@@ -3,9 +3,9 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms,
-  Vcl.Dialogs, Langji.Wke.Webbrowser, Vcl.Imaging.jpeg, // QWorker,
-  Langji.Wke.types, Langji.Wke.lib, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Langji.Wke.Webbrowser, jpeg, // QWorker,
+  Langji.Wke.types, Langji.Wke.lib, StdCtrls, Buttons,  ExtCtrls;
 
 type
   TForm1 = class(TForm)
@@ -17,16 +17,17 @@ type
     btn_back: TBitBtn;
     btn_forward: TBitBtn;
     Button3: TButton;
+    Button4: TButton;
     procedure FormShow(Sender: TObject);
     procedure WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
-    procedure WkeWebBrowser1CreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures:
-      PwkeWindowFeatures; var wvw: wkeWebView);
     procedure Button1Click(Sender: TObject);
     procedure btn_backClick(Sender: TObject);
     procedure btn_forwardClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -65,15 +66,22 @@ begin
   WkeWebBrowser1.ShowDevTool;
 end;
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TForm1.Button4Click(Sender: TObject);
 begin
-  WkeWebBrowser1.LoadUrl('http://www.langjisky.com/');
+  WkeWebBrowser1.ExecuteJavascript('alert("hello world 中文");')  ;    //
 end;
 
-procedure TForm1.WkeWebBrowser1CreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
-  windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+procedure TForm1.Edit1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-//  wvw :=wkewebbrowser1.mainwkeview;
+  if Key=13 then
+      WkeWebBrowser1.LoadUrl(Edit1.Text);
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  WkeWebBrowser1.LoadUrl('http://www.hao123.com');//       'http://www.langjisky.com/');
+ //   WkeWebBrowser1.LoadFile('E:\Wnmp\html\新建文件夹\index.html');
 end;
 
 procedure TForm1.WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);

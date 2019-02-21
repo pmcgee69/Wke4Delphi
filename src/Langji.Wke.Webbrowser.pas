@@ -31,6 +31,8 @@ type
   TOnNewWindowEvent = procedure(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures:
     PwkeWindowFeatures; var openflg: TNewWindowFlag; var webbrow: Twkewebbrowser) of object;
 
+  TOnmbJsBindFunction = procedure(Sender: TObject; const msgid: Integer; const msgText: string) of object;
+
   TWkeApp = class(TComponent)
   private
     FCookieEnabled: boolean;
@@ -96,6 +98,7 @@ type
     FOnConsoleMessage: TOnConsoleMessgeEvent;
     FOnLoadUrlEnd: TOnLoadUrlEndEvent;
     FOnLoadUrlBegin: TOnLoadUrlBeginEvent;
+    FOnmbBindFunction: TOnmbJsBindFunction;
     function GetZoom: Integer;
     procedure SetZoom(const Value: Integer);
 
@@ -106,7 +109,7 @@ type
     procedure DoWebViewLoadStart(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; var Cancel: boolean);
     procedure DoWebViewLoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
     procedure DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures:
-      PwkeWindowFeatures; var wvw: wkeWebView);
+      PwkeWindowFeatures; var wvw: Pointer);
     procedure DoWebViewAlertBox(Sender: TObject; smsg: string);
     function DoWebViewConfirmBox(Sender: TObject; smsg: string): boolean;
     function DoWebViewPromptBox(Sender: TObject; smsg, defaultres, Strres: string): boolean;
@@ -118,6 +121,7 @@ type
     procedure DoWebViewLoadUrlEnd(Sender: TObject; sUrl: string; job: Pointer; buf: Pointer; len: Integer);
     procedure DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
     procedure DoWebViewJsCallBack(Sender: TObject; param: Pointer; es: TmbJsExecState; v: TmbJsValue);
+    procedure DombJsBingFunction(Sender: TObject; const msgid: Integer; const response: string);
     procedure WM_SIZE(var msg: TMessage); message WM_SIZE;
     function GetCanBack: boolean;
     function GetCanForward: boolean;
@@ -212,7 +216,6 @@ type
     property LocationTitle: string read GetLocationTitle;
     property LoadFinished: Boolean read GetLoadFinished;       //加载完成
     property mainwkeview: TWkeWebView read thewebview;
-
     property WebViewHandle: Hwnd read GetWebHandle;
     property isMain: Boolean read FIsmain;
     property IsDocumentReady: boolean read getDocumentReady;
@@ -228,7 +231,6 @@ type
     property Color;
     property Visible;
     property WkeApp: TWkeApp read FwkeApp write FwkeApp;
-
     property UserAgent: string read FUserAgent write FUserAgent;
     property CookieEnabled: Boolean read FCookieEnabled write FCookieEnabled default true;
     property CookiePath: string read FCookiePath write setWkeCookiePath;
@@ -254,12 +256,13 @@ type
     property OnConsoleMessage: TOnConsoleMessgeEvent read FOnConsoleMessage write FOnConsoleMessage;
     property OnLoadUrlEnd: TOnLoadUrlEndEvent read FOnLoadUrlEnd write FOnLoadUrlEnd;
     property OnLoadUrlBegin: TOnLoadUrlBeginEvent read FOnLoadUrlBegin write FOnLoadUrlBegin;
+    property OnmbJsBindFunction: TOnmbJsBindFunction read FOnmbBindFunction write FOnmbBindFunction;
   end;
 
 implementation
 
-uses  // dialogs,
-  math;
+uses
+  dialogs, math;
 
 
 
@@ -313,8 +316,11 @@ end;
 
 function DoCreateView(webView: wkeWebView; param: Pointer; navigationType: wkeNavigationType; url: wkeString;
   windowFeatures: PwkeWindowFeatures): wkeWebView; cdecl;
+var
+  pt: Pointer;
 begin
-  TWkeWebBrowser(param).DoWebViewCreateView(TWkeWebBrowser(param), wkeWebView.GetString(url), navigationType, windowFeatures, result);
+  TWkeWebBrowser(param).DoWebViewCreateView(TWkeWebBrowser(param), wkeWebView.GetString(url), navigationType, windowFeatures, pt);
+  result := wkeWebView(pt);
 end;
 
 procedure DoPaintUpdated(webView: wkeWebView; param: Pointer; hdc: hdc; x: Integer; y: Integer; cx: Integer; cy: Integer); cdecl;
@@ -399,7 +405,7 @@ end;
 
 procedure DombUrlChange(webView: TmbWebView; param: Pointer; const url: PAnsiChar; bcanback, bcanforward: boolean); stdcall;
 begin
-  TWkeWebBrowser(param).DoWebViewUrlChange(TWkeWebBrowser(param), strpas(url));
+  TWkeWebBrowser(param).DoWebViewUrlChange(TWkeWebBrowser(param), UTF8Decode(strpas(url)));
 end;
 
 function DombLoadStart(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url: PAnsiChar): boolean; stdcall;
@@ -407,21 +413,27 @@ var
   cancel: boolean;
 begin
   cancel := false;
-  TWkeWebBrowser(param).DoWebViewLoadStart(TWkeWebBrowser(param), strpas(url), wkeNavigationType(navigationType), cancel);
+  TWkeWebBrowser(param).DoWebViewLoadStart(TWkeWebBrowser(param), UTF8Decode(strpas(url)), wkeNavigationType(navigationType), cancel);
   result := not cancel;
 end;
 
 procedure DombLoadEnd(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; const url: PAnsiChar; lresult:
   TmbLoadingResult; const failedReason: PAnsiChar); stdcall;
 begin
-  TWkeWebBrowser(param).DoWebViewLoadEnd(TWkeWebBrowser(param), strpas(url), wkeLoadingResult(lresult));
+  if frameId = mbWebFrameGetMainFrame(webView) then
+    TWkeWebBrowser(param).DoWebViewLoadEnd(TWkeWebBrowser(param), UTF8Decode(strpas(url)), wkeLoadingResult(lresult));
 end;
 
 function DombCreateView(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url: PAnsiChar;
   const windowFeatures: PmbWindowFeatures): TmbWebView; stdcall;
+var
+  xhandle: Hwnd;
+  wv: TmbWebview;
 begin
-//   TWkeWebBrowser(param).DoWebViewCreateView(TWkeWebBrowser(param), strpas(url),
-//   wkeNavigationType( navigationType),PwkeWindowFeatures( windowFeatures), result);
+  wv := nil;
+  TWkeWebBrowser(param).DoWebViewCreateView(TWkeWebBrowser(param), UTF8Decode(strpas(url)), wkeNavigationType(navigationType),
+    PwkeWindowFeatures(windowFeatures), wv);
+  result := wv;
 end;
 
 procedure DombDocumentReady(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle); stdcall;
@@ -431,25 +443,26 @@ end;
 
 procedure DoMbAlertBox(webView: TmbWebView; param: Pointer; const msg: PAnsiChar); stdcall;
 begin
-  TWkeWebBrowser(param).DoWebViewAlertBox(TWkeWebBrowser(param), strpas(msg));
+  TWkeWebBrowser(param).DoWebViewAlertBox(TWkeWebBrowser(param), UTF8Decode(strpas(msg)));
 end;
 
 function DombConfirmBox(webView: TmbWebView; param: Pointer; const msg: PAnsiChar): boolean; stdcall;
 begin
-  result := TWkeWebBrowser(param).DoWebViewConfirmBox(TWkeWebBrowser(param), strpas(msg));
+  result := TWkeWebBrowser(param).DoWebViewConfirmBox(TWkeWebBrowser(param), UTF8Decode(strpas(msg)));
 end;
 
 function DombPromptBox(webView: TmbWebView; param: Pointer; const msg: PAnsiChar; const defaultResult: PAnsiChar;
   sresult: PAnsiChar): boolean; stdcall;
 begin
-  result := TWkeWebBrowser(param).DoWebViewPromptBox(TWkeWebBrowser(param), strpas(msg), strpas(defaultResult), strpas(sresult));
+  result := TWkeWebBrowser(param).DoWebViewPromptBox(TWkeWebBrowser(param), UTF8Decode(strpas(msg)), UTF8Decode(strpas(defaultResult)),
+    UTF8Decode(strpas(sresult)));
 end;
 
 procedure DombConsole(webView: TmbWebView; param: Pointer; level: TmbConsoleLevel; const smessage: PAnsiChar; const
   sourceName: PAnsiChar; sourceLine: Cardinal; const stackTrace: PAnsiChar); stdcall;
 begin
-  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), strpas(smessage), strpas(sourceName), sourceLine,
-    strpas(stackTrace));
+  TWkeWebBrowser(param).DoWebViewConsoleMessage(TWkeWebBrowser(param), UTF8Decode(strpas(smessage)), UTF8Decode(strpas(sourceName)),
+    sourceLine, UTF8Decode(strpas(stackTrace)));
 end;
 
 function DombClose(webView: TmbWebView; param: Pointer; unuse: Pointer): boolean; stdcall;
@@ -469,9 +482,15 @@ begin
 
 end;
 
-function DombDownload(webView: TmbWebView; param: Pointer; const url: PAnsiChar): boolean; stdcall;
+//function DombDownload(webView: TmbWebView; param: Pointer; const url: PAnsiChar): boolean; stdcall;
+//begin
+//  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), UTF8Decode(StrPas(url)));
+//end;
+
+procedure  DoMbThreadDownload(webView: TmbWebView; param: Pointer; expectedContentLength: DWORD; const
+    url, mime, disposition: PChar; job: Tmbnetjob; databind: PmbNetJobDataBind); stdcall;
 begin
-  result := TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), StrPas(url));
+   TWkeWebBrowser(param).DoWebViewDownloadFile(TWkeWebBrowser(param), UTF8Decode(StrPas(url)));
 end;
 
 procedure DombGetCanBack(webView: TmbWebView; param: Pointer; state: TMbAsynRequestState; b: Boolean); stdcall;
@@ -497,16 +516,16 @@ end;
 procedure DombJsBingCallback(webView: TmbWebView; param: Pointer; es: TmbJsExecState; queryId: Int64; customMsg: Integer;
   const request: PAnsiChar); stdcall;
 begin
- // OutputDebugString(PChar(  StrPas(request)));
-  OutputDebugString(pchar('>>>>>>>>>>>>>>>asdfasdf==============>' + IntToStr(customMsg)));
+
   if customMsg = mbgetsourcemsg then
   begin
-
-    // tmpSource := StrPas(request);
-
     tmpSource := UTF8Decode(StrPas(request));
-    OutputDebugString(PChar(tmpSource));
+   // OutputDebugString(PChar(tmpSource));
     FmbjsgetValue := true;
+  end
+  else
+  begin
+    TWkeWebBrowser(param).DombJsBingFunction(TWkeWebBrowser(param), customMsg, UTF8Decode(StrPas(request)));
   end;
 end;
 
@@ -568,18 +587,23 @@ begin
       mbOnURLChanged(thewebview, DombUrlChange, Self);
       mbOnNavigation(thewebview, DombLoadStart, Self);
       mbOnLoadingFinish(thewebview, DombLoadEnd, Self);
+     // if Assigned(FwkeApp) or Assigned(FOnCreateView) then
       mbOnCreateView(thewebview, DombCreateView, Self);
       mbOnDocumentReady(thewebview, DombDocumentReady, Self);
-      mbOnAlertBox(thewebview, DoMbAlertBox, Self);
-      mbOnConfirmBox(thewebview, DombConfirmBox, Self);
-      mbOnPromptBox(thewebview, DombPromptBox, Self);
-      mbOnConsole(thewebview, DombCOnsole, Self);
+      if Assigned(FOnAlertBox) then
+        mbOnAlertBox(thewebview, DoMbAlertBox, Self);
+      if Assigned(FOnConfirmBox) then
+        mbOnConfirmBox(thewebview, DombConfirmBox, Self);
+      if Assigned(FOnPromptBox) then
+        mbOnPromptBox(thewebview, DombPromptBox, Self);
+      if Assigned(FOnConsoleMessage) then
+        mbOnConsole(thewebview, DombCOnsole, Self);
 
       mbOnClose(thewebview, DombClose, Self);
       mbOnDestroy(thewebview, DombDestory, self);
       mbOnPrinting(thewebview, DombPrint, self);
       mbOnJsQuery(thewebview, DombJsBingCallback, self);
-     // mbOnDownloadInBlinkThread(thewebview, DombDownload, Self);
+      mbOnDownloadInBlinkThread(thewebview, DoMbThreadDownload, Self);
 
       mbCanGoBack(thewebview, DombGetCanBack, self);
       mbCanGoForward(thewebview, DombGetCanForward, self);
@@ -589,6 +613,8 @@ begin
       if DirectoryExists(FCookiePath) then
         mbSetCookieJarPath(thewebview, PWideChar(FCookiePath));
 
+      if FpopupEnabled then
+        mbSetNavigationToNewWindowEnable(thewebview, true);
     end;
     exit;
   end;
@@ -605,7 +631,7 @@ begin
     thewebview.SetOnURLChanged(DoUrlChange, self);
     thewebview.SetOnNavigation(DoLoadStart, self);
     thewebview.SetOnLoadingFinish(DoLoadEnd, self);
-    if Assigned(FwkeApp) or Assigned(FOnCreateView) then
+   // if Assigned(FwkeApp) or Assigned(FOnCreateView) then
       thewebview.SetOnCreateView(DoCreateView, self);
     thewebview.SetOnPaintUpdated(DoPaintUpdated, self);
     if Assigned(FOnAlertBox) then
@@ -636,6 +662,12 @@ begin
   end;
 end;
 
+procedure TWkeWebBrowser.DombJsBingFunction(Sender: TObject; const msgid: Integer; const response: string);
+begin
+  if Assigned(FOnmbBindFunction) then
+    FOnmbBindFunction(self, msgid, response);
+end;
+
 procedure TWkeWebBrowser.DoWebViewAlertBox(Sender: TObject; smsg: string);
 begin
   if Assigned(FOnAlertBox) then
@@ -654,22 +686,53 @@ procedure TWkeWebBrowser.DoWebViewConsoleMessage(Sender: TObject; const AMessage
 begin
   if Assigned(FOnConsoleMessage) then
     FOnConsoleMessage(Self, AMessage, sourceName, sourceLine);
+
 end;
 
 procedure TWkeWebBrowser.DoWebViewCreateView(Sender: TObject; sUrl: string; navigationType: wkeNavigationType;
-  windowFeatures: PwkeWindowFeatures; var wvw: wkeWebView);
+  windowFeatures: PwkeWindowFeatures; var wvw: Pointer);
+var
+  newFrm: TForm;
+  view: wkeWebView;
 begin
-  if Assigned(FwkeApp) then
-  begin
-    FwkeApp.DoOnNewWindow(self, sUrl, navigationType, windowFeatures, wvw);
-    exit;
-  end;
+//  if Assigned(FwkeApp) then
+//  begin
+//    FwkeApp.DoOnNewWindow(self, sUrl, navigationType, windowFeatures, wvw);
+//    exit;
+//  end;
+
   if Assigned(FOnCreateView) then
-    FOnCreateView(self, sUrl, navigationType, windowFeatures, wvw);
-  if wvw <> nil then
   begin
-    if wvw.WindowHandle = 0 then
-      wvw := thewebview;
+    FOnCreateView(self, sUrl, navigationType, windowFeatures, view);
+    wvw := view;
+  end;
+
+  if not Assigned(wvw) then
+  begin
+    if UseFastMB then
+    begin
+      wvw := mbCreateWebWindow(MB_WINDOW_TYPE_POPUP, 0, windowFeatures.x, windowFeatures.y, 800, 600);
+      mbShowWindow(wvw, True);
+      mbMoveToCenter(wvw);
+    end
+    else
+    begin
+      wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_POPUP, 0, windowFeatures.x, windowFeatures.y, windowFeatures.width, windowFeatures.height);
+      wkeShowWindow(wvw, True);
+    end;
+  end
+  else
+  begin
+    if UseFastMB then
+    begin
+      if (mbGetHostHWND(wvw) = 0) then
+        wvw := thewebview;
+    end
+    else
+    begin
+      if wkeGetWindowHandle(wvw) = 0 then
+        wvw := thewebview;
+    end;
   end;
 end;
 
@@ -759,7 +822,7 @@ end;
 
 function TWkeWebBrowser.ExecuteJavascript(const js: string): boolean;          //执行js
 var
-  newjs: string;
+  newjs: ansistring;
   r: jsValue;
   es: jsExecState;
   x: Integer;
@@ -767,7 +830,7 @@ begin
   if UseFastMB then
   begin
     result := false;
-    newjs := 'try { ' + js + ' return 1; } catch(err){ return 0;}';
+    newjs := UTF8Encode('try { ' + js + '; return 1; } catch(err){ return 0;}');
     if Assigned(thewebview) then
     begin
       FmbjsgetValue := false;
@@ -788,7 +851,7 @@ begin
   end;
 
   result := false;
-  newjs := 'try { ' + js + ' return 1; } catch(err){ return 0;}';
+  newjs := 'try { ' + js + '; return 1; } catch(err){ return 0;}';
   if Assigned(thewebview) then
   begin
     r := thewebview.RunJS(newjs);
@@ -814,7 +877,7 @@ begin
     if Assigned(thewebview) then
     begin
       FmbjsgetValue := false;
-      mbRunJs(thewebview, mbWebFrameGetMainFrame(thewebview), PAnsiChar(js), True, Dombjscallback, self, nil);
+      mbRunJs(thewebview, mbWebFrameGetMainFrame(thewebview), PAnsiChar(ansistring(js)), True, Dombjscallback, self, nil);
       x := 0;
       repeat
         Sleep(120);
@@ -849,7 +912,7 @@ begin
     if Assigned(thewebview) then
     begin
       FmbjsgetValue := false;
-      mbRunJs(thewebview, mbWebFrameGetMainFrame(thewebview), PAnsiChar(js), True, Dombjscallback, self, nil);
+      mbRunJs(thewebview, mbWebFrameGetMainFrame(thewebview), PAnsiChar(ansistring(js)), True, Dombjscallback, self, nil);
       x := 0;
       repeat
         Sleep(120);
@@ -923,7 +986,6 @@ begin
     else
       result := thewebview.Cookie;
   end;
-
 end;
 
 function TWkeWebBrowser.GetCookieEnable: boolean;
@@ -1062,6 +1124,8 @@ begin
 end;
 
 procedure TWkeWebBrowser.GoBack;
+var
+  wv: TmbWebview;
 begin
   if Assigned(thewebview) then
   begin
@@ -1120,7 +1184,7 @@ begin
   begin
     FLoadFinished := false;
     if UseFastMB then
-      mbLoadURL(thewebview, PAnsiChar(AnsiString('file:///' + AFile)))
+      mbLoadURL(thewebview, PAnsiChar(AnsiString(UTF8Encode('file:///' + AFile))))
     else
       thewebview.LoadFile(AFile);
   end;
@@ -1141,10 +1205,11 @@ end;
 
 procedure TWkeWebBrowser.LoadUrl(const Aurl: string);
 begin
+
   if Assigned(thewebview) then
   begin
     if UseFastMB then
-      mbLoadURL(thewebview, PAnsiChar(AnsiString(Aurl)))
+      mbLoadURL(thewebview, PAnsiChar(AnsiString(UTF8Encode(Aurl))))
     else
     begin
       thewebview.LoadURL(Aurl);
@@ -1249,9 +1314,9 @@ end;
 
 procedure TWkeWebBrowser.SetNewPopupEnabled(const Value: Boolean);
 begin
+  FpopupEnabled := Value;
   if Assigned(thewebview) then
   begin
-    FpopupEnabled := Value;
     if UseFastMB then
       mbSetNavigationToNewWindowEnable(thewebview, Value)
     else
