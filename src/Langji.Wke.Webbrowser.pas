@@ -49,7 +49,7 @@ type
     procedure DoOnNewWindow(Sender: TObject; sUrl: string; navigationType: wkeNavigationType; windowFeatures:
       PwkeWindowFeatures; var wvw: wkeWebView);
   public
-    FWkeWebPages: TList{$IFDEF DELPHI16_UP}<TWkeWebBrowser>{$ENDIF} ;
+    FWkeWebPages: TList{$IFDEF DELPHI15_UP}<TWkeWebBrowser>{$ENDIF} ;
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
     procedure loaded; override;

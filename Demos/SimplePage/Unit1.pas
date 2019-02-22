@@ -80,7 +80,7 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  WkeWebBrowser1.LoadUrl('http://www.hao123.com');//       'http://www.langjisky.com/');
+  WkeWebBrowser1.LoadUrl('http://www.langjisky.com/');
  //   WkeWebBrowser1.LoadFile('E:\Wnmp\html\新建文件夹\index.html');
 end;
 
@@ -102,8 +102,8 @@ end;
 // 在initialization切加入useFastMB:=true表示使用FASTMB  ，目前只针对 wkewebbrowser有效
 //==============================================================================
 
-initialization
-  UseFastMB := true;
+//initialization
+//  UseFastMB := true;    //useFastMB为true时为使用收费版本的MINIBLINK,调试时会有付费提示
 
 end.
 

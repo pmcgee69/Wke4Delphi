@@ -66,9 +66,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 var newtab:TTabSheet;
 begin
  // WkeWebBrowser1.ShowDevTool;
-   newtab :=TTabSheet.Create(PageControl1 );
-  newtab.Caption :='sUrl';
-  newtab.PageControl  :=PageControl1;
+
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

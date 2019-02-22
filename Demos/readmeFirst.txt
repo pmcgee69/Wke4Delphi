@@ -1,2 +1,2 @@
-初学者先看wkeWebbrowTest这个Demo
-SimplePagedemo为动态创建wkeWebbrowser
+初学者先看SimplePage这个Demo
+MutilPagedemo为动态创建wkeWebbrowser及多页面Demo
