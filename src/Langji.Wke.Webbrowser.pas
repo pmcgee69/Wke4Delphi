@@ -632,7 +632,7 @@ begin
 
       mbCanGoBack(thewebview, DombGetCanBack, self);
       mbCanGoForward(thewebview, DombGetCanForward, self);
-      mbOnLoadUrlBegin(thewebview,DoOnLoadUrlBegin,Self);
+      mbOnLoadUrlBegin(thewebview,DombOnLoadUrlBegin,Self);
       if FUserAgent <> '' then
         mbSetUserAgent(thewebview, PAnsiChar(FUserAgent));
       if DirectoryExists(FCookiePath) then
@@ -815,6 +815,7 @@ end;
 
 procedure TWkeWebBrowser.DoWebViewLoadUrlStart(Sender: TObject; sUrl: string; out bhook, bHandle: boolean);
 begin
+  //bhook:=true 表示hook会触发onloadurlend 如果只是设置 bhandle=true表示 ，只是拦截这个URL
   if Assigned(FOnLoadUrlBegin) then
     FOnLoadUrlBegin(Self, sUrl, bhook, bHandle);
 end;
