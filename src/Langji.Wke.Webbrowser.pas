@@ -389,12 +389,16 @@ function DoOnLoadUrlBegin(webView: wkeWebView; param: Pointer; url: PAnsiChar; j
 var
   bhook, bHandled: boolean;
 begin
+ // result :=true;
   bhook := false;
   bHandled := false;
   TWkeWebBrowser(param).DoWebViewLoadUrlStart(TWkeWebBrowser(param), StrPas(url), bhook, bHandled);
   if bhook then
     if Assigned(wkeNetHookRequest) then
       wkeNetHookRequest(job);
+//  if bHandled  then
+//    wkeNetSetData(
+
   result := bHandled;
 
 end;
@@ -637,7 +641,6 @@ begin
         mbSetUserAgent(thewebview, PAnsiChar(FUserAgent));
       if DirectoryExists(FCookiePath) then
         mbSetCookieJarPath(thewebview, PWideChar(FCookiePath));
-
       if FpopupEnabled then
         mbSetNavigationToNewWindowEnable(thewebview, true);
     end;
@@ -677,6 +680,7 @@ begin
 
 
     wkeOnLoadUrlBegin(thewebview,DoOnLoadUrlBegin,Self);
+    wkeOnLoadUrlEnd(thewebview,DoOnLoadUrlEnd,self);
 
     if FUserAgent <> '' then
       wkeSetUserAgent(thewebview, PansiChar(AnsiString(FUserAgent)));
@@ -918,7 +922,7 @@ begin
         Dombjscallback, self, nil);
       x := 0;
       repeat
-        Sleep(120);
+        Sleep(50);
         Application.ProcessMessages;
       until (x > 15) or Fmbjsgetvalue;
       if Fmbjsgetvalue then
@@ -932,6 +936,7 @@ begin
   if Assigned(thewebview) then
   begin
     r := thewebview.RunJS(js);
+    Sleep(100);
     es := thewebview.GlobalExec;
     if es.IsString(r) then
       result := es.ToTempString(r);

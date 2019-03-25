@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Langji.Wke.Webbrowser, jpeg, // QWorker,
-  Langji.Wke.types, Langji.Wke.lib, StdCtrls, Buttons,  ExtCtrls;
+  Langji.Wke.types, Langji.Wke.lib, StdCtrls, Buttons,  ExtCtrls, Vcl.ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -18,6 +18,7 @@ type
     btn_forward: TBitBtn;
     Button3: TButton;
     Button4: TButton;
+    StatusBar1: TStatusBar;
     procedure FormShow(Sender: TObject);
     procedure WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);
     procedure Button1Click(Sender: TObject);
@@ -28,7 +29,12 @@ type
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Edit1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure WkeWebBrowser1LoadUrlBegin(Sender: TObject; sUrl: string;
+      out bHook, bHandled: Boolean);
+    procedure WkeWebBrowser1LoadUrlEnd(Sender: TObject; sUrl: string;
+      buf: Pointer; len: Integer);
   private
+    procedure showtip(const s:string);
     { Private declarations }
   public
     { Public declarations }
@@ -84,11 +90,34 @@ begin
  //   WkeWebBrowser1.LoadFile('E:\Wnmp\html\新建文件夹\index.html');
 end;
 
+procedure TForm1.showtip(const s: string);
+begin
+StatusBar1.SimpleText :=s;
+end;
+
 procedure TForm1.WkeWebBrowser1LoadEnd(Sender: TObject; sUrl: string; loadresult: wkeLoadingResult);
 begin
   Edit1.Text := WkeWebBrowser1.LocationUrl;
   btn_back.Enabled := WkeWebBrowser1.CanBack;
   btn_forward.Enabled := WkeWebBrowser1.CanForward;
+end;
+
+procedure TForm1.WkeWebBrowser1LoadUrlBegin(Sender: TObject; sUrl: string;
+  out bHook, bHandled: Boolean);
+begin
+ // if Pos('.js',sUrl)>0   then
+  begin
+     Caption :=sUrl;
+     bHandled :=true;
+   //  bhook:=true;
+    // showtip(sUrl);
+  end;
+end;
+
+procedure TForm1.WkeWebBrowser1LoadUrlEnd(Sender: TObject; sUrl: string;
+  buf: Pointer; len: Integer);
+begin
+  showtip(surl);
 end;
 
 procedure TForm1.WkeWebBrowser1TitleChange(Sender: TObject; sTitle: string);

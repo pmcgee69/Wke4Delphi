@@ -18,7 +18,7 @@ object Form1: TForm1
     Left = 0
     Top = 75
     Width = 829
-    Height = 407
+    Height = 388
     Align = alClient
     Color = clWhite
     UserAgent = 
@@ -26,6 +26,9 @@ object Form1: TForm1
       'ike Gecko) Chrome/31.0.1650.63 Safari/537.36 Langji.Wke 1.0'
     OnTitleChange = WkeWebBrowser1TitleChange
     OnLoadEnd = WkeWebBrowser1LoadEnd
+    OnLoadUrlEnd = WkeWebBrowser1LoadUrlEnd
+    OnLoadUrlBegin = WkeWebBrowser1LoadUrlBegin
+    ExplicitHeight = 407
   end
   object Panel1: TPanel
     Left = 0
@@ -110,5 +113,16 @@ object Form1: TForm1
       TabOrder = 3
       OnClick = Button4Click
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 463
+    Width = 829
+    Height = 19
+    Panels = <>
+    SimplePanel = True
+    ExplicitLeft = 464
+    ExplicitTop = 472
+    ExplicitWidth = 0
   end
 end
