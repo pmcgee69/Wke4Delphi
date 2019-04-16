@@ -152,7 +152,8 @@ type
     /// <summary>
     ///  È¡Ô´Âë
     /// </summary>
-    function GetSource: string;
+    function GetSource(const delay:Integer=200): string;
+
   end;
 
   TWkeGetSource = class
@@ -669,12 +670,12 @@ begin
   end;
 end;
 
-function TWkePopupPage.GetSource: string;
+function TWkePopupPage.GetSource(const delay:Integer): string;
 begin
   result := '';
   if Assigned(thewebview) then
     ExecuteJavascript('GetSource(document.getElementsByTagName("html")[0].outerHTML);');
-  Sleep(100);
+  Sleep(delay);
   result := tmpSource;
 end;
 

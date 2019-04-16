@@ -264,7 +264,7 @@ type
 
 implementation
 
-uses  // dialogs,
+uses   dialogs,
   math;
 
 
@@ -736,7 +736,7 @@ begin
 //    exit;
 //  end;
 
-
+   wvw :=    nil;
   if Assigned(FOnCreateView) then
   begin
     FOnCreateView(self, sUrl, navigationType, windowFeatures, view);
@@ -757,6 +757,7 @@ begin
       wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_POPUP, 0, windowFeatures.x, windowFeatures.y,
         windowFeatures.width, windowFeatures.height);
       wkeShowWindow(wvw, True);
+      wkeSetWindowTitleW(wvw,PChar(sUrl));
     end;
   end
   else
