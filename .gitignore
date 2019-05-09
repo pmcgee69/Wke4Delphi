@@ -12,5 +12,7 @@ Desktop.ini
 __history
 __recovery
 Win32
+LocalStorage
 *.tvsconfig
 *.bak
+license.key

@@ -1,12 +1,13 @@
 unit Langji.Wke.types;
 
+
+{$MINENUMSIZE 4}
 interface
 uses
   windows;
 
-const
-  wkedll = 'wke.dll';
 
+const
   // wkeMouseFlags
   WKE_LBUTTON = $01;
   WKE_RBUTTON = $02;
@@ -14,11 +15,9 @@ const
   WKE_CONTROL = $08;
   WKE_MBUTTON = $10;
 
-
   // wkeKeyFlags
   WKE_EXTENDED = $0100;
   WKE_REPEAT = $4000;
-
 
   // wkeMouseMsg
   WKE_MSG_MOUSEMOVE = $0200;
@@ -34,6 +33,8 @@ const
   WKE_MSG_MOUSEWHEEL = $020A;
 
  // WKE_SETTING_PAINTCALLBACK_IN_OTHER_THREAD=4;
+
+
 
 type
   utf8 = AnsiChar;
@@ -92,6 +93,15 @@ type
   PwkeRect = ^TwkeRect;
 
   TwkeRect = wkeRect;
+
+//  typedef struct _wkeProxy {
+//    wkeProxyType type;
+//    char hostname[100];
+//    unsigned short port;
+//    char username[50];
+//    char password[50];
+//} wkeProxy;
+
 
   wkeProxy = packed record
     AType: wkeProxyType;
@@ -170,6 +180,28 @@ type
     filelength:Int64;
   end;
 
+//  typedef struct _wkeWindowCreateInfo {
+//    int size;
+//    HWND parent;
+//    DWORD style;
+//    DWORD styleEx;
+//    int x;
+//    int y;
+//    int width;
+//    int height;
+//    COLORREF color;
+
+
+ wkeWindowCreateInfo=packed record
+   size:Integer;
+   parent:HWND;
+   style:DWORD;
+   styleex:DWORD;
+   x,y,width,height:Integer;
+   color:TColorRef;
+ end;
+ pwkeWindowCreateInfo= ^wkeWindowCreateInfo;
+
 
 {$IF not Declared(SIZE_T)}
   SIZE_T = Cardinal;
@@ -197,7 +229,7 @@ type
   JScript = class;
 
   jsExecState = JScript;
-  wkeCookieVisitor=function( params:Pointer; const name,value,domain,path:string;expires:Integer):Boolean;
+  wkeCookieVisitor=function( params:Pointer; const name,value,domain,path:string;expires:Integer):Boolean; cdecl;
 
   wkeTitleChangedCallback = procedure(webView: wkeWebView; param: Pointer; title: wkeString); cdecl;
 
@@ -223,10 +255,8 @@ type
     failedReason: wkeString); cdecl;
 
   wkeWindowClosingCallback = function(webWindow: wkeWebView; param: Pointer): Boolean; cdecl;
-
   wkeWindowDestroyCallback = procedure(webWindow: wkeWebView; param: Pointer); cdecl;
 
- // wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; var AMessage: wkeConsoleMessage); cdecl;
  // wkeWebView webView, void* param, wkeConsoleLevel level, const wkeString message, const wkeString sourceName, unsigned sourceLine, const wkeString stackTrace);
   wkeConsoleMessageCallback = procedure(webView: wkeWebView; param: Pointer; level: wkeMessageLevel; const AMessage,
     sourceName: wkeString; sourceLine: Cardinal; const stackTrack: wkeString); cdecl;
@@ -240,8 +270,9 @@ type
   wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url:PansiChar):boolean; cdecl;  // wkeString): boolean;
            //2018.02.07
 
-  wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
 
+
+  wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
   wkeCallUiThread = procedure(webView: wkeWebView; func: wkeOnCallUiThread; param: Pointer); cdecl;  //2018.02.07
 
   wkeLoadUrlBeginCallback = function(webView: wkeWebView; param: Pointer; url: PAnsiChar ; job:
@@ -495,7 +526,7 @@ type
     function EmptyArray: jsValue; {$IFDEF SupportInline}inline;{$ENDIF}
     function Object_(obj: PjsData): jsValue; {$IFDEF SupportInline}inline;{$ENDIF}
     function Function_(obj: PjsData): jsValue; {$IFDEF SupportInline}inline;{$ENDIF}
-    function GetData(AObject: jsValue): jsData; {$IFDEF SupportInline}inline;{$ENDIF}
+    function GetData(AObject: jsValue): pjsData; {$IFDEF SupportInline}inline;{$ENDIF}
     function Get(AObject: jsValue; const prop: string): jsValue; {$IFDEF SupportInline}inline;{$ENDIF}
     procedure Set_(AObject: jsValue; const prop: string; v: jsValue); {$IFDEF SupportInline}inline;{$ENDIF}
     function GetAt(AObject: jsValue; index: Integer): jsValue; {$IFDEF SupportInline}inline;{$ENDIF}

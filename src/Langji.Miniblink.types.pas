@@ -15,8 +15,7 @@ uses
 
 const
   mbdll = 'mb.dll';
-
-  mbgetsourcemsg=$4001;
+  mbgetsourcemsg = $4001;
 
   //typedef enum {
 //    MB_LBUTTON = 0x01,
@@ -278,13 +277,13 @@ type
 //    void* blinkThreadInitCallbackParam;
 //} mbSettings;
 
-  mbOnBlinkThreadInitCallback=procedure(param:Pointer);
+  mbOnBlinkThreadInitCallback = procedure(param: Pointer);
 
   TmbSettings = packed record
     proxy: TmbProxy;
     mask: Cardinal;
-    blinkThreadInitCallback :mbOnBlinkThreadInitCallback;
-    blinkThreadInitCallbackParam :Pointer;
+    blinkThreadInitCallback: mbOnBlinkThreadInitCallback;
+    blinkThreadInitCallbackParam: Pointer;
   end;
 
   PmbSettings = ^TmbSettings;
@@ -327,8 +326,7 @@ type
 //} mbCookieCommand;
 //
 
-  TmbCookieCommand = (mbCookieCommandClearAllCookies, mbCookieCommandClearSessionCookies,
-    mbCookieCommandFlushCookiesToFile, mbCookieCommandReloadCookiesFromFile);
+  TmbCookieCommand = (mbCookieCommandClearAllCookies, mbCookieCommandClearSessionCookies, mbCookieCommandFlushCookiesToFile, mbCookieCommandReloadCookiesFromFile);
 
 
 //typedef enum {
@@ -340,8 +338,7 @@ type
 //    MB_NAVIGATION_TYPE_OTHER
 //} mbNavigationType;
 
-  TmbNavigationType = (MB_NAVIGATION_TYPE_LINKCLICK, MB_NAVIGATION_TYPE_FORMSUBMITTE, MB_NAVIGATION_TYPE_BACKFORWARD,
-    MB_NAVIGATION_TYPE_RELOAD, MB_NAVIGATION_TYPE_FORMRESUBMITT, MB_NAVIGATION_TYPE_OTHER);
+  TmbNavigationType = (MB_NAVIGATION_TYPE_LINKCLICK, MB_NAVIGATION_TYPE_FORMSUBMITTE, MB_NAVIGATION_TYPE_BACKFORWARD, MB_NAVIGATION_TYPE_RELOAD, MB_NAVIGATION_TYPE_FORMRESUBMITT, MB_NAVIGATION_TYPE_OTHER);
 
 //typedef enum {
 //    kMbCursorInfoPointer,
@@ -390,17 +387,8 @@ type
 //    kMbCursorInfoCustom
 //} mbCursorInfoType;
 
-  TmbCursorInfoType = (kMbCursorInfoPointer, kMbCursorInfoCross, kMbCursorInfoHand, kMbCursorInfoIBeam,
-    kMbCursorInfoWait, kMbCursorInfoHelp, kMbCursorInfoEastResize, kMbCursorInfoNorthResize,
-    kMbCursorInfoNorthEastResize, kMbCursorInfoNorthWestResize, kMbCursorInfoSouthResize, kMbCursorInfoSouthEastResize,
-    kMbCursorInfoSouthWestResize, kMbCursorInfoWestResize, kMbCursorInfoNorthSouthResize, kMbCursorInfoEastWestResize,
-    kMbCursorInfoNorthEastSouthWestResize, kMbCursorInfoNorthWestSouthEastResize, kMbCursorInfoColumnResize,
-    kMbCursorInfoRowResize, kMbCursorInfoMiddlePanning, kMbCursorInfoEastPanning, kMbCursorInfoNorthPanning,
-    kMbCursorInfoNorthEastPanning, kMbCursorInfoNorthWestPanning, kMbCursorInfoSouthPanning,
-    kMbCursorInfoSouthEastPanning, kMbCursorInfoSouthWestPanning, kMbCursorInfoWestPanning, kMbCursorInfoMove,
-    kMbCursorInfoVerticalText, kMbCursorInfoCell, kMbCursorInfoContextMenu, kMbCursorInfoAlias, kMbCursorInfoProgress,
-    kMbCursorInfoNoDrop, kMbCursorInfoCopy, kMbCursorInfoNone, kMbCursorInfoNotAllowed, kMbCursorInfoZoomIn,
-    kMbCursorInfoZoomOut, kMbCursorInfoGrab, kMbCursorInfoGrabbing, kMbCursorInfoCustom);
+  TmbCursorInfoType = (kMbCursorInfoPointer, kMbCursorInfoCross, kMbCursorInfoHand, kMbCursorInfoIBeam, kMbCursorInfoWait, kMbCursorInfoHelp, kMbCursorInfoEastResize, kMbCursorInfoNorthResize, kMbCursorInfoNorthEastResize, kMbCursorInfoNorthWestResize, kMbCursorInfoSouthResize, kMbCursorInfoSouthEastResize, kMbCursorInfoSouthWestResize, kMbCursorInfoWestResize, kMbCursorInfoNorthSouthResize, kMbCursorInfoEastWestResize, kMbCursorInfoNorthEastSouthWestResize, kMbCursorInfoNorthWestSouthEastResize,
+    kMbCursorInfoColumnResize, kMbCursorInfoRowResize, kMbCursorInfoMiddlePanning, kMbCursorInfoEastPanning, kMbCursorInfoNorthPanning, kMbCursorInfoNorthEastPanning, kMbCursorInfoNorthWestPanning, kMbCursorInfoSouthPanning, kMbCursorInfoSouthEastPanning, kMbCursorInfoSouthWestPanning, kMbCursorInfoWestPanning, kMbCursorInfoMove, kMbCursorInfoVerticalText, kMbCursorInfoCell, kMbCursorInfoContextMenu, kMbCursorInfoAlias, kMbCursorInfoProgress, kMbCursorInfoNoDrop, kMbCursorInfoCopy, kMbCursorInfoNone, kMbCursorInfoNotAllowed, kMbCursorInfoZoomIn, kMbCursorInfoZoomOut, kMbCursorInfoGrab, kMbCursorInfoGrabbing, kMbCursorInfoCustom);
 
 
 //typedef struct {
@@ -421,7 +409,7 @@ type
   TmbWindowFeatures = packed record
     x: Integer;
     y: Integer;
-    width:Integer;
+    width: Integer;
     height: Integer;
     menuBarVisible: Boolean;
     stausBarVisible: Boolean;
@@ -578,7 +566,8 @@ type
     recvcallback: mbNetJobDataRecvCallback;
     finishCallback: mbNetJobDataFinishCallback;
   end;
-  PmbNetJobDataBind=^TmbNetJobDataBind;
+
+  PmbNetJobDataBind = ^TmbNetJobDataBind;
 
   TmbpdfDatas = packed record
     count: Integer;
@@ -619,21 +608,20 @@ type
 //    BOOL isPrintBackgroud;
 //} mbPrintSettings;
 
-  TmbPrintSettings=  packed record
-     structSize:integer;
-     dpi:integer;
-     width:integer;
-     height:integer;
-     marginTop:integer;
-     marginBottom:integer;
-     marginLeft:integer;
-     marginRight:integer;
-     isPrintPageHeadAndFooter:boolean;
-     isPrintBackgroud :boolean;
-
+  TmbPrintSettings = packed record
+    structSize: integer;
+    dpi: integer;
+    width: integer;
+    height: integer;
+    marginTop: integer;
+    marginBottom: integer;
+    marginLeft: integer;
+    marginRight: integer;
+    isPrintPageHeadAndFooter: boolean;
+    isPrintBackgroud: boolean;
   end;
 
-  PmbprintSettings=^TmbprintSettings;
+  PmbprintSettings = ^TmbprintSettings;
 
 
 //
@@ -680,24 +668,23 @@ type
 //typedef BOOL(MB_CALL_TYPE *mbDestroyCallback)(mbWebView webView, void* param, void* unuse);
 //typedef BOOL(MB_CALL_TYPE *mbCloseCallback)(mbWebView webView, void* param, void* unuse);
 
-  mbDestroyCallback  =function (webView: TmbWebView; param: Pointer;unuse:Pointer ):boolean;   stdcall;
-  mbCloseCallback =   mbDestroyCallback ;
-  mbNetGetFaviconCallback  =  procedure(webView: TmbWebView; param: Pointer; const url:PChar;buf:TmbMemBuf ); stdcall;
+  mbDestroyCallback = function(webView: TmbWebView; param: Pointer; unuse: Pointer): boolean; stdcall;
+
+  mbCloseCallback = mbDestroyCallback;
+
+  mbNetGetFaviconCallback = procedure(webView: TmbWebView; param: Pointer; const url: PChar; buf: TmbMemBuf); stdcall;
 
   mbPrintPdfDataCallback = function(webView: TmbWebView; param: Pointer; datas: PmbpdfDatas): TmbDownloadOpt; stdcall;
 
   mbPrintBitmapCallback = procedure(webView: TmbWebView; param: Pointer; data: PChar; size: DWORD); stdcall;
 
-  mbPrintingCallback = function(webView: TmbWebView; param: Pointer; step: TmbPrintintStep; hdc: HDC; const settings:
-    TmbPrintintSettings; pagecount: Integer): Boolean; stdcall;
+  mbPrintingCallback = function(webView: TmbWebView; param: Pointer; step: TmbPrintintStep; hdc: HDC; const settings: TmbPrintintSettings; pagecount: Integer): Boolean; stdcall;
 
-  mbDownloadInBlinkThreadCallback = procedure(webView: TmbWebView; param: Pointer; expectedContentLength: DWORD; const
-    url, mime, disposition: PChar; job: Tmbnetjob; databind: PmbNetJobDataBind); stdcall;
+  mbDownloadInBlinkThreadCallback = procedure(webView: TmbWebView; param: Pointer; expectedContentLength: DWORD; const url, mime, disposition: PChar; job: Tmbnetjob; databind: PmbNetJobDataBind); stdcall;
 
   mbRunJsCallback = procedure(webView: TmbWebView; param: Pointer; es: TmbJsExecState; v: TmbJsValue); stdcall;
 
-  mbJsQueryCallback = procedure(webView: TmbWebView; param: Pointer; es: TmbJsExecState; queryId: Int64; customMsg:
-    Integer; const request: PAnsiChar); stdcall;
+  mbJsQueryCallback = procedure(webView: TmbWebView; param: Pointer; es: TmbJsExecState; queryId: Int64; customMsg: Integer; const request: PAnsiChar); stdcall;
 
   mbTitleChangedCallback = procedure(webView: TmbWebView; param: Pointer; const title: PAnsiChar); stdcall;
 
@@ -705,36 +692,29 @@ type
 
   mbURLChangedCallback2 = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; const url: PAnsiChar); stdcall;
 
-  mbPaintUpdatedCallback = procedure(webView: TmbWebView; param: Pointer; const hdc: HDC; x: integer; y: integer; cx:
-    integer; cy: integer); stdcall;
+  mbPaintUpdatedCallback = procedure(webView: TmbWebView; param: Pointer; const hdc: HDC; x: integer; y: integer; cx: integer; cy: integer); stdcall;
 
-  mbPaintBitUpdatedCallback = procedure(webView: TmbWebView; param: Pointer; const buffer: Pointer; const r: PmbRect;
-    width: integer; height: Integer); stdcall;
+  mbPaintBitUpdatedCallback = procedure(webView: TmbWebView; param: Pointer; const buffer: Pointer; const r: PmbRect; width: integer; height: Integer); stdcall;
 
   mbAlertBoxCallback = procedure(webView: TmbWebView; param: Pointer; const msg: PAnsiChar); stdcall;
 
   mbConfirmBoxCallback = function(webView: TmbWebView; param: Pointer; const msg: PAnsiChar): boolean; stdcall;
 
-  mbPromptBoxCallback = function(webView: TmbWebView; param: Pointer; const msg: PAnsiChar; const defaultResult:
-    PAnsiChar; sresult: PAnsiChar): boolean; stdcall;
+  mbPromptBoxCallback = function(webView: TmbWebView; param: Pointer; const msg: PAnsiChar; const defaultResult: PAnsiChar; sresult: PAnsiChar): boolean; stdcall;
 
-  mbNavigationCallback = function(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url:
-    PAnsiChar): boolean; stdcall;
+  mbNavigationCallback = function(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url: PAnsiChar): boolean; stdcall;
 
-  mbCreateViewCallback = function(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url:
-    PAnsiChar; const windowFeatures: PmbWindowFeatures): TmbWebView; stdcall;
+  mbCreateViewCallback = function(webView: TmbWebView; param: Pointer; navigationType: TmbNavigationType; const url: PAnsiChar; const windowFeatures: PmbWindowFeatures): TmbWebView; stdcall;
 
   mbDocumentReadyCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle); stdcall;
 
   mbOnShowDevtoolsCallback = procedure(webView: TmbWebView; param: Pointer); stdcall;
 
-  mbLoadingFinishCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; const url:
-    PAnsiChar; lresult: TmbLoadingResult; const failedReason: PAnsiChar); stdcall;
+  mbLoadingFinishCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; const url: PAnsiChar; lresult: TmbLoadingResult; const failedReason: PAnsiChar); stdcall;
 
   mbDownloadCallback = function(webView: TmbWebView; param: Pointer; const url: PAnsiChar): boolean; stdcall;
 
-  mbConsoleCallback = procedure(webView: TmbWebView; param: Pointer; level: TmbConsoleLevel; const smessage: PAnsiChar;
-    const sourceName: PAnsiChar; sourceLine: Cardinal; const stackTrace: PAnsiChar);   stdcall;
+  mbConsoleCallback = procedure(webView: TmbWebView; param: Pointer; level: TmbConsoleLevel; const smessage: PAnsiChar; const sourceName: PAnsiChar; sourceLine: Cardinal; const stackTrace: PAnsiChar); stdcall;
 
   TmbOnCallUiThread = procedure(webView: TmbWebView; paramOnInThread: Pointer); stdcall;
 
@@ -744,14 +724,11 @@ type
 //mbNet--------------------------------------------------------------------------------------
   mbLoadUrlBeginCallback = function(webView: TmbWebView; param: Pointer; const url: PAnsiChar; job: Pointer): boolean; stdcall;
 
-  mbLoadUrlEndCallback = procedure(webView: TmbWebView; param: Pointer; const url: PAnsiChar; job: Pointer; buf: Pointer;
-    len: Integer); stdcall;
+  mbLoadUrlEndCallback = procedure(webView: TmbWebView; param: Pointer; const url: PAnsiChar; job: Pointer; buf: Pointer; len: Integer); stdcall;
 
-  mbDidCreateScriptContextCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; context:
-    Pointer; extensionGroup: Integer; worldId: Integer);
+  mbDidCreateScriptContextCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; context: Pointer; extensionGroup: Integer; worldId: Integer); stdcall;
 
-  mbWillReleaseScriptContextCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle;
-    context: Pointer; worldId: Integer);
+  mbWillReleaseScriptContextCallback = procedure(webView: TmbWebView; param: Pointer; frameId: TmbWebFrameHandle; context: Pointer; worldId: Integer); stdcall;
 
   mbNetResponseCallback = function(webView: TmbWebView; param: Pointer; const url: PAnsiChar; job: Pointer): boolean; stdcall;
 
@@ -765,14 +742,16 @@ type
 
   mbWindowClosingCallback = function(webWindow: TmbWebView; param: Pointer): boolean; stdcall;
 
-  mbWindowDestroyCallback = procedure(webWindow: TmbWebView; param: Pointer);
+  mbWindowDestroyCallback = procedure(webWindow: TmbWebView; param: Pointer); stdcall;
 
-  mbDraggableRegionsChangedCallback = procedure(webWindow: TmbWebView; param: Pointer; const rects: PmbDraggableRegion;
-    rectCount: Integer);
+  mbDraggableRegionsChangedCallback = procedure(webWindow: TmbWebView; param: Pointer; const rects: PmbDraggableRegion; rectCount: Integer); stdcall;
 
+//  ITERATOR1(const utf8*, mbGetTitle, mbWebView webView, "") \
+//ITERATOR1(const utf8*, mbGetUrl, mbWebView webView, "") \
 
+  mbGetTitle = function(webWindow: TmbWebView): PAnsiChar; stdcall;
 
-
+  mbGetUrl = function(webWindow: TmbWebView): PAnsiChar; stdcall;
 
   //事件定义
   TOnTitleChangeEvent = procedure(Sender: TObject; sTitle: string) of object;
@@ -783,8 +762,7 @@ type
 
   TOnBeforeLoadEvent = procedure(Sender: TObject; sUrl: string; navigationType: TmbNavigationType; var Cancel: boolean) of object;
 
-  TOnCreateViewEvent = procedure(Sender: TObject; sUrl: string; navigationType: TmbNavigationType; windowFeatures:
-    PmbWindowFeatures; var wvw: TmbWebView) of object;
+  TOnCreateViewEvent = procedure(Sender: TObject; sUrl: string; navigationType: TmbNavigationType; windowFeatures: PmbWindowFeatures; var wvw: TmbWebView) of object;
 
   TOnAlertBoxEvent = procedure(Sender: TObject; sMsg: string) of object;
 

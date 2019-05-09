@@ -251,6 +251,8 @@ begin
   mbGetLockedViewDC := GetprocAddress(mbLibHandle, 'mbGetLockedViewDC');
   mbUnlockViewDC := GetprocAddress(mbLibHandle, 'mbUnlockViewDC');
   mbWake := GetprocAddress(mbLibHandle, 'mbWake');
+  mbGetTitle  := GetprocAddress(mbLibHandle, 'mbGetTitle');
+  mbGetUrl    := GetprocAddress(mbLibHandle, 'mbGetUrl');
 
   mbJsToDouble := GetprocAddress(mbLibHandle, 'mbJsToDouble');
   mbJsToBoolean := GetprocAddress(mbLibHandle, 'mbJsToBoolean');

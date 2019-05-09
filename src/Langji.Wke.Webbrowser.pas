@@ -757,7 +757,7 @@ begin
       wvw := wkeCreateWebWindow(WKE_WINDOW_TYPE_POPUP, 0, windowFeatures.x, windowFeatures.y,
         windowFeatures.width, windowFeatures.height);
       wkeShowWindow(wvw, True);
-      wkeSetWindowTitleW(wvw,PChar(sUrl));
+      wkeSetWindowTitleW(wvw,PwideChar(sUrl));
     end;
   end
   else
@@ -1425,8 +1425,8 @@ begin
       end;
       mbSetProxy(thewebview, @xproxy)
     end
-    else
-      wkeSetViewProxy(thewebview, Value);
+    else   wkeSetproxy( @Value);
+     // wkeSetViewProxy(thewebview, @Value);
   end;
 
 end;

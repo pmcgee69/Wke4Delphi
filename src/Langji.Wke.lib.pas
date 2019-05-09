@@ -3,7 +3,8 @@ unit Langji.Wke.lib;
 interface
 
 uses
-  windows, sysutils, Langji.Miniblink.libs, Langji.Miniblink.types, Langji.Wke.types;
+  windows, sysutils, Langji.Miniblink.libs, Langji.Miniblink.types,
+  Langji.Wke.types;
 
 
   //================================wkeWebView============================
@@ -22,8 +23,7 @@ var
   wkeUpdate: procedure; cdecl;
   wkeGetVersion: function(): Integer; cdecl;
   wkeGetVersionString: function(): putf8; cdecl;
-  wkeSetFileSystem: procedure(pfn_open: FILE_OPEN; pfn_close: FILE_CLOSE; pfn_size: FILE_SIZE;
-    pfn_read: FILE_READ; pfn_seek: FILE_SEEK); cdecl;
+  wkeSetFileSystem: procedure(pfn_open: FILE_OPEN; pfn_close: FILE_CLOSE; pfn_size: FILE_SIZE; pfn_read: FILE_READ; pfn_seek: FILE_SEEK); cdecl;
   wkeCreateWebView: function(): wkeWebView; cdecl;
   wkeGetWebView: function(name: Pchar): wkeWebView; cdecl;
   wkeDestroyWebView: procedure(webView: wkeWebView); cdecl;
@@ -61,8 +61,7 @@ var
   wkeIsDirty: function(webView: wkeWebView): Boolean; cdecl;
   wkeAddDirtyArea: procedure(webView: wkeWebView; x: Integer; y: Integer; w: Integer; h: Integer); cdecl;
   wkeLayoutIfNeeded: procedure(webView: wkeWebView); cdecl;
-  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst:
-    Integer; yDst: Integer; w: Integer; h: Integer; xSrc: Integer; ySrc: Integer; bCopyAlpha: Boolean); cdecl;
+  wkePaint: procedure(webView: wkeWebView; bits: Pointer; bufWid: Integer; bufHei: Integer; xDst: Integer; yDst: Integer; w: Integer; h: Integer; xSrc: Integer; ySrc: Integer; bCopyAlpha: Boolean); cdecl;
   wkePaint2: procedure(webView: wkeWebView; bits: Pointer; pitch: Integer); cdecl;
   wkeRepaintIfNeeded: procedure(webView: wkeWebView); cdecl;
   wkeGetViewDC: function(webView: wkeWebView): HDC; cdecl;
@@ -82,17 +81,12 @@ var
   wkeIsCookieEnabled: function(webView: wkeWebView): Boolean; cdecl;
   wkeSetMediaVolume: procedure(webView: wkeWebView; volume: Single); cdecl;
   wkeGetMediaVolume: function(webView: wkeWebView): Single; cdecl;
-  wkeFireMouseEvent: function(webView: wkeWebView; AMessage: Cardinal; x: Integer; y: Integer; flags:
-    LongInt): Boolean; cdecl;
+  wkeFireMouseEvent: function(webView: wkeWebView; AMessage: Cardinal; x: Integer; y: Integer; flags: LongInt): Boolean; cdecl;
   wkeFireContextMenuEvent: function(webView: wkeWebView; x: Integer; y: Integer; flags: LongInt): Boolean; cdecl;
-  wkeFireMouseWheelEvent: function(webView: wkeWebView; x: Integer; y: Integer; delta: Integer;
-    flags: LongInt): Boolean; cdecl;
-  wkeFireKeyUpEvent: function(webView: wkeWebView; virtualKeyCode: LongInt; flags: LongInt;
-    systemKey: Boolean): Boolean; cdecl;
-  wkeFireKeyDownEvent: function(webView: wkeWebView; virtualKeyCode: LongInt; flags: LongInt;
-    systemKey: Boolean): Boolean; cdecl;
-  wkeFireKeyPressEvent: function(webView: wkeWebView; charCode: LongInt; flags: LongInt; systemKey:
-    Boolean): Boolean; cdecl;
+  wkeFireMouseWheelEvent: function(webView: wkeWebView; x: Integer; y: Integer; delta: Integer; flags: LongInt): Boolean; cdecl;
+  wkeFireKeyUpEvent: function(webView: wkeWebView; virtualKeyCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean; cdecl;
+  wkeFireKeyDownEvent: function(webView: wkeWebView; virtualKeyCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean; cdecl;
+  wkeFireKeyPressEvent: function(webView: wkeWebView; charCode: LongInt; flags: LongInt; systemKey: Boolean): Boolean; cdecl;
   wkeSetFocus: procedure(webView: wkeWebView); cdecl;
   wkeKillFocus: procedure(webView: wkeWebView); cdecl;
   wkeGetCaretRect: function(webView: wkeWebView): wkeRect; cdecl;
@@ -119,11 +113,9 @@ var
   wkeOnCreateView: procedure(webView: wkeWebView; callback: wkeCreateViewCallback; param: Pointer); cdecl;
   wkeOnDocumentReady: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback; param: Pointer); cdecl;
   wkeOnLoadingFinish: procedure(webView: wkeWebView; callback: wkeLoadingFinishCallback; param: Pointer); cdecl;
-  wkeOnConsoleMessage: procedure(webView: wkeWebView; callback: wkeConsoleMessageCallback;
-    callbackParam: Pointer); cdecl;  //  ??
+  wkeOnConsoleMessage: procedure(webView: wkeWebView; callback: wkeConsoleMessageCallback; callbackParam: Pointer); cdecl;  //  ??
 
-  wkeCreateWebWindow: function(AType: wkeWindowType; parent: HWND; x: Integer; y: Integer; width:
-    Integer; height: Integer): wkeWebView; cdecl;
+  wkeCreateWebWindow: function(AType: wkeWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height: Integer): wkeWebView; cdecl;
   wkeDestroyWebWindow: procedure(webWindow: wkeWebView); cdecl;
   wkeGetWindowHandle: function(webWindow: wkeWebView): HWND; cdecl;
   wkeOnWindowClosing: procedure(webWindow: wkeWebView; callback: wkeWindowClosingCallback; param: Pointer); cdecl;
@@ -165,8 +157,7 @@ var
   wkeSetCookieJarPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   wkeWebFrameGetMainFrame: function(webWindow: wkeWebView): Thandle; cdecl;       //minibink 新增  2018.1.17
   wkeIsMainFrame: function(webWindow: wkeWebView; frameId: Thandle): Boolean; cdecl;  //minibink 新增  2018.1.17
-  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8;
-    isInClosure: boolean): jsValue; cdecl;      // minibink 新增  2018.1.17
+  wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue; cdecl;      // minibink 新增  2018.1.17
 
  // Add 2018.02.07
   //ITERATOR2(void, wkeVisitAllCookie, void* params, wkeCookieVisitor visitor, "")
@@ -183,8 +174,8 @@ var
   wkeOnDownload: procedure(webView: wkeWebView; callback: wkeDownloadCallback; param: Pointer); cdecl;
   wkeOnDocumentReady2: procedure(webView: wkeWebView; callback: wkeDocumentReadyCallback2; param: Pointer); cdecl;
   wkeOnURLChanged2: procedure(webView: wkeWebView; callback: wkeURLChangedCallback2; callbackParam: Pointer); cdecl;
-  wkeSetProxy: procedure(const proxy: wkeProxy);
-  wkeSetViewProxy: procedure(webView: wkeWebView; proxy: wkeProxy);
+  wkeSetProxy: procedure(const proxy: pwkeProxy); cdecl;
+  wkeSetViewProxy: procedure(webView: wkeWebView; proxy: pwkeProxy); cdecl;
 
   //以下2018.3.14增加
   //WKE_API void wkeSetDebugConfig(wkeWebView webView, const char* debugString, const char* param);
@@ -193,8 +184,7 @@ var
   //WKE_API void wkeSetDragEnable(wkeWebView webView, bool b);   开启关闭拖拽功能
   wkeSetDragEnable: procedure(webView: wkeWebView; b: boolean); cdecl;
   // WKE_API void wkeOnMouseOverUrlChanged(wkeWebView webView, wkeTitleChangedCallback callback, void* callbackParam);
-  wkeOnMouseOverUrlChanged: procedure(webView: wkeWebView; callback: wkeTitleChangedCallback;
-    callbackParam: Pointer); cdecl;
+  wkeOnMouseOverUrlChanged: procedure(webView: wkeWebView; callback: wkeTitleChangedCallback; callbackParam: Pointer); cdecl;
 
   //Add 2018.05.23
   //ITERATOR2(void, wkeAddPluginDirectory, wkeWebView webView, const WCHAR* path, "")
@@ -202,16 +192,15 @@ var
   //ITERATOR1(wkePostBodyElements*, wkeNetGetPostBody, void* jobPtr, "")
   //ITERATOR1(wkeRequestType, wkeNetGetRequestMethod, void* jobPtr, "")
  // void wkeSetDeviceParameter(wkeWebView webView, const char* device, const char* paramStr, int paramInt, float paramFloat)
-  wkeSetDeviceParameter: procedure(webView: wkeWebView; const device, paramStr: putf8; paramInt:
-    integer; paramFloat: real); cdecl;
+  wkeSetDeviceParameter: procedure(webView: wkeWebView; const device, paramStr: putf8; paramInt: integer; paramFloat: real); cdecl;
  // ITERATOR1(const utf8*, wkeGetSource, wkeWebView webView, "") \
   wkeGetSource: function(webView: wkeWebView): Putf8; cdecl;
   //ITERATOR1(void, wkeNetHookRequest, void *job, "") \
   wkeNetHookRequest: procedure(job: Pointer); cdecl;
   wkeSetNavigationToNewWindowEnable: procedure(webView: wkeWebView; b: boolean); cdecl; //20180707
 
-
-  // Add 2019.01.22
+  //ITERATOR1(wkeWebView, wkeCreateWebCustomWindow, const wkeWindowCreateInfo* info, "") \
+  wkeCreateWebCustomWindow: procedure(const info: pwkeWindowCreateInfo); cdecl;   //20190509
 
 
 //================================JScript============================
@@ -264,8 +253,7 @@ var
   jsGetWebView: function(es: jsExecState): wkeWebView; cdecl;
   jsEval: function(es: jsExecState; str: Putf8): jsValue; cdecl;
   jsEvalW: function(es: jsExecState; str: Pwchar_t): jsValue; cdecl;
-  jsCall: function(es: jsExecState; func: jsValue; thisObject: jsValue; args: PjsValue; argCount:
-    Integer): jsValue; cdecl;
+  jsCall: function(es: jsExecState; func: jsValue; thisObject: jsValue; args: PjsValue; argCount: Integer): jsValue; cdecl;
   jsCallGlobal: function(es: jsExecState; func: jsValue; args: PjsValue; argCount: Integer): jsValue; cdecl;
   jsGetGlobal: function(es: jsExecState; prop: PAnsiChar): jsValue; cdecl;
   jsSetGlobal: procedure(es: jsExecState; prop: PAnsiChar; v: jsValue); cdecl;
@@ -333,7 +321,6 @@ begin
     mbUserUninit;
     exit;
   end;
-
 
   if wkeLibHandle <> 0 then
   begin
@@ -505,6 +492,7 @@ begin
   wkeSetNavigationToNewWindowEnable := GetProcAddress(wkeLibHandle, 'wkeSetNavigationToNewWindowEnable');
 
   wkeSetCspCheckEnable := GetProcAddress(wkeLibHandle, 'wkeSetCspCheckEnable');
+  wkeCreateWebCustomWindow   := GetProcAddress(wkeLibHandle, 'wkeCreateWebCustomWindow');
 
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');
