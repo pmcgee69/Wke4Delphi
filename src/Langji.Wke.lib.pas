@@ -201,6 +201,8 @@ var
 
   //ITERATOR1(wkeWebView, wkeCreateWebCustomWindow, const wkeWindowCreateInfo* info, "") \
   wkeCreateWebCustomWindow: procedure(const info: pwkeWindowCreateInfo); cdecl;   //20190509
+    //ITERATOR1(const utf8*, wkeUtilSerializeToMHTML, wkeWebView webView, "") \
+  wkeUtilSerializeToMHTML : function( webView: wkeWebView ):PAnsiChar;     cdecl;  //2019.05.09
 
 
 //================================JScript============================
@@ -242,7 +244,7 @@ var
   jsEmptyArray: function(es: jsExecState): jsValue; cdecl;
   jsObject: function(es: jsExecState; obj: PjsData): jsValue; cdecl;
   jsFunction: function(es: jsExecState; obj: PjsData): jsValue; cdecl;
-  jsGetData: function(es: jsExecState; AObject: jsValue): jsData; cdecl;
+  jsGetData: function(es: jsExecState; AObject: jsValue): pjsData; cdecl;  //2019.05.09 ¸Äpjsdata
   jsGet: function(es: jsExecState; AObject: jsValue; prop: PAnsiChar): jsValue; cdecl;
   jsSet: procedure(es: jsExecState; AObject: jsValue; prop: PAnsiChar; v: jsValue); cdecl;
   jsGetAt: function(es: jsExecState; AObject: jsValue; index: Integer): jsValue; cdecl;
@@ -493,7 +495,7 @@ begin
 
   wkeSetCspCheckEnable := GetProcAddress(wkeLibHandle, 'wkeSetCspCheckEnable');
   wkeCreateWebCustomWindow   := GetProcAddress(wkeLibHandle, 'wkeCreateWebCustomWindow');
-
+  wkeUtilSerializeToMHTML   := GetProcAddress(wkeLibHandle, 'wkeUtilSerializeToMHTML');
   jsBindFunction := GetProcAddress(wkeLibHandle, 'jsBindFunction');
   jsBindGetter := GetProcAddress(wkeLibHandle, 'jsBindGetter');
   jsBindSetter := GetProcAddress(wkeLibHandle, 'jsBindSetter');

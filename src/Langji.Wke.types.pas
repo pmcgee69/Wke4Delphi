@@ -268,9 +268,6 @@ type
 //typedef bool(*wkeNetResponseCallback)(wkeWebView webView, void* param, const char* url, void* job);
 //typedef bool(*wkeDownloadCallback)(wkeWebView webView, void* param, const char* url);
   wkeDownloadCallback = function(webView: wkeWebView; param: Pointer; url:PansiChar):boolean; cdecl;  // wkeString): boolean;
-           //2018.02.07
-
-
 
   wkeOnCallUiThread = procedure(webView: wkeWebView; paramOnInThread: Pointer); cdecl;                 //2018.02.07
   wkeCallUiThread = procedure(webView: wkeWebView; func: wkeOnCallUiThread; param: Pointer); cdecl;  //2018.02.07
@@ -283,6 +280,8 @@ type
 
   wkeNetResponseCallback = function(webView: wkeWebView; param: Pointer; url: wkeString; job:
     Pointer): boolean; cdecl;  //2018.02.07
+
+
 
   jsGetPropertyCallback = function(es: jsExecState; AObject: jsValue; propertyName: PAnsiChar): jsValue; cdecl;
 
@@ -1295,7 +1294,7 @@ begin
   Result := jsFunction(Self, obj);
 end;
 
-function JScript.GetData(AObject: jsValue): jsData;
+function JScript.GetData(AObject: jsValue): pjsData;
 begin
   Result := jsGetData(Self, AObject);
 end;

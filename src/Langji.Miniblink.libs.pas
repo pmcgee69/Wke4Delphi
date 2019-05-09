@@ -11,7 +11,7 @@ unit Langji.Miniblink.libs;
 interface
 
 uses       // Dialogs,
-  windows, Classes, Langji.Miniblink.types ;
+  windows, Classes, Langji.Miniblink.types;
 
 var
   mbLibFileName: string = 'mb.dll';
@@ -29,8 +29,7 @@ var
   mbUninit: procedure(); stdcall;
   mbCreateWebView: function(): TmbWebView; stdcall;
   mbDestroyWebView: procedure(webview: TmbWebView); stdcall;
-  mbCreateWebWindow: function(mbtype: TmbWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height:
-    Integer): TmbWebView; stdcall;
+  mbCreateWebWindow: function(mbtype: TmbWindowType; parent: HWND; x: Integer; y: Integer; width: Integer; height: Integer): TmbWebView; stdcall;
   mbSetDebugConfig: procedure(webView: TmbWebView; constdebugString: PAnsiChar; const param: PAnsiChar); stdcall;
   mbNetSetData: procedure(job: TmbNetJob; buf: Pointer; len: Integer); stdcall;
   mbCreateWebCustomWindow: function(parent: HWND; style, styleex: DWORD; x, y, w, h: Integer): TmbWebView; stdcall;
@@ -102,8 +101,7 @@ var
   mbFireKeyUpEvent: function(webview: TmbWebView; virtualKeyCode: Cardinal; flags: Cardinal; systemKey: boolean): boolean; stdcall;
   mbFireKeyDownEvent: function(webview: TmbWebView; virtualKeyCode: Cardinal; flags: Cardinal; systemKey: boolean): boolean; stdcall;
   mbFireKeyPressEvent: function(webview: TmbWebView; charCode: Cardinal; flags: Cardinal; systemKey: boolean): boolean; stdcall;
-  mbFireWindowsMessage: function(webview: TmbWebView; hWnd: Hwnd; imessage: Word; wParam: WPARAM; lParam: LPARAM; result:
-    Pointer): boolean; stdcall;
+  mbFireWindowsMessage: function(webview: TmbWebView; hWnd: Hwnd; imessage: Word; wParam: WPARAM; lParam: LPARAM; result: Pointer): boolean; stdcall;
   mbSetEnableNode: procedure(webview: TmbWebView; b: Boolean); stdcall;
   mbSetFocus: procedure(webView: TmbWebView); stdcall;
   mbKillFocus: procedure(webView: TmbWebView); stdcall;
@@ -118,10 +116,8 @@ var
   mbJsToString: function(es: TmbJsExecState; v: TmbJsValue): PAnsiChar; stdcall;
   mbOnJsQuery: procedure(webView: TmbWebView; callback: mbJsQueryCallback; param: Pointer); stdcall;
   mbResponseQuery: procedure(webView: TmbWebView; queryId: int64; customMsg: integer; const response: PAnsiChar); stdcall;
-  mbRunJs: procedure(webView: TmbWebView; frameId: TmbWebFrameHandle; const script: PAnsiChar ; isInClosure: boolean;
-    callback: mbRunJsCallback; param: Pointer; unuse: Pointer); stdcall;
-  mbRunJsSync: function(webView: TmbWebView; frameId: TmbWebFrameHandle; const script: PAnsiChar; isInClosure: Boolean):
-    TmbJsValue; stdcall;
+  mbRunJs: procedure(webView: TmbWebView; frameId: TmbWebFrameHandle; const script: PAnsiChar; isInClosure: boolean; callback: mbRunJsCallback; param: Pointer; unuse: Pointer); stdcall;
+  mbRunJsSync: function(webView: TmbWebView; frameId: TmbWebFrameHandle; const script: PAnsiChar; isInClosure: Boolean): TmbJsValue; stdcall;
   mbWebFrameGetMainFrame: function(webView: TmbWebView): TmbWebFrameHandle; stdcall;
   mbIsMainFrame: function(webView: TmbWebView; frameId: TmbWebFrameHandle): boolean; stdcall;
   mbUtilSerializeToMHTML: procedure(webView: TmbWebView; calback: mbGetMHTMLCallback; param: Pointer); stdcall;
@@ -130,10 +126,12 @@ var
   mbUtilPrint: function(webView: TmbWebView; frameid: TmbWebFrameHandle; const printparams: PmbprintSettings): boolean; stdcall;
   mbUtilBase64Encode: function(const pstr: PChar): PChar; stdcall;
   mbUtilBase64Decode: function(const pstr: PChar): PChar; stdcall;
-  mbUtilPrintToPdf: procedure(webView: TmbWebView; frameid: TmbWebFrameHandle; const printparams: PmbprintSettings;
-    callback: mbPrintPdfDataCallBack); stdcall;
-  mbUtilPrintToBitmap: procedure(webView: TmbWebView; frameid: TmbWebFrameHandle; const printparams: PmbprintSettings;
-    callback: mbPrintPdfDataCallBack); stdcall;
+  mbUtilPrintToPdf: procedure(webView: TmbWebView; frameid: TmbWebFrameHandle; const printparams: PmbprintSettings; callback: mbPrintPdfDataCallBack); stdcall;
+  mbUtilPrintToBitmap: procedure(webView: TmbWebView; frameid: TmbWebFrameHandle; const printparams: PmbprintSettings; callback: mbPrintPdfDataCallBack); stdcall;
+
+  mbGetTitle : function(webWindow: TmbWebView): PAnsiChar; stdcall;
+
+  mbGetUrl : function(webWindow: TmbWebView): PAnsiChar; stdcall;
 
 
 function LoadmbLibrary(const mbFile: string = 'mb.dll'): Boolean;
@@ -157,12 +155,14 @@ begin
 end;
 
 function LoadmbLibrary(const mbFile: string): Boolean;
-var mbdll:string;
+var
+  mbdll: string;
 begin
   Result := false;
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
-  mbdll:=mbfile;
-  if mbFile='' then  mbdll :=mbLibFileName;
+  mbdll := mbFile;
+  if mbFile = '' then
+    mbdll := mbLibFileName;
 
  // mbLibHandle := GetModuleHandle(PChar(ExtractFileName(mbLibFileName)));
   if mbLibHandle = 0 then
@@ -251,8 +251,8 @@ begin
   mbGetLockedViewDC := GetprocAddress(mbLibHandle, 'mbGetLockedViewDC');
   mbUnlockViewDC := GetprocAddress(mbLibHandle, 'mbUnlockViewDC');
   mbWake := GetprocAddress(mbLibHandle, 'mbWake');
-  mbGetTitle  := GetprocAddress(mbLibHandle, 'mbGetTitle');
-  mbGetUrl    := GetprocAddress(mbLibHandle, 'mbGetUrl');
+  mbGetTitle := GetprocAddress(mbLibHandle, 'mbGetTitle');
+  mbGetUrl := GetprocAddress(mbLibHandle, 'mbGetUrl');
 
   mbJsToDouble := GetprocAddress(mbLibHandle, 'mbJsToDouble');
   mbJsToBoolean := GetprocAddress(mbLibHandle, 'mbJsToBoolean');
@@ -313,8 +313,8 @@ begin
   begin
     uset.proxy := mbProxy;
     uset.mask := 0;   //MB_SETTING_PROXY
-    uset.blinkThreadInitCallback :=nil;
-    uset.blinkThreadInitCallbackParam :=nil;
+    uset.blinkThreadInitCallback := nil;
+    uset.blinkThreadInitCallbackParam := nil;
     mbInit(@uset);
 
     if (mbPluginDir <> '') and DirectoryExists(mbPluginDir) then

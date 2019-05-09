@@ -749,9 +749,7 @@ type
 //  ITERATOR1(const utf8*, mbGetTitle, mbWebView webView, "") \
 //ITERATOR1(const utf8*, mbGetUrl, mbWebView webView, "") \
 
-  mbGetTitle = function(webWindow: TmbWebView): PAnsiChar; stdcall;
-
-  mbGetUrl = function(webWindow: TmbWebView): PAnsiChar; stdcall;
+  
 
   //事件定义
   TOnTitleChangeEvent = procedure(Sender: TObject; sTitle: string) of object;
