@@ -115,6 +115,9 @@ type
 
   TwkeProxy = wkeProxy;
 
+
+
+
   wkeSettings = packed record
     proxy: wkeProxy;
     mask: Longint;
@@ -179,6 +182,19 @@ type
     filestart:Int64;
     filelength:Int64;
   end;
+  pwkePostBodyElement =   ^wkePostBodyElement ;
+
+//typedef enum _wkeRequestType {
+//    kWkeRequestTypeInvalidation,
+//    kWkeRequestTypeGet,
+//    kWkeRequestTypePost,
+//    kWkeRequestTypePut,
+//} wkeRequestType;
+
+   wkeRequestType =(    kWkeRequestTypeInvalidation,
+    kWkeRequestTypeGet,
+    kWkeRequestTypePost,
+    kWkeRequestTypePut);
 
 //  typedef struct _wkeWindowCreateInfo {
 //    int size;
@@ -202,6 +218,22 @@ type
  end;
  pwkeWindowCreateInfo= ^wkeWindowCreateInfo;
 
+
+// typedef struct _wkePostBodyElements {
+//    int size;
+//    wkePostBodyElement** element;
+//    size_t elementSize;
+//    bool isDirty;
+//} wkePostBodyElements;
+
+  TwkePostBodyElements= packed record
+    size:Integer;
+    element  :PwkePostBodyElement;
+    elementSize  :Cardinal;
+    isDirty :BOOLean;
+  end;
+
+  pwkePostBodyElements =^TwkePostBodyElements;
 
 {$IF not Declared(SIZE_T)}
   SIZE_T = Cardinal;

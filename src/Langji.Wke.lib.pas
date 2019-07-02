@@ -190,7 +190,9 @@ var
   //ITERATOR2(void, wkeAddPluginDirectory, wkeWebView webView, const WCHAR* path, "")
   wkeAddPluginDirectory: procedure(webView: wkeWebView; const path: Pwchar_t); cdecl;
   //ITERATOR1(wkePostBodyElements*, wkeNetGetPostBody, void* jobPtr, "")
+  wkeNetGetPostBody : function(job: Pointer):PwkePostBodyElements; cdecl;
   //ITERATOR1(wkeRequestType, wkeNetGetRequestMethod, void* jobPtr, "")
+  wkeNetGetRequestMethod  : function(job: Pointer):wkeRequestType; cdecl;
  // void wkeSetDeviceParameter(wkeWebView webView, const char* device, const char* paramStr, int paramInt, float paramFloat)
   wkeSetDeviceParameter: procedure(webView: wkeWebView; const device, paramStr: putf8; paramInt: integer; paramFloat: real); cdecl;
  // ITERATOR1(const utf8*, wkeGetSource, wkeWebView webView, "") \
@@ -481,6 +483,7 @@ begin
   wkeOnURLChanged2 := GetProcAddress(wkeLibHandle, 'wkeOnURLChanged2');
   wkeSetProxy := GetProcAddress(wkeLibHandle, 'wkeSetProxy');
   wkeSetViewProxy := GetProcAddress(wkeLibHandle, 'wkeSetViewProxy');
+
 
   //2018.3.14
   wkeSetDebugConfig := GetProcAddress(wkeLibHandle, 'wkeSetDebugConfig');
