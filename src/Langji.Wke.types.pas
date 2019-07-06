@@ -261,7 +261,20 @@ type
   JScript = class;
 
   jsExecState = JScript;
-  wkeCookieVisitor=function( params:Pointer; const name,value,domain,path:string;expires:Integer):Boolean; cdecl;
+
+
+//  typedef bool(WKE_CALL_TYPE * wkeCookieVisitor)(
+//    void* params,
+//    const char* name,
+//    const char* value,
+//    const char* domain,
+//    const char* path, // If |path| is non-empty only URLs at or below the path will get the cookie value.
+//    int secure, // If |secure| is true the cookie will only be sent for HTTPS requests.
+//    int httpOnly, // If |httponly| is true the cookie will only be sent for HTTP requests.
+//    int* expires // The cookie expiration date is only valid if |has_expires| is true.
+//    );
+
+  wkeCookieVisitor=function( params:Pointer; const name,value,domain,path:PAnsiChar; secure,httpOnly:Integer;   expires:PInteger):Boolean; cdecl;
 
   wkeTitleChangedCallback = procedure(webView: wkeWebView; param: Pointer; title: wkeString); cdecl;
 

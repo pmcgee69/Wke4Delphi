@@ -163,6 +163,7 @@ type
     constructor Create();
     destructor Destroy; override;
     procedure ShowWebPage(const bVisible, bHeadLess: Boolean);
+
     procedure LoadUrl(const Aurl: string);
     property SourceHtml: string read GetSourceHtml;
     property SourceText: string read GetSourceText;
@@ -291,6 +292,7 @@ end;
 
 destructor TCustomWkePage.Destroy;
 begin
+  wkeDestroyWebWindow(thewebview);
   inherited;
 end;
 
@@ -686,6 +688,8 @@ end;
 
 { TWkeGetSource }
 
+
+
 constructor TWkeGetSource.Create;
 begin
   Fwke := TWkePopupPage.Create(nil);
@@ -693,6 +697,7 @@ begin
   Fwke.WindowTop := 0; // -480;
   Fwke.WindowWidth := 600;
   Fwke.WindowHeight := 480;
+  Fwke.UserAgent :='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3747.0 Safari/537.36';
  // Fwke.OnAlertBox :=DoAlertBox;
   //ÉèÖÃ
   //FHeadless := false;
@@ -700,7 +705,6 @@ end;
 
 destructor TWkeGetSource.Destroy;
 begin
- // CloseWindow(Fwke.WindowHandle );
   Fwke.Free;
   inherited;
 end;
@@ -774,7 +778,7 @@ begin
         if ntry > 100 then
           break;
       end;
-      Sleep(100);
+      Dodelay(ADelay );
       result := SourceHtml;
     finally
       Free;

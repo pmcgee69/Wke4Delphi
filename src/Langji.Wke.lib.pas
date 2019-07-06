@@ -160,8 +160,9 @@ var
   wkeRunJsByFrame: function(webWindow: wkeWebView; frameId: Thandle; const script: putf8; isInClosure: boolean): jsValue; cdecl;      // minibink ÐÂÔö  2018.1.17
 
  // Add 2018.02.07
-  //ITERATOR2(void, wkeVisitAllCookie, void* params, wkeCookieVisitor visitor, "")
-  wkeVisitAllCookie: procedure(params: Pointer; const visitor: wkeCookieVisitor); cdecl;
+
+  // ITERATOR3(void, wkeVisitAllCookie, wkeWebView webView, void* params, wkeCookieVisitor visitor, "") \//20190727
+  wkeVisitAllCookie: procedure(webWindow: wkeWebView;params: Pointer; const visitor: wkeCookieVisitor); cdecl;
   //ITERATOR2(void, wkeSetLocalStorageFullPath, wkeWebView webView, const WCHAR* path, "")
   wkeSetLocalStorageFullPath: procedure(webWindow: wkeWebView; const path: Pwchar_t); cdecl;
   //ITERATOR1(void, wkePerformCookieCommand, wkeCookieCommand command, "") \

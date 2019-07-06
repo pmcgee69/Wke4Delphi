@@ -1594,7 +1594,7 @@ procedure TWkeApp.DoOnNewWindow(Sender: TObject; sUrl: string; navigationType: w
 var
   Openflag: TNewWindowFlag;
   NewwebPage: TWkeWebBrowser;
-  newFrm: TForm;
+ // newFrm: TForm;
 begin
   Openflag := nwf_NewPage;
   NewwebPage := nil;
